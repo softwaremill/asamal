@@ -27,7 +27,7 @@ import java.util.Set;
  *
  * User: szimano
  */
-@WebServlet(urlPatterns = "/*")
+@WebServlet(urlPatterns = "/*", loadOnStartup = 1)
 public class CDIWebServlet extends HttpServlet{
 
     public static final String CDIWEB_DEV_DIR = "CDIWEB_DEV_DIR";
@@ -160,11 +160,8 @@ public class CDIWebServlet extends HttpServlet{
                 throw new RuntimeException(e);
             }
         } else {
-            req.getServletContext().getResourceAsStream(
-                    "/WEB-INF/" + controller + "/" + view + ".vm");
-
+            return req.getServletContext().getResourceAsStream("/WEB-INF/" + controller + "/" + view + ".vm");
         }
-        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 
     @Override
