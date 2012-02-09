@@ -13,3 +13,4 @@ conf_env
 .tmp*
 conf_install
 *.iml
+.idea
