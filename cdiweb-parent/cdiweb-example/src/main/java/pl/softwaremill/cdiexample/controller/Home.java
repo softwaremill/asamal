@@ -18,4 +18,8 @@ public class Home extends ControllerBean {
 
         setParameter("list", Arrays.asList("One", "Two", "Three"));
     }
+
+    public void register() {
+
+    }
 }

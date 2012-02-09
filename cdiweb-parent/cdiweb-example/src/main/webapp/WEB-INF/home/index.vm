@@ -10,5 +10,7 @@
         <li>$item</li>
     #{end}
     </ul>
+
+    <a href="register">Register</a>
 </body>
 </html>

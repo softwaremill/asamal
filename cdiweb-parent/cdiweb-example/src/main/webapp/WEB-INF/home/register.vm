@@ -1,0 +1,14 @@
+<html>
+<head>
+    <title>Register Welcome</title>
+</head>
+<body>
+    <h1>Please register</h1>
+
+    <form>
+        <label for="text">Please enter the text</label>
+        <input type="text" id="text"/>
+        <input type="submit"/>
+    </form>
+</body>
+</html>
