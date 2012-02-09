@@ -1,0 +1,14 @@
+<html>
+<head>
+    <title>Home Welcome</title>
+</head>
+<body>
+    <h1>Welcome to home!</h1>
+
+    <ul>
+    #{foreach}($item in $list)
+        <li>$item</li>
+    #{end}
+    </ul>
+</body>
+</html>
