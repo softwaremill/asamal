@@ -1,0 +1,15 @@
+Gemfile.lock
+bd.sh
+.generators
+.rakeTasks
+tmp
+temp
+log
+target
+conf_env
+.classpath
+.project
+.settings
+.tmp*
+conf_install
+*.iml
