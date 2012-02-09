@@ -4,8 +4,12 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.ControllerImpl;
+import pl.softwaremill.cdiweb.controller.annotation.Web;
+import pl.softwaremill.cdiweb.controller.annotation.WebImpl;
 import pl.softwaremill.common.util.dependency.D;
 
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,9 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This is the starting point for everything
@@ -73,6 +79,25 @@ public class CDIWebServlet extends HttpServlet{
                 resp.setContentType("text/html");
 
                 VelocityContext context = new VelocityContext();
+
+                BeanManager beanManager = (BeanManager) req.getServletContext().getAttribute(CDIWebListener.BEAN_MANAGER);
+
+                Set<Bean<?>> beans = beanManager.getBeans(Object.class, new WebImpl());
+
+                System.out.println("Listing beans");
+                for (Bean<?> bean : beans) {
+                    System.out.println("bean: "+bean);
+                    for (Annotation annotation : bean.getQualifiers()) {
+                        System.out.println("annotation = " + annotation.annotationType());
+                        if (annotation.annotationType().equals(Web.class)) {
+                            System.out.println("Adding annotation "+annotation);
+                            context.put(((Web)annotation).value(), D.inject(bean.getBeanClass(), 
+                                    bean.getQualifiers().toArray(new Annotation[bean.getQualifiers().size()])));
+
+                            break;
+                        }
+                    }
+                }
 
                 for (Map.Entry<String, Object> param : controller.getParams().entrySet()) {
                     context.put(param.getKey(), param.getValue());

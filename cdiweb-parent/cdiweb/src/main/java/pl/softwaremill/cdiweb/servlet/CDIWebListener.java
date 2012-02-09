@@ -16,6 +16,8 @@ import javax.servlet.ServletContextListener;
  * User: szimano
  */
 public class CDIWebListener implements ServletContextListener {
+    
+    public static final String BEAN_MANAGER = "BeanManager";
 
     private DependencyProvider registeredDependencyProvider;
 
@@ -29,6 +31,8 @@ public class CDIWebListener implements ServletContextListener {
         }
         registeredDependencyProvider = new BeanManagerDependencyProvider(bm);
         D.register(registeredDependencyProvider);
+
+        sce.getServletContext().setAttribute(BEAN_MANAGER, bm);
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
