@@ -15,10 +15,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -33,11 +30,24 @@ import java.util.Set;
 @WebServlet(urlPatterns = "/*")
 public class CDIWebServlet extends HttpServlet{
 
+    public static final String CDIWEB_DEV_DIR = "CDIWEB_DEV_DIR";
+
     @Override
     public void init() throws ServletException {
         super.init();
 
         Velocity.init();
+
+        // warn about dev mode
+        if (System.getProperty(CDIWEB_DEV_DIR) != null) {
+            System.out.println("****************************");
+            System.out.println("****************************");
+            System.out.println("*    Running in DEV mode   *");
+            System.out.println("* DO NOT use on production *");
+            System.out.println("****************************");
+            System.out.println("****************************");
+        }
+
     }
 
     @Override
@@ -109,8 +119,7 @@ public class CDIWebServlet extends HttpServlet{
 
                 StringWriter w = new StringWriter();
 
-                InputStream templateStream = req.getServletContext().getResourceAsStream(
-                        "/WEB-INF/" + path[0] + "/" + path[1] + ".vm");
+                InputStream templateStream = resolveTemplate(req, path[0], path[1]);
 
                 StringWriter templateSW = new StringWriter();
                 
@@ -137,6 +146,25 @@ public class CDIWebServlet extends HttpServlet{
                 throw new ServletException(e);
             }
         }
+    }
+
+    protected InputStream resolveTemplate(HttpServletRequest req, String controller, String view) {
+        if (System.getProperty(CDIWEB_DEV_DIR) != null) {
+            // read from the disk
+            
+            String dir = System.getProperty(CDIWEB_DEV_DIR);
+
+            try {
+                return new FileInputStream(dir + "/WEB-INF/" + controller + "/" + view + ".vm");
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            req.getServletContext().getResourceAsStream(
+                    "/WEB-INF/" + controller + "/" + view + ".vm");
+
+        }
+        return null;  //To change body of created methods use File | Settings | File Templates.
     }
 
     @Override
