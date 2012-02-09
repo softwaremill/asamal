@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: pl.softwaremill.common:softwaremill-cdi:63">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/pl/softwaremill/common/softwaremill-cdi/63/softwaremill-cdi-63.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/pl/softwaremill/common/softwaremill-cdi/63/softwaremill-cdi-63-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/pl/softwaremill/common/softwaremill-cdi/63/softwaremill-cdi-63-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

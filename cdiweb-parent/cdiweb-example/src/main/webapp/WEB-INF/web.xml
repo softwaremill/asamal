@@ -1,0 +1,5 @@
+<web-app>
+    <listener>
+        <listener-class>pl.softwaremill.cdiweb.servlet.CDIWebListener</listener-class>
+    </listener>
+</web-app>

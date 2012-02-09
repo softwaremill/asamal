@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module org.jetbrains.idea.maven.project.MavenProjectsManager.isMavenModule="true" type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="WebBeans" name="CDI">
+      <configuration />
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:3.8.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-core:1.1.2.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.enterprise:cdi-api:1.0-SP4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.1_spec:1.0.0.Beta1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.annotation:jsr250-api:1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-api:1.1.Beta2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-spi:1.1.Beta2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.javassist:javassist:3.14.0-GA" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:10.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.interceptor:jboss-interceptor-spi:2.0.0.CR1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.interceptor:jboss-interceptor-core:2.0.0.CR1" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.5.10" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.slf4j:slf4j-ext:1.5.10" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: ch.qos.cal10n:cal10n-api:0.7.2" level="project" />
+    <orderEntry type="library" name="Maven: pl.softwaremill.common:softwaremill-cdi:63" level="project" />
+    <orderEntry type="library" name="Maven: pl.softwaremill.common:softwaremill-util:63" level="project" />
+    <orderEntry type="library" name="Maven: com.google.code.findbugs:jsr305:1.3.9" level="project" />
+    <orderEntry type="library" name="Maven: pl.softwaremill.common:softwaremill-conf:63" level="project" />
+    <orderEntry type="library" name="Maven: org.jboss.seam.solder:seam-solder:3.0.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-log4j12:1.5.10" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.14" level="project" />
+  </component>
+</module>
+
