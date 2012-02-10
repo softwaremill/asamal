@@ -3,7 +3,7 @@ package pl.softwaremill.cdiexample.controller;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Controller;
 
-import java.util.Arrays;
+import javax.ws.rs.Path;
 
 /**
  * Home page controller

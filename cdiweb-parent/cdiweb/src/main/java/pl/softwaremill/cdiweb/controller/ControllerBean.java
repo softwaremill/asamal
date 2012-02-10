@@ -1,6 +1,11 @@
 package pl.softwaremill.cdiweb.controller;
 
+import org.apache.commons.beanutils.BeanUtils;
+
+import javax.ws.rs.core.MultivaluedMap;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,5 +27,16 @@ public abstract class ControllerBean {
 
     public void clearParams() {
         params.clear();
+    }
+
+    protected void doPostMagic(MultivaluedMap<String,String> form) {
+        for (Map.Entry<String, List<String>> entry : form.entrySet()) {
+            try {
+                BeanUtils.setProperty(this, entry.getKey(), entry.getValue());
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

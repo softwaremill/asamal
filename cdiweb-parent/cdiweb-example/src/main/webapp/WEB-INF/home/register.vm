@@ -2,13 +2,17 @@
 <head>
     <title>Register Welcome</title>
 </head>
-<body>
-    <h1>Please register</h1>
+    <body>
+        <h1>Please register</h1>
 
-    <form>
-        <label for="text">Please enter the text</label>
-        <input type="text" id="text"/>
-        <input type="submit"/>
-    </form>
-</body>
+        <form method="POST" action="/cdiweb-example-1.0-SNAPSHOT/post/home/doRegister">
+            <label>Please enter the text</label>
+            <input type="text" name="person.name"/>
+            <input type="text" name="person.lastName"/>
+            <input type="text" name="person.addresses"/>
+            <input type="text" name="person.addresses"/>
+            <input type="text" name="person.addresses"/>
+            <input type="submit"/>
+        </form>
+    </body>
 </html>

@@ -60,7 +60,7 @@ public class CDIWebServlet extends HttpServlet{
             return;
         }
 
-        String[] path = req.getRequestURI().substring(req.getContextPath().length() + 1).split("/");
+        String[] path = req.getRequestURI().substring((req.getContextPath()).length() + 1).split("/");
 
         System.out.println("Path: " + Arrays.toString(path));
 
@@ -73,6 +73,7 @@ public class CDIWebServlet extends HttpServlet{
             try {
                 controller = D.inject(ControllerBean.class, new ControllerImpl(path[0]));
             } catch (Exception e) {
+                e.printStackTrace();
                 // injection failed, show 404
                 resp.sendError(404, "Not found");
                 return;
@@ -138,11 +139,15 @@ public class CDIWebServlet extends HttpServlet{
 
                 writer.close();
             } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+                
                 // no such method, show 404
                 resp.sendError(404, "Not found");
 
                 return;
             } catch (Exception e) {
+                e.printStackTrace();
+
                 throw new ServletException(e);
             }
         }
