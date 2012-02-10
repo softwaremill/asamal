@@ -3,10 +3,9 @@ package pl.softwaremill.cdiexample.controller;
 import pl.softwaremill.cdiexample.model.Person;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Controller;
+import pl.softwaremill.cdiweb.controller.annotation.Get;
+import pl.softwaremill.cdiweb.controller.annotation.Post;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.MultivaluedMap;
 import java.util.Arrays;
 
 /**
@@ -15,7 +14,6 @@ import java.util.Arrays;
  * User: szimano
  */
 @Controller("home")
-@Path("/home")
 public class Home extends ControllerBean {
 
     private Person person = new Person();
@@ -28,22 +26,20 @@ public class Home extends ControllerBean {
         this.person = person;
     }
 
+    @Get
     public void index() {
         System.out.println("Running index controller !");
 
         setParameter("list", Arrays.asList("One", "Two", "Three"));
     }
 
+    @Get
     public void register() {
 
     }
 
-    @POST
-    @Path("/doRegister")
-    public void doRegister(MultivaluedMap<String, String> form) {
-        System.out.println("form = " + form);
-        doPostMagic(form);
-
+    @Post
+    public void doRegister() {
         System.out.println("person = " + person);
     }
 

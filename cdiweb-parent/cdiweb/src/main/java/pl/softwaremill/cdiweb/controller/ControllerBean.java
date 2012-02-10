@@ -29,8 +29,8 @@ public abstract class ControllerBean {
         params.clear();
     }
 
-    protected void doPostMagic(MultivaluedMap<String,String> form) {
-        for (Map.Entry<String, List<String>> entry : form.entrySet()) {
+    public void doPostMagic(java.util.Set<java.util.Map.Entry<String,List<String>>> entrySet) {
+        for (Map.Entry<String, List<String>> entry : entrySet) {
             try {
                 BeanUtils.setProperty(this, entry.getKey(), entry.getValue());
             } catch (Exception e) {

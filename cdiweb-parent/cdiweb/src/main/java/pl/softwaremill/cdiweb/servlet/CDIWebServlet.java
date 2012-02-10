@@ -2,11 +2,12 @@ package pl.softwaremill.cdiweb.servlet;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import pl.softwaremill.cdiweb.cdi.ControllerResolver;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.ControllerImpl;
 import pl.softwaremill.cdiweb.controller.annotation.Web;
 import pl.softwaremill.cdiweb.controller.annotation.WebImpl;
-import pl.softwaremill.cdiweb.velcoity.TagHelper;
+import pl.softwaremill.cdiweb.velocity.TagHelper;
 import pl.softwaremill.common.util.dependency.D;
 
 import javax.enterprise.inject.spi.Bean;
@@ -76,8 +77,9 @@ public class CDIWebServlet extends HttpServlet{
         }
         else {
             ControllerBean controller = null;
+
             try {
-                controller = D.inject(ControllerBean.class, new ControllerImpl(path[0]));
+                controller = ControllerResolver.resolveController(path[0]).executeView(path[1]).getController();
             } catch (Exception e) {
                 e.printStackTrace();
                 // injection failed, show 404
@@ -87,11 +89,6 @@ public class CDIWebServlet extends HttpServlet{
 
             // get the method
             try {
-                // get the view method
-                Method method = controller.getClass().getDeclaredMethod(path[1]);
-
-                // invoke it
-                method.invoke(controller);
 
                 resp.setContentType("text/html");
 
@@ -146,14 +143,7 @@ public class CDIWebServlet extends HttpServlet{
                 writer.write(w.toString());
 
                 writer.close();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-                
-                // no such method, show 404
-                resp.sendError(404, "Not found");
-
-                return;
-            } catch (Exception e) {
+            }  catch (Exception e) {
                 e.printStackTrace();
 
                 throw new ServletException(e);

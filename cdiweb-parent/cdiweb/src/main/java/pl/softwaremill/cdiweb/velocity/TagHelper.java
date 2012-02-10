@@ -1,4 +1,4 @@
-package pl.softwaremill.cdiweb.velcoity;
+package pl.softwaremill.cdiweb.velocity;
 
 import java.io.StringWriter;
 
