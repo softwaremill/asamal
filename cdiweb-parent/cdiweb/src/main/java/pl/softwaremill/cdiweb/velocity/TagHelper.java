@@ -32,6 +32,6 @@ public class TagHelper {
     public String jsLink(String jsName) {
         StringWriter sw = new StringWriter();
 
-        return sw.append(contextPath).append("/js/").append(jsName).toString();
+        return sw.append(contextPath).append("/static/js/").append(jsName).toString();
     }
 }

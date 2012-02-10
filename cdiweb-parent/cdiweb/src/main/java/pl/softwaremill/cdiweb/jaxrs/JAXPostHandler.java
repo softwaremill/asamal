@@ -36,6 +36,12 @@ public class JAXPostHandler {
 
     public static final String CDIWEB_DEV_DIR = "CDIWEB_DEV_DIR";
 
+    @GET
+    @Path("/static/{path:.*}")
+    public Object handleStaticGet(@Context HttpServletRequest req, @PathParam("path") String path) {
+        return resolveFile(req, path);
+    }
+    
     @POST
     @Path("/post/{controller}/{view}")
     public void handlePost(@PathParam("controller") String controller, @PathParam("view") String view,
@@ -121,21 +127,7 @@ public class JAXPostHandler {
 
 
     protected String resolveTemplate(HttpServletRequest req, String controller, String view) throws IOException {
-        InputStream is;
-
-        if (System.getProperty(CDIWEB_DEV_DIR) != null) {
-            // read from the disk
-
-            String dir = System.getProperty(CDIWEB_DEV_DIR);
-
-            try {
-                is = new FileInputStream(dir + "/WEB-INF/" + controller + "/" + view + ".vm");
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            is = req.getServletContext().getResourceAsStream("/WEB-INF/" + controller + "/" + view + ".vm");
-        }
+        InputStream is = resolveFile(req, "/WEB-INF/"+controller+"/"+view+".vm");
 
         StringWriter templateSW = new StringWriter();
 
@@ -146,5 +138,24 @@ public class JAXPostHandler {
         
         return templateSW.toString();
     }
+    
+    protected InputStream resolveFile(HttpServletRequest req, String path) {
+        InputStream is;
 
+        if (System.getProperty(CDIWEB_DEV_DIR) != null) {
+            // read from the disk
+
+            String dir = System.getProperty(CDIWEB_DEV_DIR);
+
+            try {
+                is = new FileInputStream(dir + path);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            is = req.getServletContext().getResourceAsStream(path);
+        }
+
+        return is;
+    }
 }
