@@ -1,18 +1,11 @@
-<html>
-<head>
-    <title>Register Welcome</title>
-</head>
-    <body>
-        <h1>Please register</h1>
+<h1>Please register</h1>
 
-        <form method="POST" action="$tag.formAction("home", "doRegister")">
-            <label>Please enter the text</label>
-            <input type="text" name="person.name"/>
-            <input type="text" name="person.lastName"/>
-            <input type="text" name="person.addresses"/>
-            <input type="text" name="person.addresses"/>
-            <input type="text" name="person.addresses"/>
-            <input type="submit"/>
-        </form>
-    </body>
-</html>
+<form method="POST" action="$tag.formAction("home", "doRegister")">
+    <label>Please enter the text</label>
+    <input type="text" name="person.name"/>
+    <input type="text" name="person.lastName"/>
+    <input type="text" name="person.addresses"/>
+    <input type="text" name="person.addresses"/>
+    <input type="text" name="person.addresses"/>
+    <input type="submit"/>
+</form>

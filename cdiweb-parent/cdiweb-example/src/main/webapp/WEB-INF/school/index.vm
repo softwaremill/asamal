@@ -1,12 +1,5 @@
-<html>
-<head>
-    <title>School Welcome</title>
-</head>
-<body>
-    <h1>Welcome to school!</h1>
+<h1>Welcome to school!</h1>
 
-    <h3>Session scoped date: $date.now </h3>
+<h3>Session scoped date: $date.now </h3>
 
-    <h3>Request scoped date: $dateReally.now</h3>
-</body>
-</html>
+<h3>Request scoped date: $dateReally.now</h3>

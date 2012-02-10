@@ -16,6 +16,10 @@ import java.util.Map;
 public abstract class ControllerBean {
     
     private Map<String, Object> params = new HashMap<String, Object>();
+    
+    private String layout = "default";
+    
+    private String pageTitle = "CDIWEB Application";
 
     protected void setParameter(String key, Object value) {
         params.put(key, value);
@@ -38,5 +42,21 @@ public abstract class ControllerBean {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public String getLayout() {
+        return layout;
+    }
+
+    public void setLayout(String layout) {
+        this.layout = layout;
+    }
+
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
     }
 }

@@ -1,16 +1,9 @@
-<html>
-<head>
-    <title>Home Welcome</title>
-</head>
-<body>
-    <h1>Welcome to home!</h1>
+<h1>Welcome to home!</h1>
 
-    <ul>
+<ul>
     #{foreach}($item in $list)
         <li>$item</li>
     #{end}
-    </ul>
+</ul>
 
-    <a href="$tag.link("home", "register")">Register</a>
-</body>
-</html>
+<a href="$tag.link("home", "register")">Register</a>

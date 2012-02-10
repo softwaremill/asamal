@@ -95,6 +95,8 @@ public class JAXPostHandler {
             }
 
             context.put("tag", new TagHelper(req.getContextPath()));
+            context.put("pageTitle", controllerBean.getPageTitle());
+            context.put("content", resolveTemplate(req, controller, view));
 
             controllerBean.clearParams();
 
@@ -102,16 +104,9 @@ public class JAXPostHandler {
 
             StringWriter w = new StringWriter();
 
-            InputStream templateStream = resolveTemplate(req, controller, view);
+            String template = resolveTemplate(req, "layout", controllerBean.getLayout());
 
-            StringWriter templateSW = new StringWriter();
-
-            int c;
-            while ((c = templateStream.read()) > 0) {
-                templateSW.append((char) c);
-            }
-
-            Velocity.evaluate(context, w, controller + "/" + view, templateSW.toString());
+            Velocity.evaluate(context, w, controller + "/" + view, template);
 
             System.out.println(" template : " + w);
 
@@ -125,20 +120,31 @@ public class JAXPostHandler {
     }
 
 
-    protected InputStream resolveTemplate(HttpServletRequest req, String controller, String view) {
+    protected String resolveTemplate(HttpServletRequest req, String controller, String view) throws IOException {
+        InputStream is;
+
         if (System.getProperty(CDIWEB_DEV_DIR) != null) {
             // read from the disk
 
             String dir = System.getProperty(CDIWEB_DEV_DIR);
 
             try {
-                return new FileInputStream(dir + "/WEB-INF/" + controller + "/" + view + ".vm");
+                is = new FileInputStream(dir + "/WEB-INF/" + controller + "/" + view + ".vm");
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            return req.getServletContext().getResourceAsStream("/WEB-INF/" + controller + "/" + view + ".vm");
+            is = req.getServletContext().getResourceAsStream("/WEB-INF/" + controller + "/" + view + ".vm");
         }
+
+        StringWriter templateSW = new StringWriter();
+
+        int c;
+        while ((c = is.read()) > 0) {
+            templateSW.append((char) c);
+        }
+        
+        return templateSW.toString();
     }
 
 }
