@@ -42,7 +42,7 @@ public class JAXPostHandler {
     public Object handleStaticGet(@Context HttpServletRequest req, @PathParam("path") String path) {
         return resolveFile(req, path);
     }
-    
+
     @POST
     @Path("/post/{controller}/{view}")
     public void handlePost(@PathParam("controller") String controller, @PathParam("view") String view,
@@ -60,6 +60,20 @@ public class JAXPostHandler {
     }
 
     @GET
+    @Path("/json/{controller}/{view}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Object handleJsonGet(@Context HttpServletRequest req, @PathParam("controller") String controller,
+                                @PathParam("view") String view) throws HttpErrorException {
+        try {
+            ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
+
+            return controllerResolver.executeView(RequestType.JSON, view);
+        } catch (Exception e) {
+            throw new HttpErrorException(Response.Status.NOT_FOUND, e);
+        }
+    }
+
+    @GET
     @Path("/{controller}/{view}")
     @Produces(MediaType.TEXT_HTML)
     public String handleGet(@Context HttpServletRequest req, @PathParam("controller") String controller,
@@ -67,8 +81,9 @@ public class JAXPostHandler {
         ControllerBean controllerBean = null;
 
         try {
-            controllerBean = ControllerResolver.resolveController(controller).executeView(RequestType.GET, view).
-                    getController();
+            ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
+            controllerResolver.executeView(RequestType.GET, view);
+            controllerBean = controllerResolver.getController();
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }
@@ -118,7 +133,7 @@ public class JAXPostHandler {
             while ((layout = (String) context.get(LayoutDirective.LAYOUT)) != null) {
                 // clear the layout
                 context.put(LayoutDirective.LAYOUT, null);
-                
+
                 w = new StringWriter();
                 template = resolveTemplate(req, "layout", layout);
                 Velocity.evaluate(context, w, controller + "/" + view, template);
@@ -137,7 +152,7 @@ public class JAXPostHandler {
 
 
     protected String resolveTemplate(HttpServletRequest req, String controller, String view) throws IOException {
-        InputStream is = resolveFile(req, "/WEB-INF/"+controller+"/"+view+".vm");
+        InputStream is = resolveFile(req, "/WEB-INF/" + controller + "/" + view + ".vm");
 
         StringWriter templateSW = new StringWriter();
 
@@ -145,10 +160,10 @@ public class JAXPostHandler {
         while ((c = is.read()) > 0) {
             templateSW.append((char) c);
         }
-        
+
         return templateSW.toString();
     }
-    
+
     protected InputStream resolveFile(HttpServletRequest req, String path) {
         InputStream is;
 

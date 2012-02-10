@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation specifies controller
+ * Marks get enabled methods
  *
  * User: szimano
  */

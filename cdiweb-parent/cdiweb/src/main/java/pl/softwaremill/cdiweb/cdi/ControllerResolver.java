@@ -22,7 +22,7 @@ public class ControllerResolver {
         return resolver;
     }
 
-    public ControllerResolver executeView(RequestType requestType, String view) throws InvocationTargetException,
+    public Object executeView(RequestType requestType, String view) throws InvocationTargetException,
             IllegalAccessException,
             NoSuchMethodException {
         // get the view method
@@ -36,9 +36,7 @@ public class ControllerResolver {
         }
 
         // invoke it
-        method.invoke(controller);
-
-        return this;
+        return method.invoke(controller);
     }
 
     public ControllerBean getController() {

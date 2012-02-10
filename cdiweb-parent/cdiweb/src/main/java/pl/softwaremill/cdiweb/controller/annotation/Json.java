@@ -7,12 +7,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks POST enabled methods
+ * Marks Json enabled methods
  *
  * User: szimano
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 @Qualifier
-public @interface Post {
+public @interface Json {
 }

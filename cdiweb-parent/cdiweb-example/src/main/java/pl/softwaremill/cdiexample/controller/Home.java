@@ -4,6 +4,7 @@ import pl.softwaremill.cdiexample.model.Person;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Controller;
 import pl.softwaremill.cdiweb.controller.annotation.Get;
+import pl.softwaremill.cdiweb.controller.annotation.Json;
 import pl.softwaremill.cdiweb.controller.annotation.Post;
 
 import java.util.Arrays;
@@ -38,6 +39,16 @@ public class Home extends ControllerBean {
 
     }
 
+    @Json
+    public Person showJSON() {
+        person = new Person();
+        person.setAddresses(Arrays.asList("One Ad", "Second Ad"));
+        person.setName("Tomek");
+        person.setLastName("Szymanski");
+
+        return person;
+    }
+    
     public void notWorking() {}
 
     @Post
