@@ -11,14 +11,15 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.util.Properties;
 
 /**
  * Listener that sets the correct D providers
- *
+ * <p/>
  * User: szimano
  */
 public class CDIWebListener implements ServletContextListener {
-    
+
     public static final String BEAN_MANAGER = "BeanManager";
 
     private DependencyProvider registeredDependencyProvider;
@@ -37,7 +38,12 @@ public class CDIWebListener implements ServletContextListener {
         sce.getServletContext().setAttribute(BEAN_MANAGER, bm);
 
         // init velocity
-        Velocity.init();
+        Properties velocityProps = new Properties();
+        velocityProps.setProperty("userdirective",
+                        "pl.softwaremill.cdiweb.velocity.RegionDirective," +
+                        "pl.softwaremill.cdiweb.velocity.LayoutDirective," +
+                        "pl.softwaremill.cdiweb.velocity.IncludeRegionDirective");
+        Velocity.init(velocityProps);
 
         // warn about dev mode
         if (System.getProperty(JAXPostHandler.CDIWEB_DEV_DIR) != null) {

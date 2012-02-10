@@ -1,0 +1,11 @@
+#layout('default')
+
+#region('content')
+    This is inner layout
+
+    #includeRegion('school_content')
+#end
+
+#region('footer')
+    Footer from the outer layout
+#end

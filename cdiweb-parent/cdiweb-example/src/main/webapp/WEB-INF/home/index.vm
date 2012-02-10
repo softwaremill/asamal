@@ -1,9 +1,13 @@
-<h1>Welcome to home!</h1>
+#layout('default')
 
-<ul>
-    #{foreach}($item in $list)
-        <li>$item</li>
-    #{end}
-</ul>
+#region('content')
+    <h1>Welcome to home!</h1>
 
-<a href="$tag.link("home", "register")">Register</a>
+    <ul>
+        #{foreach}($item in $list)
+            <li>$item</li>
+        #{end}
+    </ul>
+
+    <a href="$tag.link("home", "register")">Register</a>
+#end

@@ -4,6 +4,10 @@
     <script type="text/javascript" src="$tag.jsLink("jquery-min-1.7.1.js")"></script>
 </head>
 <body>
-    #evaluate($content)
+    #includeRegion('content')
+
+    <hr/>
+        #includeRegion('footer')
+    <hr/>
 </body>
 </html>

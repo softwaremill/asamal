@@ -10,6 +10,7 @@ import pl.softwaremill.cdiweb.controller.annotation.Web;
 import pl.softwaremill.cdiweb.controller.annotation.WebImpl;
 import pl.softwaremill.cdiweb.exception.HttpErrorException;
 import pl.softwaremill.cdiweb.servlet.CDIWebListener;
+import pl.softwaremill.cdiweb.velocity.LayoutDirective;
 import pl.softwaremill.cdiweb.velocity.TagHelper;
 import pl.softwaremill.common.util.dependency.D;
 
@@ -102,7 +103,6 @@ public class JAXPostHandler {
 
             context.put("tag", new TagHelper(req.getContextPath()));
             context.put("pageTitle", controllerBean.getPageTitle());
-            context.put("content", resolveTemplate(req, controller, view));
 
             controllerBean.clearParams();
 
@@ -110,9 +110,19 @@ public class JAXPostHandler {
 
             StringWriter w = new StringWriter();
 
-            String template = resolveTemplate(req, "layout", controllerBean.getLayout());
+            String template = resolveTemplate(req, controller, view);
 
             Velocity.evaluate(context, w, controller + "/" + view, template);
+
+            String layout;
+            while ((layout = (String) context.get(LayoutDirective.LAYOUT)) != null) {
+                // clear the layout
+                context.put(LayoutDirective.LAYOUT, null);
+                
+                w = new StringWriter();
+                template = resolveTemplate(req, "layout", layout);
+                Velocity.evaluate(context, w, controller + "/" + view, template);
+            }
 
             System.out.println(" template : " + w);
 
