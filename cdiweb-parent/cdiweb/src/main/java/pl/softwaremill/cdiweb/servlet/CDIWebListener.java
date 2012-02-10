@@ -1,5 +1,7 @@
 package pl.softwaremill.cdiweb.servlet;
 
+import org.apache.velocity.app.Velocity;
+import pl.softwaremill.cdiweb.jaxrs.JAXPostHandler;
 import pl.softwaremill.common.util.dependency.BeanManagerDependencyProvider;
 import pl.softwaremill.common.util.dependency.D;
 import pl.softwaremill.common.util.dependency.DependencyProvider;
@@ -33,6 +35,19 @@ public class CDIWebListener implements ServletContextListener {
         D.register(registeredDependencyProvider);
 
         sce.getServletContext().setAttribute(BEAN_MANAGER, bm);
+
+        // init velocity
+        Velocity.init();
+
+        // warn about dev mode
+        if (System.getProperty(JAXPostHandler.CDIWEB_DEV_DIR) != null) {
+            System.out.println("****************************");
+            System.out.println("****************************");
+            System.out.println("*    Running in DEV mode   *");
+            System.out.println("* DO NOT use on production *");
+            System.out.println("****************************");
+            System.out.println("****************************");
+        }
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
