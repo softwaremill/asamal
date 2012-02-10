@@ -1,0 +1,8 @@
+<html>
+<head>
+    <title>$pageTitle</title>
+</head>
+<body>
+    #evaluate($content)
+</body>
+</html>

@@ -28,4 +28,10 @@ public class TagHelper {
         return sw.append(contextPath).append("/").append(controller).
                 append("/").append(view).toString();
     }
+    
+    public String jsLink(String jsName) {
+        StringWriter sw = new StringWriter();
+
+        return sw.append(contextPath).append("/js/").append(jsName).toString();
+    }
 }
