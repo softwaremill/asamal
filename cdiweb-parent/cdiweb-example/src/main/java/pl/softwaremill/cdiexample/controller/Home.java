@@ -38,6 +38,8 @@ public class Home extends ControllerBean {
 
     }
 
+    public void notWorking() {}
+
     @Post
     public void doRegister() {
         System.out.println("person = " + person);

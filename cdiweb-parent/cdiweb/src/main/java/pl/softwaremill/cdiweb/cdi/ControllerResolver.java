@@ -22,10 +22,18 @@ public class ControllerResolver {
         return resolver;
     }
 
-    public ControllerResolver executeView(String view) throws InvocationTargetException, IllegalAccessException,
+    public ControllerResolver executeView(RequestType requestType, String view) throws InvocationTargetException,
+            IllegalAccessException,
             NoSuchMethodException {
         // get the view method
         Method method = controller.getClass().getDeclaredMethod(view);
+
+        // check that the method is annotated with the correct annotation
+        if (method.getAnnotation(requestType.getRequestAnnotation()) == null) {
+            throw new SecurityException("Method "+view+" on controller "+controller.getClass().getSimpleName()+
+                    " isn't annotated with @"+
+                    requestType.getRequestAnnotation().getSimpleName());
+        }
 
         // invoke it
         method.invoke(controller);

@@ -4,6 +4,7 @@ package pl.softwaremill.cdiweb.jaxrs;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import pl.softwaremill.cdiweb.cdi.ControllerResolver;
+import pl.softwaremill.cdiweb.cdi.RequestType;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Web;
 import pl.softwaremill.cdiweb.controller.annotation.WebImpl;
@@ -45,7 +46,7 @@ public class JAXPostHandler {
 
             controllerResolver.getController().doPostMagic(formValues.entrySet());
 
-            controllerResolver.executeView(view);
+            controllerResolver.executeView(RequestType.POST, view);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -59,7 +60,7 @@ public class JAXPostHandler {
         ControllerBean controllerBean = null;
 
         try {
-            controllerBean = ControllerResolver.resolveController(controller).executeView(view).
+            controllerBean = ControllerResolver.resolveController(controller).executeView(RequestType.GET, view).
                     getController();
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
