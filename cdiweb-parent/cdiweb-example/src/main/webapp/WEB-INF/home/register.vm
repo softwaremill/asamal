@@ -5,7 +5,7 @@
     <body>
         <h1>Please register</h1>
 
-        <form method="POST" action="/cdiweb-example-1.0-SNAPSHOT/post/home/doRegister">
+        <form method="POST" action="$tag.formAction("home", "doRegister")">
             <label>Please enter the text</label>
             <input type="text" name="person.name"/>
             <input type="text" name="person.lastName"/>

@@ -6,10 +6,12 @@ import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.ControllerImpl;
 import pl.softwaremill.cdiweb.controller.annotation.Web;
 import pl.softwaremill.cdiweb.controller.annotation.WebImpl;
+import pl.softwaremill.cdiweb.velcoity.TagHelper;
 import pl.softwaremill.common.util.dependency.D;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -32,8 +34,10 @@ public class CDIWebServlet extends HttpServlet{
 
     public static final String CDIWEB_DEV_DIR = "CDIWEB_DEV_DIR";
 
+    public static TagHelper tagHelper;
+
     @Override
-    public void init() throws ServletException {
+    public void init(ServletConfig config) throws ServletException {
         super.init();
 
         Velocity.init();
@@ -47,6 +51,8 @@ public class CDIWebServlet extends HttpServlet{
             System.out.println("****************************");
             System.out.println("****************************");
         }
+
+        tagHelper = new TagHelper(config.getServletContext().getContextPath());
 
     }
 
@@ -113,6 +119,8 @@ public class CDIWebServlet extends HttpServlet{
                 for (Map.Entry<String, Object> param : controller.getParams().entrySet()) {
                     context.put(param.getKey(), param.getValue());
                 }
+
+                context.put("tag", tagHelper);
 
                 controller.clearParams();
 

@@ -11,6 +11,6 @@
     #{end}
     </ul>
 
-    <a href="register">Register</a>
+    <a href="$tag.link("home", "register")">Register</a>
 </body>
 </html>
