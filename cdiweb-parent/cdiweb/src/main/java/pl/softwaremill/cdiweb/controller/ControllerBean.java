@@ -1,6 +1,7 @@
 package pl.softwaremill.cdiweb.controller;
 
 import org.apache.commons.beanutils.BeanUtils;
+import pl.softwaremill.cdiweb.controller.annotation.Controller;
 
 import javax.ws.rs.core.MultivaluedMap;
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +19,20 @@ public abstract class ControllerBean {
     private Map<String, Object> params = new HashMap<String, Object>();
     
     private String pageTitle = "CDIWEB Application";
+    
+    private String name;
+
+    protected ControllerBean() {
+    }
+    
+    public String getName() {
+        if (name == null) {
+            // read it
+            name = this.getClass().getAnnotation(Controller.class).value();
+        }
+
+        return name;
+    }
 
     protected void setParameter(String key, Object value) {
         params.put(key, value);

@@ -5,6 +5,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import pl.softwaremill.cdiweb.cdi.ControllerResolver;
 import pl.softwaremill.cdiweb.cdi.RequestType;
+import pl.softwaremill.cdiweb.controller.ContextConstants;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Web;
 import pl.softwaremill.cdiweb.controller.annotation.WebImpl;
@@ -116,8 +117,11 @@ public class JAXPostHandler {
                 context.put(param.getKey(), param.getValue());
             }
 
+            // put some context
             context.put("tag", new TagHelper(req.getContextPath()));
             context.put("pageTitle", controllerBean.getPageTitle());
+            context.put(ContextConstants.CONTROLLER, controllerBean);
+            context.put(ContextConstants.VIEW, view);
 
             controllerBean.clearParams();
 

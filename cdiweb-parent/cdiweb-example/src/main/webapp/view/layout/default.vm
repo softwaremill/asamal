@@ -32,12 +32,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="#">Project name</a>
+            <a class="brand" href="#">CDIWeb Example App</a>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="active"><a href="$tag.link('home', 'index')">Home</a></li>
-                    <li><a href="$tag.link('home', 'register')">Register</a></li>
-                    <li><a href="$tag.link('school', 'index')">School</a></li>
+                    <li #if($controller.name == 'home' && $view == 'index')class="active"#end>
+                        <a href="$tag.link('home', 'index')">Home</a></li>
+                    <li #if($controller.name == 'home' && $view == 'register')class="active"#end>
+                        <a href="$tag.link('home', 'register')">Register</a></li>
+                    <li #if($controller.name == 'school' && $view == 'index')class="active"#end>
+                        <a href="$tag.link('school', 'index')">School</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>
@@ -48,19 +51,17 @@
 
     #includeRegion('content')
 
+    <footer>
+        #includeRegion('footer')
+    </footer>
+
 </div> <!-- /container -->
-
-<div class="footer">
-
-    #includeRegion('footer')
-
-</div>
 
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="$tag.jsLink("jquery-min-1.7.1.js")"></script>
-<script src="$tag.jsLink("bootstrap-min.js")"></script>
+<script src="$tag.jsLink("bootstrap.min.js")"></script>
 
 </body>
 </html>
