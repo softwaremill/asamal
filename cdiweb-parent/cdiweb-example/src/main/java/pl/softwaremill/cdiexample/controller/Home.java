@@ -8,6 +8,8 @@ import pl.softwaremill.cdiweb.controller.annotation.Get;
 import pl.softwaremill.cdiweb.controller.annotation.Json;
 import pl.softwaremill.cdiweb.controller.annotation.Post;
 
+import javax.enterprise.context.SessionScoped;
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
@@ -16,7 +18,7 @@ import java.util.Arrays;
  * User: szimano
  */
 @Controller("home")
-public class Home extends ControllerBean {
+public class Home extends ControllerBean implements Serializable {
 
     private Person person = new Person();
 
@@ -53,11 +55,11 @@ public class Home extends ControllerBean {
     public void notWorking() {}
 
     @Post
-    public void doRegister(CDIWebContext context) {
+    public void doRegister() {
         System.out.println("person = " + person);
 
         // on succesfull
-        context.redirect("index");
+        redirect("index");
     }
 
 

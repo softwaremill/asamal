@@ -1,12 +1,16 @@
 package pl.softwaremill.cdiweb.controller.cdi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.softwaremill.cdiweb.controller.CDIWebContext;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.ControllerImpl;
 import pl.softwaremill.common.util.dependency.D;
 
+import javax.enterprise.context.SessionScoped;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * User: szimano
@@ -14,6 +18,8 @@ import java.lang.reflect.Method;
 public class ControllerResolver {
 
     private ControllerBean controller;
+
+    private final static Logger log = LoggerFactory.getLogger(ControllerResolver.class);
 
     public static ControllerResolver resolveController(String controllerName) {
         ControllerResolver resolver = new ControllerResolver();
@@ -26,13 +32,7 @@ public class ControllerResolver {
     public Object executeView(RequestType requestType, String view, CDIWebContext context)
             throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         // get the view method
-        Method method = null;
-        try {
-            method = controller.getClass().getDeclaredMethod(view);
-        } catch (NoSuchMethodException e) {
-            // try with context param
-            method = controller.getClass().getDeclaredMethod(view, CDIWebContext.class);
-        }
+        Method method = controller.getClass().getDeclaredMethod(view);
 
         // check that the method is annotated with the correct annotation
         if (method.getAnnotation(requestType.getRequestAnnotation()) == null) {
@@ -41,21 +41,14 @@ public class ControllerResolver {
                     requestType.getRequestAnnotation().getSimpleName());
         }
 
+        // set the context
+        controller.setContext(context);
+
         // invoke it
-        return invokeMethod(method, controller, context);
+        return method.invoke(controller);
     }
 
     public ControllerBean getController() {
         return controller;
-    }
-
-    private Object invokeMethod(Method method, ControllerBean controller, CDIWebContext context)
-            throws InvocationTargetException, IllegalAccessException {
-        // check if it has parameters
-        if (method.getParameterTypes().length > 0) {
-            return method.invoke(controller, context);
-        }
-
-        return method.invoke(controller);
     }
 }

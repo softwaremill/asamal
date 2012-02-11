@@ -22,9 +22,15 @@ public abstract class ControllerBean {
     
     private String name;
 
+    private CDIWebContext context;
+
     protected ControllerBean() {
     }
-    
+
+    public void setContext(CDIWebContext context) {
+        this.context = context;
+    }
+
     public String getName() {
         if (name == null) {
             // read it
@@ -63,5 +69,13 @@ public abstract class ControllerBean {
 
     public void setPageTitle(String pageTitle) {
         this.pageTitle = pageTitle;
+    }
+
+    public void redirect(String controller, String view) {
+        context.redirect(controller, view);
+    }
+
+    public void redirect(String view) {
+        context.redirect(view);
     }
 }
