@@ -33,6 +33,7 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand" href="#">CDIWeb Example App</a>
+
             <div class="nav-collapse">
                 <ul class="nav">
                     <li #if($controller.name == 'home' && $view == 'index')class="active"#end>
@@ -42,12 +43,52 @@
                     <li #if($controller.name == 'school' && $view == 'index')class="active"#end>
                         <a href="$tag.link('school', 'index')">School</a></li>
                 </ul>
-            </div><!--/.nav-collapse -->
+            </div>
+            <!--/.nav-collapse -->
         </div>
     </div>
 </div>
 
 <div class="container">
+
+    <div id="messages">
+        #if($success)
+            <div class="alert alert-success">
+                <ul>
+                    #foreach($m in $success)
+                        <li>$m</li>
+                    #end
+                </ul>
+            </div>
+        #end
+        #if($warn)
+            <div class="alert alert-block">
+                <ul>
+                    #foreach($m in $warn)
+                        <li>$m</li>
+                    #end
+                </ul>
+            </div>
+        #end
+        #if($err)
+            <div class="alert alert-error">
+                <ul>
+                    #foreach($m in $err)
+                        <li>$m</li>
+                    #end
+                </ul>
+            </div>
+        #end
+        #if($info)
+            <div class="alert alert-info">
+                <ul>
+                    #foreach($m in $info)
+                        <li>$m</li>
+                    #end
+                </ul>
+            </div>
+        #end
+    </div>
 
     #includeRegion('content')
 
@@ -55,7 +96,8 @@
         #includeRegion('footer')
     </footer>
 
-</div> <!-- /container -->
+</div>
+<!-- /container -->
 
 <!-- Le javascript
 ================================================== -->
