@@ -54,8 +54,6 @@ public class JAXPostHandler {
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
-            controllerResolver.getController().doPostMagic(formValues.entrySet());
-
             controllerResolver.executeView(RequestType.POST, view, new CDIWebContext(req, resp,
                     extraPath, formValues));
         } catch (Exception e) {

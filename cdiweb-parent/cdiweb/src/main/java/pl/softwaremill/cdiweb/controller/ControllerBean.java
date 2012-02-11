@@ -12,15 +12,15 @@ import java.util.Set;
 
 /**
  * Base Controller bean
- *
+ * <p/>
  * User: szimano
  */
 public abstract class ControllerBean {
-    
+
     private Map<String, Object> params = new HashMap<String, Object>();
-    
+
     private String pageTitle = "CDIWEB Application";
-    
+
     private String name;
 
     private CDIWebContext context;
@@ -44,7 +44,7 @@ public abstract class ControllerBean {
     protected void setParameter(String key, Object value) {
         params.put(key, value);
     }
-    
+
     public Map<String, Object> getParams() {
         return params;
     }
@@ -53,10 +53,10 @@ public abstract class ControllerBean {
         params.clear();
     }
 
-    public void doPostMagic(java.util.Set<java.util.Map.Entry<String,List<String>>> entrySet) {
-        for (Map.Entry<String, List<String>> entry : entrySet) {
+    protected void doAutoBinding(String... parameterNames) {
+        for (String parameterName : parameterNames) {
             try {
-                BeanUtils.setProperty(this, entry.getKey(), entry.getValue());
+                BeanUtils.setProperty(this, parameterName, getParameterValues(parameterName));
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
@@ -79,7 +79,7 @@ public abstract class ControllerBean {
     public void redirect(String view) {
         context.redirect(getName(), view);
     }
-    
+
     public String getParameter(String key) {
         return context.getParameter(key);
     }
