@@ -145,7 +145,10 @@ public class JAXPostHandler {
             context.put("pageTitle", controllerBean.getPageTitle());
             context.put(ContextConstants.CONTROLLER, controllerBean);
             context.put(ContextConstants.VIEW, view);
-            context.put("msg", req.getAttribute(CDIWebContext.FLASH_MSG));
+
+            for (CDIWebContext.MessageSeverity severity : CDIWebContext.MessageSeverity.values()) {
+                context.put(severity.name().toLowerCase(), req.getAttribute(severity.name()));
+            }
 
             controllerBean.clearParams();
 

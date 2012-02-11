@@ -65,8 +65,14 @@ public class Home extends ControllerBean implements Serializable {
         System.out.println("Parameter name = "+getParameter("person.name"));
         System.out.println("Parameter addresses = "+getParameterValues("person.addresses"));
 
-        addMessageToFlash("User was registered successfully");
-        addMessageToFlash("And i mean it");
+        addMessageToFlash("User was registered successfully", CDIWebContext.MessageSeverity.SUCCESS);
+        addMessageToFlash("And i mean it", CDIWebContext.MessageSeverity.SUCCESS);
+
+        addMessageToFlash("Info", CDIWebContext.MessageSeverity.INFO);
+
+        addMessageToFlash("Warn", CDIWebContext.MessageSeverity.WARN);
+
+        addMessageToFlash("ERROR baby, error.", CDIWebContext.MessageSeverity.ERR);
 
         // on succesfull
         redirect("index");

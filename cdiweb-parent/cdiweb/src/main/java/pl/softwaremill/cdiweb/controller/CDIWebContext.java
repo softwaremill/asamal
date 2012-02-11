@@ -16,8 +16,6 @@ import java.util.*;
 public class CDIWebContext {
     private static final String FLASH_PREFIX = "flash.";
 
-    public static final String FLASH_MSG = "msg";
-
     private HttpServletRequest request;
     private HttpServletResponse response;
     private String[] extraPath = new String[0];
@@ -77,14 +75,36 @@ public class CDIWebContext {
         return willRedirect;
     }
     
-    public void addMessageToFlash(String msg) {
-        List<String> msgs = (List<String>) request.getAttribute(FLASH_PREFIX + FLASH_MSG);
+    public void addMessageToFlash(String msg, MessageSeverity severity) {
+        List<String> msgs = (List<String>) request.getAttribute(FLASH_PREFIX + severity.name());
        
         if (msgs == null) {
             msgs = new ArrayList<String>();
 
-            request.setAttribute(FLASH_PREFIX + FLASH_MSG, msgs);
+            request.setAttribute(FLASH_PREFIX + severity.name(), msgs);
         }
         msgs.add(msg);
+    }
+
+    public enum MessageSeverity {
+        /**
+         * Information
+         */
+        INFO,
+
+        /**
+         * Warning
+         */
+        WARN,
+
+        /**
+         * Error
+         */
+        ERR,
+
+        /**
+         * Success
+         */
+        SUCCESS;
     }
 }

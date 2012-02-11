@@ -96,7 +96,7 @@ public abstract class ControllerBean {
         return context.getParameterNames();
     }
 
-    public void addMessageToFlash(String msg) {
-        context.addMessageToFlash(msg);
+    public void addMessageToFlash(String msg, CDIWebContext.MessageSeverity severity) {
+        context.addMessageToFlash(msg, severity);
     }
 }
