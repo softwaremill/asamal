@@ -1,6 +1,5 @@
 package pl.softwaremill.cdiweb.controller.cdi;
 
-import com.sun.tools.javac.comp.Check;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Controller;
 
@@ -10,7 +9,6 @@ import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
 
 /**
  * Bootstrap CDI extension to check that the configuration is right
