@@ -28,6 +28,13 @@ public class TagHelper {
         return sw.append(contextPath).append("/").append(controller).
                 append("/").append(view).toString();
     }
+
+    public String jsonLink(String controller, String view) {
+        StringWriter sw = new StringWriter();
+
+        return sw.append(contextPath).append("/json/").append(controller).
+                append("/").append(view).toString();
+    }
     
     public String jsLink(String jsName) {
         return staticLink("js", jsName);

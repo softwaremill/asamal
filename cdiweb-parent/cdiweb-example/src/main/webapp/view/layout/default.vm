@@ -42,6 +42,7 @@
                         <a href="$tag.link('home', 'register')">Register</a></li>
                     <li #if($controller.name == 'school' && $view == 'index')class="active"#end>
                         <a href="$tag.link('school', 'index')">School</a></li>
+                    <li><a href="$tag.jsonLink('home', 'showJSON')">JSON</a></li>
                 </ul>
             </div>
             <!--/.nav-collapse -->

@@ -82,6 +82,8 @@ public class Home extends ControllerBean implements Serializable {
 
     @Get
     public void doGetRegister() {
+        doAutoBinding("person.name", "person.lastName", "person.addresses");
+
         System.out.println("Parameter names: "+getParameterNames());
 
         System.out.println("Parameter name = "+getParameter("person.name"));

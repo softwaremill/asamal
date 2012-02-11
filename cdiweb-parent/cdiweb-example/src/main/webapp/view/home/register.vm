@@ -8,13 +8,13 @@
 
     <form method="POST" action="$tag.formAction("home", "doRegister")" class="form-horizontal">
         <label>Please enter the name</label>
-        <input type="text" name="person.name"/>
+        <input type="text" name="person.name" value="$!controller.person.name"/>
         <label>Please enter the lastname</label>
-        <input type="text" name="person.lastName"/>
+        <input type="text" name="person.lastName" value="$!controller.person.lastName"/>
         <label>Please enter the addresses</label>
-        <input type="text" name="person.addresses"/>
-        <input type="text" name="person.addresses"/>
-        <input type="text" name="person.addresses"/>
+        <input type="text" name="person.addresses" value="$!controller.person.addresses.get(0)"/>
+        <input type="text" name="person.addresses" value="$!controller.person.addresses.get(1)"/>
+        <input type="text" name="person.addresses" value="$!controller.person.addresses.get(2)"/>
         <label>And submit...</label>
         <input type="submit"/>
     </form>
@@ -26,7 +26,7 @@
 
     <form method="GET" action="$tag.link("home", "doGetRegister")" class="form-horizontal">
         <label>Please enter the name</label>
-        <input type="text" name="person.name"/>
+        <input type="text" name="person.name" />
         <label>Please enter the lastname</label>
         <input type="text" name="person.lastName"/>
         <label>Please enter the addresses</label>
