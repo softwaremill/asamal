@@ -145,6 +145,7 @@ public class JAXPostHandler {
             context.put("pageTitle", controllerBean.getPageTitle());
             context.put(ContextConstants.CONTROLLER, controllerBean);
             context.put(ContextConstants.VIEW, view);
+            context.put("msg", req.getAttribute(CDIWebContext.FLASH_MSG));
 
             controllerBean.clearParams();
 

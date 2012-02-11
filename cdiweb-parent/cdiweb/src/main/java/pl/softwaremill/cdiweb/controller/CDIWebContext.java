@@ -1,5 +1,7 @@
 package pl.softwaremill.cdiweb.controller;
 
+import pl.softwaremill.cdiweb.servlet.FlashScopeFilter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MultivaluedMap;
@@ -12,6 +14,10 @@ import java.util.*;
  * User: szimano
  */
 public class CDIWebContext {
+    private static final String FLASH_PREFIX = "flash.";
+
+    public static final String FLASH_MSG = "msg";
+
     private HttpServletRequest request;
     private HttpServletResponse response;
     private String[] extraPath = new String[0];
@@ -69,5 +75,16 @@ public class CDIWebContext {
 
     public boolean isWillRedirect() {
         return willRedirect;
+    }
+    
+    public void addMessageToFlash(String msg) {
+        List<String> msgs = (List<String>) request.getAttribute(FLASH_PREFIX + FLASH_MSG);
+       
+        if (msgs == null) {
+            msgs = new ArrayList<String>();
+
+            request.setAttribute(FLASH_PREFIX + FLASH_MSG, msgs);
+        }
+        msgs.add(msg);
     }
 }

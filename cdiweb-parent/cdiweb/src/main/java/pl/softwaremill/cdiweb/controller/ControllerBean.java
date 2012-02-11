@@ -95,4 +95,8 @@ public abstract class ControllerBean {
     public Set<String> getParameterNames() {
         return context.getParameterNames();
     }
+
+    public void addMessageToFlash(String msg) {
+        context.addMessageToFlash(msg);
+    }
 }

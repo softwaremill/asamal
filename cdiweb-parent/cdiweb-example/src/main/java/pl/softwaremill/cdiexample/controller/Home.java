@@ -64,6 +64,10 @@ public class Home extends ControllerBean implements Serializable {
 
         System.out.println("Parameter name = "+getParameter("person.name"));
         System.out.println("Parameter addresses = "+getParameterValues("person.addresses"));
+
+        addMessageToFlash("User was registered successfully");
+        addMessageToFlash("And i mean it");
+
         // on succesfull
         redirect("index");
     }

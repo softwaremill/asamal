@@ -11,6 +11,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 import java.util.Properties;
 
 /**
@@ -18,6 +19,7 @@ import java.util.Properties;
  * <p/>
  * User: szimano
  */
+@WebListener
 public class CDIWebListener implements ServletContextListener {
 
     public static final String BEAN_MANAGER = "BeanManager";
