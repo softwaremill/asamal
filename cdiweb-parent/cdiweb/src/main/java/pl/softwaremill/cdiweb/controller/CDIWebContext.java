@@ -21,6 +21,9 @@ public class CDIWebContext {
     private String[] extraPath = new String[0];
     private MultivaluedMap<String, String> formValueMap;
     private boolean willRedirect = false;
+    private boolean willInclude = false;
+    
+    private String includeView;
 
     public CDIWebContext(HttpServletRequest request, HttpServletResponse response,
                          String extraPath, MultivaluedMap<String, String> formValueMap) {
@@ -34,6 +37,10 @@ public class CDIWebContext {
     }
 
     public void redirect(String controller, String view) {
+        if (willInclude) {
+            throw new IllegalStateException("Include was already scheduled");
+        }
+
         // do the redirect
         try {
             willRedirect = true;
@@ -74,16 +81,40 @@ public class CDIWebContext {
     public boolean isWillRedirect() {
         return willRedirect;
     }
-    
-    public void addMessageToFlash(String msg, MessageSeverity severity) {
-        List<String> msgs = (List<String>) request.getAttribute(FLASH_PREFIX + severity.name());
-       
-        if (msgs == null) {
-            msgs = new ArrayList<String>();
 
-            request.setAttribute(FLASH_PREFIX + severity.name(), msgs);
+    public boolean isWillInclude() {
+        return willInclude;
+    }
+
+    public String getIncludeView() {
+        return includeView;
+    }
+
+    public void addMessageToFlash(String msg, MessageSeverity severity) {
+        List<String> msgsFlash = (List<String>) request.getAttribute(FLASH_PREFIX + severity.name());
+        List<String> msgsNonFlash = (List<String>) request.getAttribute(severity.name());
+
+        // remember those when doing redirect
+        if (msgsFlash == null) {
+            msgsFlash = new ArrayList<String>();
+            request.setAttribute(FLASH_PREFIX + severity.name(), msgsFlash);
         }
-        msgs.add(msg);
+        // remember those for includes
+        if (msgsNonFlash == null) {
+            msgsNonFlash = new ArrayList<String>();
+            request.setAttribute(severity.name(), msgsNonFlash);
+        }
+
+        msgsFlash.add(msg);
+        msgsNonFlash.add(msg);
+    }
+    
+    public void includeView(String view) {
+        if (willRedirect) {
+            throw new IllegalStateException("Redirect was already scheduled");
+        }
+        includeView = view;
+        willInclude = true;
     }
 
     public enum MessageSeverity {

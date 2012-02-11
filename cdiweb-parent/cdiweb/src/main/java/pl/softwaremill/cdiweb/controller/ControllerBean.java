@@ -99,4 +99,8 @@ public abstract class ControllerBean {
     public void addMessageToFlash(String msg, CDIWebContext.MessageSeverity severity) {
         context.addMessageToFlash(msg, severity);
     }
+
+    public void includeView(String view) {
+        context.includeView(view);
+    }
 }

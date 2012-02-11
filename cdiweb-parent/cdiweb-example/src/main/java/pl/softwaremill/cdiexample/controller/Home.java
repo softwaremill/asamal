@@ -62,6 +62,13 @@ public class Home extends ControllerBean implements Serializable {
 
         doAutoBinding("person.name", "person.lastName", "person.addresses");
 
+        if (person.getName().length() == 0) {
+            addMessageToFlash("Name cannot be null", CDIWebContext.MessageSeverity.ERR);
+            includeView("register");
+
+            return;
+        }
+
         System.out.println("person = " + person);
 
         System.out.println("Parameter name = "+getParameter("person.name"));

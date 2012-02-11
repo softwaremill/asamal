@@ -45,7 +45,7 @@ public class JAXPostHandler {
 
     @POST
     @Path("/post/{controller}/{view}{sep:/?}{path:.*}")
-    public void handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+    public String handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                            @PathParam("controller") String controller, @PathParam("view") String view,
                            @PathParam("path") String extraPath,
                            MultivaluedMap<String, String> formValues) {
@@ -53,8 +53,16 @@ public class JAXPostHandler {
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
-            controllerResolver.executeView(RequestType.POST, view, new CDIWebContext(req, resp,
-                    extraPath, formValues));
+            CDIWebContext context = new CDIWebContext(req, resp,
+                    extraPath, formValues);
+
+            controllerResolver.executeView(RequestType.POST, view, context);
+
+            if (context.isWillInclude()) {
+                return showView(req, controllerResolver.getController(), controller, context.getIncludeView());
+            }
+
+            return null;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -98,6 +106,12 @@ public class JAXPostHandler {
 
             // if not redirecting, show the view
             if (!context.isWillRedirect()) {
+
+                if (context.isWillInclude()) {
+                    // change the view
+                    // this will just render a different view, it won't execute that view's method again
+                    view = context.getIncludeView();
+                }
                 return showView(req, controllerBean, controller, view);
             }
 
