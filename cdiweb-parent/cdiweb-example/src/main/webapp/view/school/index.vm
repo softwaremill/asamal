@@ -3,7 +3,9 @@
 #region('school_content')
     <h1>Welcome to school!</h1>
 
-    <h3>Session scoped date: $date.now </h3>
+    <div class="well">
+        <h3>Session scoped date: $date.now </h3>
 
-    <h3>Request scoped date: $dateReally.now</h3>
+        <h3>Request scoped date: $dateReally.now</h3>
+    </div>
 #end
