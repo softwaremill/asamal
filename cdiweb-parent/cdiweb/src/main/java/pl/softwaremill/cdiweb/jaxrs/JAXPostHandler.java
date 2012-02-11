@@ -109,8 +109,10 @@ public class JAXPostHandler {
 
                 if (context.isWillInclude()) {
                     // change the view
-                    // this will just render a different view, it won't execute that view's method again
                     view = context.getIncludeView();
+
+                    // and execute it's controller
+                    controllerResolver.executeView(RequestType.GET, view, context);
                 }
                 return showView(req, controllerBean, controller, view);
             }

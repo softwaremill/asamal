@@ -36,6 +36,13 @@ public class CDIWebContext {
         }
     }
 
+    /**
+     * Will redirect the view to a new controller/view
+     *
+     * @param controller Name of the controller
+     * @param view Name of the view
+     * @throws IllegalStateException If includeView was already scheduled
+     */
     public void redirect(String controller, String view) {
         if (willInclude) {
             throw new IllegalStateException("Include was already scheduled");
@@ -51,6 +58,12 @@ public class CDIWebContext {
         }
     }
 
+    /**
+     * Gets the parameter's single (or first) value
+     *
+     * @param key Name of the parameter
+     * @return Value
+     */
     public String getParameter(String key) {
         if (formValueMap == null) {
             String[] values = request.getParameterMap().get(key);
@@ -60,13 +73,24 @@ public class CDIWebContext {
         return formValueMap.getFirst(key);
     }
 
+    /**
+     * Gets all the values of a single parameter
+     *
+     * @param key Name of the parameter
+     * @return List of values
+     */
     public List<String> getParameterValues(String key) {
         if (formValueMap == null) {
             return Arrays.asList(request.getParameterMap().get(key));
         }
         return formValueMap.get(key);
     }
-    
+
+    /**
+     * Gets all the parameter's names available from the post/get
+     *
+     * @return Set of parameter names
+     */
     public Set<String> getParameterNames() {
         if (formValueMap == null) {
             return request.getParameterMap().keySet();
@@ -74,6 +98,13 @@ public class CDIWebContext {
         return formValueMap.keySet();
     }
 
+    /**
+     * Gets all the extra elements (if any) after /view/controller path.
+     *
+     * If the link was /home/index/this/is/it this will return a list of String[]{"this", "is", "it"}
+     *
+     * @return List of elements
+     */
     public String[] getExtraPath() {
         return extraPath;
     }
@@ -90,6 +121,16 @@ public class CDIWebContext {
         return includeView;
     }
 
+    /**
+     * Adds a message to the flash scope, so they will be visibile after redirect.
+     *
+     * The messages will be added also inside the current request, to be visible if include is called.
+     *
+     * The messages will be then available in the velocity scope under $info, $err, $success and $warn (lists).
+     *
+     * @param msg Message
+     * @param severity Severity
+     */
     public void addMessageToFlash(String msg, MessageSeverity severity) {
         List<String> msgsFlash = (List<String>) request.getAttribute(FLASH_PREFIX + severity.name());
         List<String> msgsNonFlash = (List<String>) request.getAttribute(severity.name());
@@ -108,7 +149,13 @@ public class CDIWebContext {
         msgsFlash.add(msg);
         msgsNonFlash.add(msg);
     }
-    
+
+    /**
+     * This will include another view once the view's method is finished
+     *
+     * @param view View to include
+     * @throws IllegalStateException If redirect was already scheduled
+     */
     public void includeView(String view) {
         if (willRedirect) {
             throw new IllegalStateException("Redirect was already scheduled");
