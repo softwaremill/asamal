@@ -57,7 +57,7 @@ public class JAXPostHandler {
             controllerResolver.getController().doPostMagic(formValues.entrySet());
 
             controllerResolver.executeView(RequestType.POST, view, new CDIWebContext(req, resp,
-                    controllerResolver.getController(), extraPath));
+                    extraPath, formValues));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -74,7 +74,7 @@ public class JAXPostHandler {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
             return controllerResolver.executeView(RequestType.JSON, view, new CDIWebContext(req, resp,
-                    controllerResolver.getController(), extraPath));
+                    extraPath, null));
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }
@@ -87,18 +87,32 @@ public class JAXPostHandler {
                             @PathParam("controller") String controller,
                             @PathParam("view") String view, @PathParam("path") String extraPath)
             throws HttpErrorException {
+
         ControllerBean controllerBean = null;
 
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
-            controllerResolver.executeView(RequestType.GET, view, new CDIWebContext(req, resp,
-                    controllerResolver.getController(), extraPath));
+
+            // create the context
+            CDIWebContext context = new CDIWebContext(req, resp, extraPath, null);
+
+            controllerResolver.executeView(RequestType.GET, view, context);
             controllerBean = controllerResolver.getController();
+
+            // if not redirecting, show the view
+            if (!context.isWillRedirect()) {
+                return showView(req, controllerBean, controller, view);
+            }
+
+            // will redirect
+            return null;
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }
+    }
 
-        // get the method
+    private String showView(HttpServletRequest req, ControllerBean controllerBean, String controller, String view)
+            throws HttpErrorException {
         try {
 
             VelocityContext context = new VelocityContext();
@@ -160,7 +174,6 @@ public class JAXPostHandler {
 
             throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
         }
-
     }
 
 

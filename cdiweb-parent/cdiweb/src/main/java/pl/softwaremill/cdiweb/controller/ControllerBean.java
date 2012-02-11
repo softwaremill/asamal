@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Base Controller bean
@@ -76,18 +77,22 @@ public abstract class ControllerBean {
     }
 
     public void redirect(String view) {
-        context.redirect(view);
+        context.redirect(getName(), view);
     }
     
     public String getParameter(String key) {
         return context.getParameter(key);
     }
 
-    public String[] getParameterValues(String key) {
+    public List<String> getParameterValues(String key) {
         return context.getParameterValues(key);
     }
 
     public String[] getExtraPath() {
         return context.getExtraPath();
+    }
+
+    public Set<String> getParameterNames() {
+        return context.getParameterNames();
     }
 }

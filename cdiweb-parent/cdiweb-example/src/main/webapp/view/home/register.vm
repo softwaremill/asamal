@@ -1,19 +1,44 @@
 #layout('default')
 
 #region('content')
-    <h1>Please register</h1>
+<h1>Please register</h1>
 
-    <form method="POST" action="$tag.formAction("home", "doRegister")">
-        <label>Please enter the text</label>
+<div class="well">
+    <h2>POST form</h2>
+
+    <form method="POST" action="$tag.formAction("home", "doRegister")" class="form-horizontal">
+        <label>Please enter the name</label>
         <input type="text" name="person.name"/>
+        <label>Please enter the lastname</label>
         <input type="text" name="person.lastName"/>
+        <label>Please enter the addresses</label>
         <input type="text" name="person.addresses"/>
         <input type="text" name="person.addresses"/>
         <input type="text" name="person.addresses"/>
+        <label>And submit...</label>
         <input type="submit"/>
     </form>
+
+</div>
+
+<div class="well">
+    <h2>GET form</h2>
+
+    <form method="GET" action="$tag.link("home", "doGetRegister")" class="form-horizontal">
+        <label>Please enter the name</label>
+        <input type="text" name="person.name"/>
+        <label>Please enter the lastname</label>
+        <input type="text" name="person.lastName"/>
+        <label>Please enter the addresses</label>
+        <input type="text" name="person.addresses"/>
+        <input type="text" name="person.addresses"/>
+        <input type="text" name="person.addresses"/>
+        <label>And submit...</label>
+        <input type="submit"/>
+    </form>
+</div>
 #end
 
 #region('footer')
-    This is register footer
+This is register footer
 #end

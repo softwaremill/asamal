@@ -58,11 +58,22 @@ public class Home extends ControllerBean implements Serializable {
 
     @Post
     public void doRegister() {
+        System.out.println("Parameter names: "+getParameterNames());
+
         System.out.println("person = " + person);
 
         System.out.println("Parameter name = "+getParameter("person.name"));
-        System.out.println("Parameter addresses = "+Arrays.toString(getParameterValues("person.addresses")));
+        System.out.println("Parameter addresses = "+getParameterValues("person.addresses"));
         // on succesfull
+        redirect("index");
+    }
+
+    @Get
+    public void doGetRegister() {
+        System.out.println("Parameter names: "+getParameterNames());
+
+        System.out.println("Parameter name = "+getParameter("person.name"));
+        
         redirect("index");
     }
 

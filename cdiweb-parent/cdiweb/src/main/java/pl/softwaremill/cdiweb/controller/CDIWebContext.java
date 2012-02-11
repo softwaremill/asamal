@@ -2,25 +2,27 @@ package pl.softwaremill.cdiweb.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
+import java.util.*;
 
 /**
  * Optionally injectable
- *
+ * <p/>
  * User: szimano
  */
 public class CDIWebContext {
-    private ControllerBean controllerBean;
-
     private HttpServletRequest request;
     private HttpServletResponse response;
     private String[] extraPath = new String[0];
+    private MultivaluedMap<String, String> formValueMap;
+    private boolean willRedirect = false;
 
-    public CDIWebContext(HttpServletRequest request, HttpServletResponse response, ControllerBean controllerBean, 
-                         String extraPath) {
+    public CDIWebContext(HttpServletRequest request, HttpServletResponse response,
+                         String extraPath, MultivaluedMap<String, String> formValueMap) {
         this.response = response;
         this.request = request;
-        this.controllerBean = controllerBean;
+        this.formValueMap = formValueMap;
 
         if (extraPath != null) {
             this.extraPath = extraPath.split("/");
@@ -30,26 +32,42 @@ public class CDIWebContext {
     public void redirect(String controller, String view) {
         // do the redirect
         try {
+            willRedirect = true;
+
             response.sendRedirect(request.getContextPath() + "/" + controller + "/" + view);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void redirect(String view) {
-        // do the redirect on teh current controller
-        redirect(controllerBean.getName(), view);
-    }
-    
     public String getParameter(String key) {
-        return request.getParameter(key);
+        if (formValueMap == null) {
+            String[] values = request.getParameterMap().get(key);
+
+            return (values.length == 0 ? null : values[0]);
+        }
+        return formValueMap.getFirst(key);
     }
 
-    public String[] getParameterValues(String key) {
-        return request.getParameterValues(key);
+    public List<String> getParameterValues(String key) {
+        if (formValueMap == null) {
+            return Arrays.asList(request.getParameterMap().get(key));
+        }
+        return formValueMap.get(key);
     }
     
+    public Set<String> getParameterNames() {
+        if (formValueMap == null) {
+            return request.getParameterMap().keySet();
+        }
+        return formValueMap.keySet();
+    }
+
     public String[] getExtraPath() {
-       return extraPath;
+        return extraPath;
+    }
+
+    public boolean isWillRedirect() {
+        return willRedirect;
     }
 }
