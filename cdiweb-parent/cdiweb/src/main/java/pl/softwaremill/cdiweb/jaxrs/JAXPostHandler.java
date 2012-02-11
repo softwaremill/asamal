@@ -11,6 +11,7 @@ import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Web;
 import pl.softwaremill.cdiweb.controller.annotation.WebImpl;
 import pl.softwaremill.cdiweb.exception.HttpErrorException;
+import pl.softwaremill.cdiweb.resource.ResourceResolver;
 import pl.softwaremill.cdiweb.servlet.CDIWebListener;
 import pl.softwaremill.cdiweb.velocity.LayoutDirective;
 import pl.softwaremill.cdiweb.velocity.TagHelper;
@@ -36,12 +37,10 @@ import java.util.Set;
 @Path("/")
 public class JAXPostHandler {
 
-    public static final String CDIWEB_DEV_DIR = "CDIWEB_DEV_DIR";
-
     @GET
     @Path("/static/{path:.*}")
     public Object handleStaticGet(@Context HttpServletRequest req, @PathParam("path") String path) {
-        return resolveFile(req, "/static/"+path);
+        return new ResourceResolver(req).resolveFile("/static/"+path);
     }
 
     @POST
@@ -113,7 +112,12 @@ public class JAXPostHandler {
             throws HttpErrorException {
         try {
 
+            ResourceResolver resourceResolver = new ResourceResolver(req);
+
             VelocityContext context = new VelocityContext();
+
+            // set the resolver
+            context.put("resourceResolver", resourceResolver);
 
             BeanManager beanManager = (BeanManager) req.getServletContext().getAttribute(CDIWebListener.BEAN_MANAGER);
 
@@ -154,7 +158,7 @@ public class JAXPostHandler {
 
             StringWriter w = new StringWriter();
 
-            String template = resolveTemplate(req, controller, view);
+            String template = resourceResolver.resolveTemplate(controller, view);
 
             Velocity.evaluate(context, w, controller + "/" + view, template);
 
@@ -164,7 +168,7 @@ public class JAXPostHandler {
                 context.put(LayoutDirective.LAYOUT, null);
 
                 w = new StringWriter();
-                template = resolveTemplate(req, "layout", layout);
+                template = resourceResolver.resolveTemplate("layout", layout);
                 Velocity.evaluate(context, w, controller + "/" + view, template);
             }
 
@@ -176,39 +180,5 @@ public class JAXPostHandler {
 
             throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
         }
-    }
-
-
-    protected String resolveTemplate(HttpServletRequest req, String controller, String view) throws IOException {
-        InputStream is = resolveFile(req, "/view/" + controller + "/" + view + ".vm");
-
-        StringWriter templateSW = new StringWriter();
-
-        int c;
-        while ((c = is.read()) > 0) {
-            templateSW.append((char) c);
-        }
-
-        return templateSW.toString();
-    }
-
-    protected InputStream resolveFile(HttpServletRequest req, String path) {
-        InputStream is;
-
-        if (System.getProperty(CDIWEB_DEV_DIR) != null) {
-            // read from the disk
-
-            String dir = System.getProperty(CDIWEB_DEV_DIR);
-
-            try {
-                is = new FileInputStream(dir + path);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            is = req.getServletContext().getResourceAsStream(path);
-        }
-
-        return is;
     }
 }

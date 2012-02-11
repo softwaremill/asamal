@@ -2,6 +2,7 @@ package pl.softwaremill.cdiweb.servlet;
 
 import org.apache.velocity.app.Velocity;
 import pl.softwaremill.cdiweb.jaxrs.JAXPostHandler;
+import pl.softwaremill.cdiweb.resource.ResourceResolver;
 import pl.softwaremill.common.util.dependency.BeanManagerDependencyProvider;
 import pl.softwaremill.common.util.dependency.D;
 import pl.softwaremill.common.util.dependency.DependencyProvider;
@@ -44,11 +45,12 @@ public class CDIWebListener implements ServletContextListener {
         velocityProps.setProperty("userdirective",
                         "pl.softwaremill.cdiweb.velocity.RegionDirective," +
                         "pl.softwaremill.cdiweb.velocity.LayoutDirective," +
-                        "pl.softwaremill.cdiweb.velocity.IncludeRegionDirective");
+                        "pl.softwaremill.cdiweb.velocity.IncludeRegionDirective,"+
+                        "pl.softwaremill.cdiweb.velocity.RenderPartialDirective");
         Velocity.init(velocityProps);
 
         // warn about dev mode
-        if (System.getProperty(JAXPostHandler.CDIWEB_DEV_DIR) != null) {
+        if (System.getProperty(ResourceResolver.CDIWEB_DEV_DIR) != null) {
             System.out.println("****************************");
             System.out.println("****************************");
             System.out.println("*    Running in DEV mode   *");

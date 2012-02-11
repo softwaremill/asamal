@@ -12,6 +12,8 @@ import org.apache.velocity.runtime.parser.ParseException;
 import org.apache.velocity.runtime.parser.node.Node;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
 import org.apache.velocity.util.introspection.Info;
+import pl.softwaremill.cdiweb.controller.ControllerBean;
+import pl.softwaremill.cdiweb.resource.ResourceResolver;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -20,10 +22,10 @@ import java.io.Writer;
 /**
  * User: szimano
  */
-public class IncludeRegionDirective extends AbstractVelocityEvaluator {
+public class RenderPartialDirective extends AbstractVelocityEvaluator {
     @Override
     public String getName() {
-        return "includeRegion";
+        return "renderPartial";
     }
 
     @Override
@@ -32,23 +34,25 @@ public class IncludeRegionDirective extends AbstractVelocityEvaluator {
     }
 
     @Override
-    public String getStringToEvaluate(InternalContextAdapter context, Writer writer, Node node) {
+    public String getStringToEvaluate(InternalContextAdapter context, Writer writer, Node node) throws IOException,
+            ResourceNotFoundException, ParseErrorException, MethodInvocationException {
         /*
         * Evaluate the string with the current context.  We know there is
         * exactly one argument and it is a string or reference.
         */
 
         Object value = node.jjtGetChild(0).value( context );
-        String regionName;
+        String partialName;
         if ( value != null )
         {
-            regionName = value.toString();
+            partialName = value.toString();
         }
         else
         {
-            throw new ParseErrorException("The includeRegion has to specify a name");
+            throw new ParseErrorException("The renderPartial has to specify a name");
         }
 
-        return (String) context.get(RegionDirective.REGION + regionName);
+        return ((ResourceResolver) context.get("resourceResolver")).resolvePartial(
+                ((ControllerBean) context.get("controller")).getName(), partialName);
     }
 }

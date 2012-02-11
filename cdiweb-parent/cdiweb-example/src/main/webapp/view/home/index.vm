@@ -47,4 +47,8 @@
     </ul>
 
     <a href="$tag.link("home", "register")">Register</a>
+
+    #renderPartial("partial")
+
+    #renderPartial("/common/common_partial")
 #end
