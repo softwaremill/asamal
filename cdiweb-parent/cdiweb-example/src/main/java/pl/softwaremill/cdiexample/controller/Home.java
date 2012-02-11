@@ -35,6 +35,8 @@ public class Home extends ControllerBean implements Serializable {
         System.out.println("Running index controller !");
 
         setParameter("list", Arrays.asList("One", "Two", "Three"));
+
+        System.out.println("Extra path: "+Arrays.toString(getExtraPath()));
     }
 
     @Get
@@ -58,6 +60,8 @@ public class Home extends ControllerBean implements Serializable {
     public void doRegister() {
         System.out.println("person = " + person);
 
+        System.out.println("Parameter name = "+getParameter("person.name"));
+        System.out.println("Parameter addresses = "+Arrays.toString(getParameterValues("person.addresses")));
         // on succesfull
         redirect("index");
     }

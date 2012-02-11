@@ -78,4 +78,16 @@ public abstract class ControllerBean {
     public void redirect(String view) {
         context.redirect(view);
     }
+    
+    public String getParameter(String key) {
+        return context.getParameter(key);
+    }
+
+    public String[] getParameterValues(String key) {
+        return context.getParameterValues(key);
+    }
+
+    public String[] getExtraPath() {
+        return context.getExtraPath();
+    }
 }

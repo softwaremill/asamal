@@ -45,9 +45,10 @@ public class JAXPostHandler {
     }
 
     @POST
-    @Path("/post/{controller}/{view}")
+    @Path("/post/{controller}/{view}{sep:/?}{path:.*}")
     public void handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                            @PathParam("controller") String controller, @PathParam("view") String view,
+                           @PathParam("path") String extraPath,
                            MultivaluedMap<String, String> formValues) {
 
         try {
@@ -56,40 +57,42 @@ public class JAXPostHandler {
             controllerResolver.getController().doPostMagic(formValues.entrySet());
 
             controllerResolver.executeView(RequestType.POST, view, new CDIWebContext(req, resp,
-                    controllerResolver.getController()));
+                    controllerResolver.getController(), extraPath));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @GET
-    @Path("/json/{controller}/{view}")
+    @Path("/json/{controller}/{view}{sep:/?}{path:.*}")
     @Produces(MediaType.APPLICATION_JSON)
     public Object handleJsonGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                                 @PathParam("controller") String controller,
-                                @PathParam("view") String view) throws HttpErrorException {
+                                @PathParam("view") String view, @PathParam("path") String extraPath)
+            throws HttpErrorException {
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
             return controllerResolver.executeView(RequestType.JSON, view, new CDIWebContext(req, resp,
-                    controllerResolver.getController()));
+                    controllerResolver.getController(), extraPath));
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }
     }
 
     @GET
-    @Path("/{controller}/{view}")
+    @Path("/{controller}/{view}{sep:/?}{path:.*}")
     @Produces(MediaType.TEXT_HTML)
     public String handleGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                             @PathParam("controller") String controller,
-                            @PathParam("view") String view) throws HttpErrorException {
+                            @PathParam("view") String view, @PathParam("path") String extraPath)
+            throws HttpErrorException {
         ControllerBean controllerBean = null;
 
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
             controllerResolver.executeView(RequestType.GET, view, new CDIWebContext(req, resp,
-                    controllerResolver.getController()));
+                    controllerResolver.getController(), extraPath));
             controllerBean = controllerResolver.getController();
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);

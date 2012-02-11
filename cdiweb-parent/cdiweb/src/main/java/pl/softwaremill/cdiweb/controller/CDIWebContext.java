@@ -14,11 +14,17 @@ public class CDIWebContext {
 
     private HttpServletRequest request;
     private HttpServletResponse response;
+    private String[] extraPath = new String[0];
 
-    public CDIWebContext(HttpServletRequest request, HttpServletResponse response, ControllerBean controllerBean) {
+    public CDIWebContext(HttpServletRequest request, HttpServletResponse response, ControllerBean controllerBean, 
+                         String extraPath) {
         this.response = response;
         this.request = request;
         this.controllerBean = controllerBean;
+
+        if (extraPath != null) {
+            this.extraPath = extraPath.split("/");
+        }
     }
 
     public void redirect(String controller, String view) {
@@ -33,5 +39,17 @@ public class CDIWebContext {
     public void redirect(String view) {
         // do the redirect on teh current controller
         redirect(controllerBean.getName(), view);
+    }
+    
+    public String getParameter(String key) {
+        return request.getParameter(key);
+    }
+
+    public String[] getParameterValues(String key) {
+        return request.getParameterValues(key);
+    }
+    
+    public String[] getExtraPath() {
+       return extraPath;
     }
 }
