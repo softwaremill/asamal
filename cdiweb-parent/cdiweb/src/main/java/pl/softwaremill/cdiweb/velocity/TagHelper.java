@@ -30,8 +30,20 @@ public class TagHelper {
     }
     
     public String jsLink(String jsName) {
+        return staticLink("js", jsName);
+    }
+
+    public String cssLink(String cssName) {
+        return staticLink("css", cssName);
+    }
+
+    public String imgLink(String imgName) {
+        return staticLink("img", imgName);
+    }
+    
+    private String staticLink(String type, String name) {
         StringWriter sw = new StringWriter();
 
-        return sw.append(contextPath).append("/static/js/").append(jsName).toString();
+        return sw.append(contextPath).append("/static/").append(type).append("/").append(name).toString();
     }
 }
