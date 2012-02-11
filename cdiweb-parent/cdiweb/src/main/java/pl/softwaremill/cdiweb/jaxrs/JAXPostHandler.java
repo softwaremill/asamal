@@ -3,8 +3,9 @@ package pl.softwaremill.cdiweb.jaxrs;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import pl.softwaremill.cdiweb.cdi.ControllerResolver;
-import pl.softwaremill.cdiweb.cdi.RequestType;
+import pl.softwaremill.cdiweb.controller.CDIWebContext;
+import pl.softwaremill.cdiweb.controller.cdi.ControllerResolver;
+import pl.softwaremill.cdiweb.controller.cdi.RequestType;
 import pl.softwaremill.cdiweb.controller.ContextConstants;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Web;
@@ -17,9 +18,8 @@ import pl.softwaremill.common.util.dependency.D;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -46,7 +46,8 @@ public class JAXPostHandler {
 
     @POST
     @Path("/post/{controller}/{view}")
-    public void handlePost(@PathParam("controller") String controller, @PathParam("view") String view,
+    public void handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+                           @PathParam("controller") String controller, @PathParam("view") String view,
                            MultivaluedMap<String, String> formValues) {
 
         try {
@@ -54,7 +55,8 @@ public class JAXPostHandler {
 
             controllerResolver.getController().doPostMagic(formValues.entrySet());
 
-            controllerResolver.executeView(RequestType.POST, view);
+            controllerResolver.executeView(RequestType.POST, view, new CDIWebContext(req, resp,
+                    controllerResolver.getController()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -63,12 +65,14 @@ public class JAXPostHandler {
     @GET
     @Path("/json/{controller}/{view}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Object handleJsonGet(@Context HttpServletRequest req, @PathParam("controller") String controller,
+    public Object handleJsonGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+                                @PathParam("controller") String controller,
                                 @PathParam("view") String view) throws HttpErrorException {
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
-            return controllerResolver.executeView(RequestType.JSON, view);
+            return controllerResolver.executeView(RequestType.JSON, view, new CDIWebContext(req, resp,
+                    controllerResolver.getController()));
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }
@@ -77,13 +81,15 @@ public class JAXPostHandler {
     @GET
     @Path("/{controller}/{view}")
     @Produces(MediaType.TEXT_HTML)
-    public String handleGet(@Context HttpServletRequest req, @PathParam("controller") String controller,
+    public String handleGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+                            @PathParam("controller") String controller,
                             @PathParam("view") String view) throws HttpErrorException {
         ControllerBean controllerBean = null;
 
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
-            controllerResolver.executeView(RequestType.GET, view);
+            controllerResolver.executeView(RequestType.GET, view, new CDIWebContext(req, resp,
+                    controllerResolver.getController()));
             controllerBean = controllerResolver.getController();
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);

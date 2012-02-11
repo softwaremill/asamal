@@ -1,6 +1,7 @@
 package pl.softwaremill.cdiexample.controller;
 
 import pl.softwaremill.cdiexample.model.Person;
+import pl.softwaremill.cdiweb.controller.CDIWebContext;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Controller;
 import pl.softwaremill.cdiweb.controller.annotation.Get;
@@ -52,8 +53,11 @@ public class Home extends ControllerBean {
     public void notWorking() {}
 
     @Post
-    public void doRegister() {
+    public void doRegister(CDIWebContext context) {
         System.out.println("person = " + person);
+
+        // on succesfull
+        context.redirect("index");
     }
 
 

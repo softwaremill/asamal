@@ -1,4 +1,4 @@
-package pl.softwaremill.cdiweb.cdi;
+package pl.softwaremill.cdiweb.controller.cdi;
 
 import java.lang.annotation.Annotation;
 
