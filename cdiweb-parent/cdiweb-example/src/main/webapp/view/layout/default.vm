@@ -35,9 +35,9 @@
             <a class="brand" href="#">Project name</a>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li class="active"><a href="$tag.link('home', 'index')">Home</a></li>
+                    <li><a href="$tag.link('home', 'register')">Register</a></li>
+                    <li><a href="$tag.link('school', 'index')">School</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
         </div>

@@ -40,7 +40,7 @@ public class JAXPostHandler {
     @GET
     @Path("/static/{path:.*}")
     public Object handleStaticGet(@Context HttpServletRequest req, @PathParam("path") String path) {
-        return resolveFile(req, path);
+        return resolveFile(req, "/static/"+path);
     }
 
     @POST
@@ -152,7 +152,7 @@ public class JAXPostHandler {
 
 
     protected String resolveTemplate(HttpServletRequest req, String controller, String view) throws IOException {
-        InputStream is = resolveFile(req, "/WEB-INF/" + controller + "/" + view + ".vm");
+        InputStream is = resolveFile(req, "/view/" + controller + "/" + view + ".vm");
 
         StringWriter templateSW = new StringWriter();
 
