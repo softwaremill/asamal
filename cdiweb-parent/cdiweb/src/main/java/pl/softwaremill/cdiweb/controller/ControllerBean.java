@@ -3,8 +3,7 @@ package pl.softwaremill.cdiweb.controller;
 import org.apache.commons.beanutils.BeanUtils;
 import pl.softwaremill.cdiweb.controller.annotation.Controller;
 
-import javax.ws.rs.core.MultivaluedMap;
-import java.lang.reflect.InvocationTargetException;
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,7 @@ public abstract class ControllerBean {
 
     private String name;
 
+    @Inject
     private CDIWebContext context;
 
     protected ControllerBean() {

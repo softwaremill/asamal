@@ -4,12 +4,12 @@ package pl.softwaremill.cdiweb.jaxrs;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import pl.softwaremill.cdiweb.controller.CDIWebContext;
-import pl.softwaremill.cdiweb.controller.cdi.ControllerResolver;
-import pl.softwaremill.cdiweb.controller.cdi.RequestType;
 import pl.softwaremill.cdiweb.controller.ContextConstants;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
 import pl.softwaremill.cdiweb.controller.annotation.Web;
 import pl.softwaremill.cdiweb.controller.annotation.WebImpl;
+import pl.softwaremill.cdiweb.controller.cdi.ControllerResolver;
+import pl.softwaremill.cdiweb.controller.cdi.RequestType;
 import pl.softwaremill.cdiweb.exception.HttpErrorException;
 import pl.softwaremill.cdiweb.resource.ResourceResolver;
 import pl.softwaremill.cdiweb.servlet.CDIWebListener;
@@ -26,7 +26,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import java.io.*;
+import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +36,8 @@ import java.util.Set;
  */
 @Path("/")
 public class JAXPostHandler {
+
+    private final static ThreadLocal<CDIWebContext> cdiWebContextHolder = new ThreadLocal<CDIWebContext>();
 
     @GET
     @Path("/static/{path:.*}")
@@ -50,13 +52,14 @@ public class JAXPostHandler {
                            @PathParam("path") String extraPath,
                            MultivaluedMap<String, String> formValues) {
 
+        // create the context
+        CDIWebContext context = new CDIWebContext(req, resp, extraPath, null);
+        cdiWebContextHolder.set(context);
+
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
-            CDIWebContext context = new CDIWebContext(req, resp,
-                    extraPath, formValues);
-
-            controllerResolver.executeView(RequestType.POST, view, context);
+            controllerResolver.executeView(RequestType.POST, view);
 
             if (context.isWillInclude()) {
                 return showView(req, controllerResolver.getController(), controller, context.getIncludeView());
@@ -75,11 +78,15 @@ public class JAXPostHandler {
                                 @PathParam("controller") String controller,
                                 @PathParam("view") String view, @PathParam("path") String extraPath)
             throws HttpErrorException {
+
+        // create the context
+        CDIWebContext context = new CDIWebContext(req, resp, extraPath, null);
+        cdiWebContextHolder.set(context);
+
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
-            return controllerResolver.executeView(RequestType.JSON, view, new CDIWebContext(req, resp,
-                    extraPath, null));
+            return controllerResolver.executeView(RequestType.JSON, view);
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }
@@ -93,15 +100,16 @@ public class JAXPostHandler {
                             @PathParam("view") String view, @PathParam("path") String extraPath)
             throws HttpErrorException {
 
+        // create the context
+        CDIWebContext context = new CDIWebContext(req, resp, extraPath, null);
+        cdiWebContextHolder.set(context);
+
         ControllerBean controllerBean = null;
 
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
-            // create the context
-            CDIWebContext context = new CDIWebContext(req, resp, extraPath, null);
-
-            controllerResolver.executeView(RequestType.GET, view, context);
+            controllerResolver.executeView(RequestType.GET, view);
             controllerBean = controllerResolver.getController();
 
             // if not redirecting, show the view
@@ -112,7 +120,7 @@ public class JAXPostHandler {
                     view = context.getIncludeView();
 
                     // and execute it's controller
-                    controllerResolver.executeView(RequestType.GET, view, context);
+                    controllerResolver.executeView(RequestType.GET, view);
                 }
                 return showView(req, controllerBean, controller, view);
             }
@@ -196,5 +204,10 @@ public class JAXPostHandler {
 
             throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
         }
+    }
+
+    @javax.enterprise.inject.Produces
+    public CDIWebContext produceCDIWebContext() {
+        return cdiWebContextHolder.get();
     }
 }
