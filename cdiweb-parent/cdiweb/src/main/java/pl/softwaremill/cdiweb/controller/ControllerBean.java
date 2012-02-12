@@ -2,6 +2,8 @@ package pl.softwaremill.cdiweb.controller;
 
 import org.apache.commons.beanutils.BeanUtils;
 import pl.softwaremill.cdiweb.controller.annotation.Controller;
+import pl.softwaremill.cdiweb.controller.exception.AutobindingException;
+import pl.softwaremill.cdiweb.controller.exception.NoSuchParameterException;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -54,11 +56,13 @@ public abstract class ControllerBean {
 
     protected void doAutoBinding(String... parameterNames) {
         for (String parameterName : parameterNames) {
+            if (!getParameterNames().contains(parameterName)) {
+                throw new NoSuchParameterException("There is no parameter " + parameterName);
+            }
             try {
                 BeanUtils.setProperty(this, parameterName, getParameterValues(parameterName));
             } catch (Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+                throw new AutobindingException(e);
             }
         }
     }
@@ -75,7 +79,7 @@ public abstract class ControllerBean {
      * Will redirect the view to a new controller/view
      *
      * @param controller Name of the controller
-     * @param view Name of the view
+     * @param view       Name of the view
      * @throws IllegalStateException If includeView was already scheduled
      */
     public void redirect(String controller, String view) {
@@ -123,7 +127,7 @@ public abstract class ControllerBean {
 
     /**
      * Gets all the extra elements (if any) after /view/controller path.
-     *
+     * <p/>
      * If the link was /home/index/this/is/it this will return a list of String[]{"this", "is", "it"}
      *
      * @return List of elements
@@ -134,12 +138,12 @@ public abstract class ControllerBean {
 
     /**
      * Adds a message to the flash scope, so they will be visibile after redirect.
-     *
+     * <p/>
      * The messages will be added also inside the current request, to be visible if include is called.
-     *
+     * <p/>
      * The messages will be then available in the velocity scope under $info, $err, $success and $warn (lists).
      *
-     * @param msg Message
+     * @param msg      Message
      * @param severity Severity
      */
     public void addMessageToFlash(String msg, CDIWebContext.MessageSeverity severity) {
@@ -158,10 +162,10 @@ public abstract class ControllerBean {
 
     /**
      * Adds object to the flash scope.
-     *
+     * <p/>
      * It will be accessible in this and the next reques.
      *
-     * @param key Key
+     * @param key   Key
      * @param value The object
      */
     public void addObjectToFlash(String key, Object value) {
@@ -192,8 +196,7 @@ public abstract class ControllerBean {
     public Class<? extends ControllerBean> getRealClass() {
         if (getClass().getAnnotation(Controller.class) != null) {
             return getClass();
-        }
-        else {
+        } else {
             return (Class<? extends ControllerBean>) getClass().getSuperclass();
         }
     }

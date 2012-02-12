@@ -16,6 +16,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sml.common.version>63</sml.common.version>
     </properties>
 
     <dependencies>
@@ -23,7 +24,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
-            <scope>test</scope>
+            <scope>testPojo</scope>
         </dependency>
 
         <!-- servlet api -->
@@ -45,8 +46,23 @@
         <dependency>
             <groupId>pl.softwaremill.common</groupId>
             <artifactId>softwaremill-cdi</artifactId>
-            <version>63</version>
+            <version>${sml.common.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>pl.softwaremill.common</groupId>
+            <artifactId>softwaremill-test-arquillian</artifactId>
+            <version>${sml.common.version}</version>
+            <scope>testPojo</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
+            <scope>testPojo</scope>
+        </dependency>
+
 
         <!-- logging -->
         <dependency>

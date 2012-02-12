@@ -13,6 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
+ * Class that resolves the controller beans and view actions
+ *
  * User: szimano
  */
 public class ControllerResolver {
