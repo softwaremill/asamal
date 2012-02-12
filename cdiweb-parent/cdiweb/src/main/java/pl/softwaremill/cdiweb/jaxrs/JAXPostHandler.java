@@ -6,19 +6,17 @@ import org.apache.velocity.app.Velocity;
 import pl.softwaremill.cdiweb.controller.CDIWebContext;
 import pl.softwaremill.cdiweb.controller.ContextConstants;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
+import pl.softwaremill.cdiweb.controller.FilterStopException;
 import pl.softwaremill.cdiweb.controller.annotation.Web;
-import pl.softwaremill.cdiweb.controller.annotation.WebImpl;
+import pl.softwaremill.cdiweb.controller.cdi.BootstrapCheckerExtension;
 import pl.softwaremill.cdiweb.controller.cdi.ControllerResolver;
 import pl.softwaremill.cdiweb.controller.cdi.RequestType;
 import pl.softwaremill.cdiweb.exception.HttpErrorException;
 import pl.softwaremill.cdiweb.resource.ResourceResolver;
-import pl.softwaremill.cdiweb.servlet.CDIWebListener;
 import pl.softwaremill.cdiweb.velocity.LayoutDirective;
 import pl.softwaremill.cdiweb.velocity.TagHelper;
 import pl.softwaremill.common.util.dependency.D;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -27,9 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.StringWriter;
-import java.lang.annotation.Annotation;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * User: szimano
@@ -42,15 +38,15 @@ public class JAXPostHandler {
     @GET
     @Path("/static/{path:.*}")
     public Object handleStaticGet(@Context HttpServletRequest req, @PathParam("path") String path) {
-        return new ResourceResolver(req).resolveFile("/static/"+path);
+        return new ResourceResolver(req).resolveFile("/static/" + path);
     }
 
     @POST
     @Path("/post/{controller}/{view}{sep:/?}{path:.*}")
     public String handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
-                           @PathParam("controller") String controller, @PathParam("view") String view,
-                           @PathParam("path") String extraPath,
-                           MultivaluedMap<String, String> formValues) {
+                             @PathParam("controller") String controller, @PathParam("view") String view,
+                             @PathParam("path") String extraPath,
+                             MultivaluedMap<String, String> formValues) {
 
         // create the context
         CDIWebContext context = new CDIWebContext(req, resp, extraPath, null);
@@ -66,7 +62,10 @@ public class JAXPostHandler {
             }
 
             return null;
-        } catch (Exception e) {
+        } catch (FilterStopException e) {
+            // stop execution
+            return null;
+        }catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -87,7 +86,10 @@ public class JAXPostHandler {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
             return controllerResolver.executeView(RequestType.JSON, view);
-        } catch (Exception e) {
+        } catch (FilterStopException e) {
+            // stop execution
+            return null;
+        }catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }
     }
@@ -127,6 +129,9 @@ public class JAXPostHandler {
 
             // will redirect
             return null;
+        } catch (FilterStopException e) {
+            // stop execution
+            return null;
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }
@@ -143,23 +148,11 @@ public class JAXPostHandler {
             // set the resolver
             context.put("resourceResolver", resourceResolver);
 
-            BeanManager beanManager = (BeanManager) req.getServletContext().getAttribute(CDIWebListener.BEAN_MANAGER);
-
-            Set<Bean<?>> beans = beanManager.getBeans(Object.class, new WebImpl());
-
             System.out.println("Listing beans");
-            for (Bean<?> bean : beans) {
-                System.out.println("bean: " + bean);
-                for (Annotation annotation : bean.getQualifiers()) {
-                    System.out.println("annotation = " + annotation.annotationType());
-                    if (annotation.annotationType().equals(Web.class)) {
-                        System.out.println("Adding annotation " + annotation);
-                        context.put(((Web) annotation).value(), D.inject(bean.getBeanClass(),
-                                bean.getQualifiers().toArray(new Annotation[bean.getQualifiers().size()])));
-
-                        break;
-                    }
-                }
+            for (Class clazz : BootstrapCheckerExtension.webScopedBeans) {
+                System.out.println("bean: " + clazz);
+                String webName = ((Web) clazz.getAnnotation(Web.class)).value();
+                context.put(webName, D.inject(clazz));
             }
 
             for (Map.Entry<String, Object> param : controllerBean.getParams().entrySet()) {

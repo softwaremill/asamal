@@ -44,6 +44,12 @@
                         <a href="$tag.link('school', 'index')">School</a></li>
                     <li><a href="$tag.jsonLink('home', 'showJSON')">JSON</a></li>
                 </ul>
+
+                <p class="navbar-text pull-right">
+                    #if($login.loggedIn)
+                        Logged in as $login.user.username
+                        <a href="$tag.link('home', 'logout')">Logout</a></p>
+                    #end
             </div>
             <!--/.nav-collapse -->
         </div>

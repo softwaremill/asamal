@@ -1,12 +1,13 @@
 package pl.softwaremill.cdiweb.controller;
 
-import pl.softwaremill.cdiweb.servlet.FlashScopeFilter;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Optionally injectable
@@ -44,8 +45,8 @@ public class CDIWebContext {
      * @throws IllegalStateException If includeView was already scheduled
      */
     public void redirect(String controller, String view) {
-        if (willInclude) {
-            throw new IllegalStateException("Include was already scheduled");
+        if (willInclude || willRedirect) {
+            throw new IllegalStateException("Include or redirect was already scheduled");
         }
 
         // do the redirect
@@ -57,6 +58,22 @@ public class CDIWebContext {
             throw new RuntimeException(e);
         }
     }
+
+    public void redirectToURI(String uri) {
+        if (willInclude || willRedirect) {
+            throw new IllegalStateException("Include or redirect was already scheduled");
+        }
+
+        // do the redirect
+        try {
+            willRedirect = true;
+
+            response.sendRedirect(uri);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * Gets the parameter's single (or first) value
@@ -151,17 +168,52 @@ public class CDIWebContext {
     }
 
     /**
+     * Adds object to the flash scope.
+     *
+     * It will be accessible in this and the next reques.
+     *
+     * @param key Key
+     * @param value The object
+     */
+    public void addObjectToFlash(String key, Object value) {
+        request.setAttribute(FLASH_PREFIX + key, value);
+
+        // put also in just request, to be accessible in includes
+        request.setAttribute(key, value);
+    }
+
+    /**
+     * Retrieves object from the flash scope
+     *
+     * @param key Key
+     * @return the previously put object or null
+     */
+    public Object getObjectFromFlash(String key) {
+        return request.getAttribute(key);
+    }
+
+    /**
      * This will include another view once the view's method is finished
      *
      * @param view View to include
      * @throws IllegalStateException If redirect was already scheduled
      */
     public void includeView(String view) {
-        if (willRedirect) {
-            throw new IllegalStateException("Redirect was already scheduled");
+        if (willRedirect || willInclude) {
+            throw new IllegalStateException("Include or redirect was already scheduled");
         }
         includeView = view;
         willInclude = true;
+    }
+
+    /**
+     * Gets the current link
+     *
+     * @return Current link
+     */
+    public String getCurrentLink() {
+        String queryString = request.getQueryString();
+        return request.getRequestURI() + (queryString == null ? "" : "?" + queryString);
     }
 
     public enum MessageSeverity {

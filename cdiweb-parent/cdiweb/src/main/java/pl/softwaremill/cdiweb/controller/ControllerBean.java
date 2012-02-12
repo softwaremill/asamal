@@ -23,7 +23,7 @@ public abstract class ControllerBean {
     private String name;
 
     @Inject
-    private CDIWebContext context;
+    protected CDIWebContext context;
 
     protected ControllerBean() {
     }
@@ -155,5 +155,35 @@ public abstract class ControllerBean {
      */
     public void includeView(String view) {
         context.includeView(view);
+    }
+
+    /**
+     * Adds object to the flash scope.
+     *
+     * It will be accessible in this and the next reques.
+     *
+     * @param key Key
+     * @param value The object
+     */
+    public void addObjectToFlash(String key, Object value) {
+        context.addObjectToFlash(key, value);
+    }
+
+    /**
+     * Retrieves object from the flash scope
+     *
+     * @param key Key
+     * @return the previously put object or null
+     */
+    public Object getObjectFromFlash(String key) {
+        return context.getObjectFromFlash(key);
+    }
+
+    public CDIWebContext getContext() {
+        return context;
+    }
+
+    public void redirectToURI(String uri) {
+        context.redirectToURI(uri);
     }
 }

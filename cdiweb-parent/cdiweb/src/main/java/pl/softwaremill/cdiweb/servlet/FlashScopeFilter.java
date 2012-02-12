@@ -23,9 +23,11 @@ public class FlashScopeFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
 
+        // ignore this for /static calls
+
         //reinstate any flash scoped params from the users session
         //and clear the session
-        if (request instanceof HttpServletRequest) {
+        if (request instanceof HttpServletRequest && !isStaticCall(((HttpServletRequest) request))) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             HttpSession session = httpRequest.getSession(true);
             if (session != null) {
@@ -45,7 +47,7 @@ public class FlashScopeFilter implements Filter {
 
         //store any flash scoped params in the user's session for the
         //next request
-        if (request instanceof HttpServletRequest) {
+        if (request instanceof HttpServletRequest && !isStaticCall(((HttpServletRequest) request))) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             Map<String, Object> flashParams = new HashMap();
             Enumeration e = httpRequest.getAttributeNames();
@@ -62,6 +64,10 @@ public class FlashScopeFilter implements Filter {
                 session.setAttribute(FLASH_SESSION_KEY, flashParams);
             }
         }
+    }
+
+    private boolean isStaticCall(HttpServletRequest request) {
+        return request.getRequestURI().startsWith(request.getContextPath()+"/static");
     }
 
     public void init(FilterConfig filterConfig) throws ServletException {

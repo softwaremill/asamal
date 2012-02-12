@@ -1,5 +1,7 @@
 package pl.softwaremill.cdiexample.controller;
 
+import pl.softwaremill.cdiexample.filters.AuthorizationFilter;
+import pl.softwaremill.cdiexample.logic.auth.LoginBean;
 import pl.softwaremill.cdiexample.model.Person;
 import pl.softwaremill.cdiweb.controller.CDIWebContext;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
@@ -8,7 +10,7 @@ import pl.softwaremill.cdiweb.controller.annotation.Get;
 import pl.softwaremill.cdiweb.controller.annotation.Json;
 import pl.softwaremill.cdiweb.controller.annotation.Post;
 
-import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -21,6 +23,17 @@ import java.util.Arrays;
 public class Home extends ControllerBean implements Serializable {
 
     private Person person = new Person();
+
+    @Inject
+    private LoginBean loginBean;
+
+    public LoginBean getLoginBean() {
+        return loginBean;
+    }
+
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
+    }
 
     public Person getPerson() {
         return person;
@@ -98,5 +111,44 @@ public class Home extends ControllerBean implements Serializable {
         redirect("index");
     }
 
+    @Get
+    public void login() {
+        String previousURI = (String) getObjectFromFlash(AuthorizationFilter.PREVIOUS_URI);
 
+        System.out.println("login() prevoius = " + previousURI);
+
+        if (previousURI != null) {
+            addObjectToFlash(AuthorizationFilter.PREVIOUS_URI, previousURI);
+        }
+    }
+
+    @Post
+    public void doLogin() {
+        String previousURI = (String) getObjectFromFlash(AuthorizationFilter.PREVIOUS_URI);
+
+        System.out.println("doLogin() previous = " + previousURI);
+
+        if (loginBean.doLogin(getParameter("login"), getParameter("password"))) {
+            addMessageToFlash("Logged in as "+getParameter("login"), CDIWebContext.MessageSeverity.SUCCESS);
+
+            if (previousURI != null) {
+                redirectToURI(previousURI);
+            }
+            else {
+                redirect("index");
+            }
+
+        } else {
+            // put the PREV URI into flash again
+            addObjectToFlash(AuthorizationFilter.PREVIOUS_URI, previousURI);
+            includeView("login");
+        }
+    }
+
+    @Get
+    public void logout() {
+        loginBean.logout();
+
+        redirect("index");
+    }
 }
