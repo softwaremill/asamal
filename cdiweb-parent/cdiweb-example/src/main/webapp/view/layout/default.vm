@@ -49,6 +49,8 @@
                     #if($login.loggedIn)
                         Logged in as $login.user.username
                         <a href="$tag.link('home', 'logout')">Logout</a></p>
+                    #else
+                        <a href="$tag.link('home', 'login')">Log in</a>
                     #end
             </div>
             <!--/.nav-collapse -->
