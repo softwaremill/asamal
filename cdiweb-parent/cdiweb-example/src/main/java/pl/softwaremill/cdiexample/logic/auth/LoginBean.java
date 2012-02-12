@@ -3,6 +3,7 @@ package pl.softwaremill.cdiexample.logic.auth;
 import pl.softwaremill.cdiweb.controller.annotation.Web;
 
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
  */
 @SessionScoped
 @Web("login")
+@Named("login")
 public class LoginBean implements Serializable {
     
     private static final Map<String, String> users = new HashMap<String, String>();

@@ -13,10 +13,12 @@ import pl.softwaremill.cdiweb.controller.cdi.ControllerResolver;
 import pl.softwaremill.cdiweb.controller.cdi.RequestType;
 import pl.softwaremill.cdiweb.exception.HttpErrorException;
 import pl.softwaremill.cdiweb.resource.ResourceResolver;
+import pl.softwaremill.cdiweb.servlet.CDIWebListener;
 import pl.softwaremill.cdiweb.velocity.LayoutDirective;
 import pl.softwaremill.cdiweb.velocity.TagHelper;
 import pl.softwaremill.common.util.dependency.D;
 
+import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -25,6 +27,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -160,7 +164,19 @@ public class JAXPostHandler {
             for (Class clazz : BootstrapCheckerExtension.webScopedBeans) {
                 System.out.println("bean: " + clazz);
                 String webName = ((Web) clazz.getAnnotation(Web.class)).value();
-                context.put(webName, D.inject(clazz));
+
+                // get the qualifiers from that bean, so it gets injected no matter what
+                BeanManager bm = (BeanManager) req.getServletContext().getAttribute(CDIWebListener.BEAN_MANAGER);
+
+                // iterate through all of them, and remember which ones are qualifiers
+                ArrayList<Annotation> qualifiers = new ArrayList<Annotation>();
+                for (Annotation annotation : clazz.getDeclaredAnnotations()) {
+                    if (bm.isQualifier(annotation.annotationType())) {
+                        qualifiers.add(annotation);
+                    }
+                }
+
+                context.put(webName, D.inject(clazz, qualifiers.toArray(new Annotation[qualifiers.size()])));
             }
 
             for (Map.Entry<String, Object> param : controllerBean.getParams().entrySet()) {
