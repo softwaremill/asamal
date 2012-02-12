@@ -31,6 +31,9 @@ public class LoginBean implements Serializable {
         return user != null;
     }
 
+    public boolean isAdmin() {
+        return user != null && "admin".equals(user.getUsername());
+    }
 
     public boolean doLogin(String login, String password) {
         if (password == null) {

@@ -16,6 +16,7 @@ import pl.softwaremill.cdiweb.resource.ResourceResolver;
 import pl.softwaremill.cdiweb.servlet.CDIWebListener;
 import pl.softwaremill.cdiweb.velocity.LayoutDirective;
 import pl.softwaremill.cdiweb.velocity.TagHelper;
+import pl.softwaremill.common.cdi.security.SecurityConditionException;
 import pl.softwaremill.common.util.dependency.D;
 
 import javax.enterprise.inject.spi.BeanManager;
@@ -28,6 +29,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -144,6 +146,13 @@ public class JAXPostHandler {
         } catch (FilterStopException e) {
             // stop execution
             return null;
+        } catch (InvocationTargetException e) {
+            if (e.getCause() instanceof SecurityConditionException) {
+                throw new HttpErrorException(Response.Status.FORBIDDEN, e);
+            }
+            else {
+                throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
+            }
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }

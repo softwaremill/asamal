@@ -25,9 +25,9 @@ public class ControllerResolver {
         ControllerResolver resolver = new ControllerResolver();
 
         resolver.controller = D.inject(ControllerBean.class, new ControllerImpl(controllerName));
-        
+
         // check controller-wide filters first
-        Filters filters = resolver.controller.getClass().getAnnotation(Filters.class);
+        Filters filters = resolver.controller.getRealClass().getAnnotation(Filters.class);
 
         if (filters != null) {
             for (Class<? extends CDIWebFilter> filterClass : filters.value()) {
@@ -46,8 +46,9 @@ public class ControllerResolver {
     public Object executeView(RequestType requestType, String view)
             throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, FilterStopException {
         // get the view method
-        Method method = controller.getClass().getDeclaredMethod(view);
-        
+        Method method = controller.getRealClass().getDeclaredMethod(view);
+        Method possiblyProxiedMethod = controller.getClass().getDeclaredMethod(view);
+
         // check method filters
         Filters filters = method.getAnnotation(Filters.class);
         if (filters != null) {
@@ -61,7 +62,6 @@ public class ControllerResolver {
             }
         }
 
-        // check that the method is annotated with the correct annotation
         if (method.getAnnotation(requestType.getRequestAnnotation()) == null) {
             throw new SecurityException("Method " + view + " on controller " + controller.getClass().getSimpleName() +
                     " isn't annotated with @" +
@@ -69,7 +69,7 @@ public class ControllerResolver {
         }
 
         // invoke it
-        return method.invoke(controller);
+        return possiblyProxiedMethod.invoke(controller);
     }
 
     public ControllerBean getController() {

@@ -34,8 +34,7 @@ public abstract class ControllerBean {
 
     public String getName() {
         if (name == null) {
-            // read it
-            name = this.getClass().getAnnotation(Controller.class).value();
+            name = this.getRealClass().getAnnotation(Controller.class).value();
         }
 
         return name;
@@ -185,5 +184,17 @@ public abstract class ControllerBean {
 
     public void redirectToURI(String uri) {
         context.redirectToURI(uri);
+    }
+
+    /**
+     * This method will return a class of this object handling possible Proxy.
+     */
+    public Class<? extends ControllerBean> getRealClass() {
+        if (getClass().getAnnotation(Controller.class) != null) {
+            return getClass();
+        }
+        else {
+            return (Class<? extends ControllerBean>) getClass().getSuperclass();
+        }
     }
 }
