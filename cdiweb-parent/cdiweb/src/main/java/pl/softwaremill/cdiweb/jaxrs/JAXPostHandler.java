@@ -36,6 +36,14 @@ public class JAXPostHandler {
     private final static ThreadLocal<CDIWebContext> cdiWebContextHolder = new ThreadLocal<CDIWebContext>();
 
     @GET
+    @Path("/")
+    public String handleRootGet(@Context HttpServletRequest request, @Context HttpServletResponse response) {
+        new CDIWebContext(request, response, null, null).redirect("home", "index");
+
+        return null;
+    }
+
+    @GET
     @Path("/static/{path:.*}")
     public Object handleStaticGet(@Context HttpServletRequest req, @PathParam("path") String path) {
         return new ResourceResolver(req).resolveFile("/static/" + path);
