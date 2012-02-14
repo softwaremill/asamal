@@ -3,6 +3,9 @@ package pl.softwaremill.cdiweb.jaxrs;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import pl.softwaremill.cdiweb.controller.CDIWebContext;
 import pl.softwaremill.cdiweb.controller.ContextConstants;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
@@ -20,6 +23,7 @@ import pl.softwaremill.common.cdi.security.SecurityConditionException;
 import pl.softwaremill.common.util.dependency.D;
 
 import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -27,10 +31,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,7 +46,16 @@ import java.util.Map;
 @Path("/")
 public class JAXPostHandler {
 
+    private ResourceResolver.Factory resourceResolverFactory;
+
     private final static ThreadLocal<CDIWebContext> cdiWebContextHolder = new ThreadLocal<CDIWebContext>();
+
+    @Inject
+    public JAXPostHandler(ResourceResolver.Factory resourceResolverFactory) {
+        this.resourceResolverFactory = resourceResolverFactory;
+    }
+
+    public JAXPostHandler() {}
 
     @GET
     @Path("/")
@@ -52,7 +68,35 @@ public class JAXPostHandler {
     @GET
     @Path("/static/{path:.*}")
     public Object handleStaticGet(@Context HttpServletRequest req, @PathParam("path") String path) {
-        return new ResourceResolver(req).resolveFile("/static/" + path);
+        return resourceResolverFactory.create(req).resolveFile("/static/" + path);
+    }
+
+    @POST
+    @Path("/post-formdata/{controller}/{view}{sep:/?}{path:.*}")
+    @Consumes("multipart/form-data")
+    public String handlePostFormData(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+                                     @PathParam("controller") String controller, @PathParam("view") String view,
+                                     @PathParam("path") String extraPath,
+                                     MultipartFormDataInput multiInput) {
+        // create a multivalued map, to pass to the regulas post method
+
+        MultivaluedMap<String, Object> formValues = new MultivaluedMapImpl<String, Object>();
+
+        for (Map.Entry<String, List<InputPart>> entry : multiInput.getFormDataMap().entrySet()) {
+            for (InputPart inputPart : entry.getValue()) {
+                try {
+                    if (inputPart.getMediaType().getType().equals("text")) {
+                        formValues.add(entry.getKey(), inputPart.getBodyAsString());
+                    } else {
+                        formValues.add(entry.getKey(), inputPart.getBody(InputStream.class, null));
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("Problem reading the multipart form", e);
+                }
+            }
+        }
+        System.out.println("formValues = " + formValues.keySet());
+        return handlePost(req, resp, controller, view, extraPath, formValues);
     }
 
     @POST
@@ -60,10 +104,10 @@ public class JAXPostHandler {
     public String handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                              @PathParam("controller") String controller, @PathParam("view") String view,
                              @PathParam("path") String extraPath,
-                             MultivaluedMap<String, String> formValues) {
+                             MultivaluedMap<String, Object> formValues) {
 
         // create the context
-        CDIWebContext context = new CDIWebContext(req, resp, extraPath, null);
+        CDIWebContext context = new CDIWebContext(req, resp, extraPath, formValues);
         cdiWebContextHolder.set(context);
 
         try {
@@ -79,7 +123,7 @@ public class JAXPostHandler {
         } catch (FilterStopException e) {
             // stop execution
             return null;
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -103,7 +147,7 @@ public class JAXPostHandler {
         } catch (FilterStopException e) {
             // stop execution
             return null;
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
         }
     }
@@ -149,8 +193,7 @@ public class JAXPostHandler {
         } catch (InvocationTargetException e) {
             if (e.getCause() instanceof SecurityConditionException) {
                 throw new HttpErrorException(Response.Status.FORBIDDEN, e);
-            }
-            else {
+            } else {
                 throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
             }
         } catch (Exception e) {
@@ -162,7 +205,7 @@ public class JAXPostHandler {
             throws HttpErrorException {
         try {
 
-            ResourceResolver resourceResolver = new ResourceResolver(req);
+            ResourceResolver resourceResolver = resourceResolverFactory.create(req);
 
             VelocityContext context = new VelocityContext();
 

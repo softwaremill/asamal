@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 /**
  * User: szimano
  */
-public class AutoBindTestController extends ControllerBean {
+public class AutoBindControllerTest extends ControllerBean {
 
     private TestPojo testPojo;
 
@@ -41,8 +41,10 @@ public class AutoBindTestController extends ControllerBean {
         testPojo = new TestPojo();
 
         CDIWebContext context = mock(CDIWebContext.class);
-        when(context.getParameterValues("testPojo.test")).thenReturn(Collections.singletonList("testPojo"));
-        when(context.getParameterValues("testPojo.inTest.intest")).thenReturn(Collections.singletonList("intest"));
+        when(context.getObjectParameterValues("testPojo.test")).thenReturn(
+                Collections.singletonList((Object)"testPojo"));
+        when(context.getObjectParameterValues("testPojo.inTest.intest"))
+                .thenReturn(Collections.singletonList((Object)"intest"));
         when(context.getParameterNames()).thenReturn(new HashSet<String>(Arrays.asList("testPojo.test",
                 "testPojo.inTest.intest")));
         setContext(context);

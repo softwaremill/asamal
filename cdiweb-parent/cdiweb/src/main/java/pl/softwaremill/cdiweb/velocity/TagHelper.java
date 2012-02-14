@@ -22,6 +22,13 @@ public class TagHelper {
                 append("/").append(view).toString();
     }
     
+    public String formActionFormData(String controller, String view) {
+        StringWriter sw = new StringWriter();
+
+        return sw.append(contextPath).append("/post-formdata/").append(controller).
+                append("/").append(view).toString();
+    }
+    
     public String link(String controller, String view) {
         StringWriter sw = new StringWriter();
 

@@ -1,30 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>pl.softwaremill</groupId>
-  <artifactId>cdiweb-parent</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+    <groupId>pl.softwaremill</groupId>
+    <artifactId>cdiweb-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-  <name>cdiweb-parent</name>
-  <url>http://maven.apache.org</url>
+    <name>cdiweb-parent</name>
+    <url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sml.common.version>63</sml.common.version>
+        <slf4j.version>1.5.10</slf4j.version>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>testPojo</scope>
-    </dependency>
-  </dependencies>
+    <dependencies>
 
-  <modules>
-    <module>cdiweb</module>
-    <module>cdiweb-example</module>
-  </modules>
+        <dependency>
+            <groupId>pl.softwaremill.common</groupId>
+            <artifactId>softwaremill-test-arquillian</artifactId>
+            <version>${sml.common.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!-- logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <modules>
+        <module>cdiweb</module>
+        <module>cdiweb-example</module>
+        <module>cdiweb-integration-tests</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>softwaremill-snapshots</id>
+            <name>SoftwareMill Snapshots</name>
+            <url>http://tools.softwaremill.pl/nexus/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>softwaremill-releases</id>
+            <name>SoftwareMill Releases</name>
+            <url>http://tools.softwaremill.pl/nexus/content/repositories/releases</url>
+        </repository>
+    </repositories>
 </project>

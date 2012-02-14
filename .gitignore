@@ -14,3 +14,4 @@ conf_env
 conf_install
 *.iml
 .idea
+velocity.log

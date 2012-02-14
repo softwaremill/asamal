@@ -37,6 +37,19 @@
         <input type="submit"/>
     </form>
 </div>
+
+<div class="well">
+    <h2>multipart/form-data form</h2>
+    <form method="POST" action="$tag.formActionFormData("home", "doImage")" class="form-horizontal"
+            enctype="multipart/form-data">
+        <label>Give your addresses</label>
+        <input type="text" name="person.addresses"/>
+        <input type="text" name="person.addresses"/>
+        <label>Send a picture</label>
+        <input type="file" name="person.file"/>
+        <label>And submit...</label>
+        <input type="submit"/>
+    </form>
 #end
 
 #region('footer')

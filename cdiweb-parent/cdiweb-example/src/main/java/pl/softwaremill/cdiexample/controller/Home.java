@@ -145,6 +145,18 @@ public class Home extends ControllerBean implements Serializable {
         }
     }
 
+    @Post
+    public void doImage() {
+        doAutoBinding("person.file", "person.addresses");
+
+        System.out.println("person.getAddresses() = " + person.getAddresses());
+        System.out.println("person.file.class = " + person.getFile().getClass());
+        System.out.println("person.file = " + person.getFile());
+
+        System.out.println("Object parameter file = " + getContext().getObjectParameter("person.file"));
+    }
+
+
     @Get
     public void logout() {
         loginBean.logout();

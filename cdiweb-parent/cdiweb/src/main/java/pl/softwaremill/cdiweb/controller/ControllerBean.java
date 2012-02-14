@@ -1,15 +1,13 @@
 package pl.softwaremill.cdiweb.controller;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.PropertyUtils;
 import pl.softwaremill.cdiweb.controller.annotation.Controller;
 import pl.softwaremill.cdiweb.controller.exception.AutobindingException;
 import pl.softwaremill.cdiweb.controller.exception.NoSuchParameterException;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Base Controller bean
@@ -60,11 +58,26 @@ public abstract class ControllerBean {
                 throw new NoSuchParameterException("There is no parameter " + parameterName);
             }
             try {
-                BeanUtils.setProperty(this, parameterName, getParameterValues(parameterName));
+                List<Object> values = getObjectParameterValues(parameterName);
+
+                Object toSet = values;
+
+                if (!Collection.class.isAssignableFrom(
+                        PropertyUtils.getPropertyDescriptor(this, parameterName).getPropertyType()) && 
+                        values.size() == 1) {
+                    // if field is not a collection and only one element, unpack it
+                    toSet = values.get(0);
+                }
+
+                BeanUtils.setProperty(this, parameterName, toSet);
             } catch (Exception e) {
                 throw new AutobindingException(e);
             }
         }
+    }
+
+    private List<Object> getObjectParameterValues(String parameterName) {
+        return context.getObjectParameterValues(parameterName);
     }
 
     public String getPageTitle() {
@@ -188,6 +201,10 @@ public abstract class ControllerBean {
 
     public void redirectToURI(String uri) {
         context.redirectToURI(uri);
+    }
+
+    public Object getObjectParameter(String key) {
+        return context.getObjectParameter(key);
     }
 
     /**

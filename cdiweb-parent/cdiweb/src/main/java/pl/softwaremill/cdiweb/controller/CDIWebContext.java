@@ -20,14 +20,14 @@ public class CDIWebContext {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private String[] extraPath = new String[0];
-    private MultivaluedMap<String, String> formValueMap;
+    private MultivaluedMap<String, Object> formValueMap;
     private boolean willRedirect = false;
     private boolean willInclude = false;
     
     private String includeView;
 
     public CDIWebContext(HttpServletRequest request, HttpServletResponse response,
-                         String extraPath, MultivaluedMap<String, String> formValueMap) {
+                         String extraPath, MultivaluedMap<String, Object> formValueMap) {
         this.response = response;
         this.request = request;
         this.formValueMap = formValueMap;
@@ -87,6 +87,14 @@ public class CDIWebContext {
 
             return (values.length == 0 ? null : values[0]);
         }
+        return (String) formValueMap.getFirst(key);
+    }
+    public Object getObjectParameter(String key) {
+        if (formValueMap == null) {
+            String[] values = request.getParameterMap().get(key);
+
+            return (values.length == 0 ? null : values[0]);
+        }
         return formValueMap.getFirst(key);
     }
 
@@ -100,7 +108,11 @@ public class CDIWebContext {
         if (formValueMap == null) {
             return Arrays.asList(request.getParameterMap().get(key));
         }
-        return formValueMap.get(key);
+        List<String> values = new ArrayList<String>();
+        for (Object obj : formValueMap.get(key)) {
+            values.add(obj.toString());
+        }
+        return values;
     }
 
     /**
@@ -214,6 +226,17 @@ public class CDIWebContext {
     public String getCurrentLink() {
         String queryString = request.getQueryString();
         return request.getRequestURI() + (queryString == null ? "" : "?" + queryString);
+    }
+
+    public List<Object> getObjectParameterValues(String parameterName) {
+        if (formValueMap == null) {
+            List<Object> o = new ArrayList<Object>();
+            for (String param : request.getParameterValues(parameterName)) {
+                o.add(param);
+            }
+            return o;
+        }
+        return formValueMap.get(parameterName);
     }
 
     public enum MessageSeverity {

@@ -1,5 +1,6 @@
 package pl.softwaremill.cdiexample.model;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -12,6 +13,8 @@ public class Person {
     private String lastName;
 
     private List<String> addresses;
+    
+    private InputStream file;
 
     public String getName() {
         return name;
@@ -35,6 +38,14 @@ public class Person {
 
     public void setAddresses(List<String> addresses) {
         this.addresses = addresses;
+    }
+
+    public InputStream getFile() {
+        return file;
+    }
+
+    public void setFile(InputStream file) {
+        this.file = file;
     }
 
     @Override
