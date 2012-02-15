@@ -54,6 +54,13 @@ public class TagHelper {
         return staticLink("js", jsName);
     }
 
+    public String cdiWebLinks() {
+        StringWriter sw = new StringWriter();
+
+        return sw.append("<script type='text/javascript' src='")
+                .append(contextPath).append("/cdiweb/cdiweb.js'></script>\n").toString();
+    }
+    
     public String cssLink(String cssName) {
         return staticLink("css", cssName);
     }

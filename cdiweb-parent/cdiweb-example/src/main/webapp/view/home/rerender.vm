@@ -2,18 +2,6 @@
 
 #region('content')
 
-    <script type="text/javascript">
-        function doPost(url) {
-            $.post(url, $("#testform").serialize(),
-                    function(page){
-                        $.each(page, function(id, html){
-                            $("#"+id).html(html);
-                        });
-                    }, "json");
-
-            return false;
-        }
-    </script>
     <h1>Welcome to rerender showout!</h1>
 
     <div id="output">
@@ -23,9 +11,10 @@
     <form id="testform" method="post" action="$tag.formAction('home', 'doReRender')">
         <input type="text" name="person.name"/>
         <input type="submit" value="Normal Post"/>
-        <input type="hidden" name="reRenderList" value="output"/>
-        <input type="hidden" name="reRenderList" value="footer"/>
-        <a href="#" onclick="return doPost('$tag.reRenderLink("home", "doReRender")')" >Ajax Post</a>
+        <a href="#"
+           onclick="return doPost('$tag.reRenderLink("home", "doReRender")', 'testform', ['output', 'footer'])" >
+            Ajax Post
+        </a>
     </form>
 
     <div id="footer">

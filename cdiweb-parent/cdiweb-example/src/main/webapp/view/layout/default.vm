@@ -20,6 +20,7 @@
     </style>
     <link href="$tag.cssLink("bootstrap-responsive.css")" rel="stylesheet">
 
+    $tag.cdiWebLinks()
 </head>
 
 <body>

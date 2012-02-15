@@ -74,6 +74,12 @@ public class JAXPostHandler {
         return resourceResolverFactory.create(req).resolveFile("/static/" + path);
     }
 
+    @GET
+    @Path("/cdiweb/{path:.*}")
+    public Object handleStaticCCDWebGet(@Context HttpServletRequest req, @PathParam("path") String path) {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream("/resources/"+path);
+    }
+
     @POST
     @Path("/post-formdata/{controller}/{view}{sep:/?}{path:.*}")
     @Consumes("multipart/form-data")
