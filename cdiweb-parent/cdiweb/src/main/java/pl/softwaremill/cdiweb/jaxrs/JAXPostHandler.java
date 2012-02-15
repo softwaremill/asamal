@@ -1,11 +1,13 @@
 package pl.softwaremill.cdiweb.jaxrs;
 
-
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import pl.softwaremill.cdiweb.controller.CDIWebContext;
 import pl.softwaremill.cdiweb.controller.ContextConstants;
 import pl.softwaremill.cdiweb.controller.ControllerBean;
@@ -37,6 +39,7 @@ import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -96,7 +99,7 @@ public class JAXPostHandler {
             }
         }
         System.out.println("formValues = " + formValues.keySet());
-        return handlePost(req, resp, controller, view, extraPath, formValues);
+        return handleCommonPost(req, resp, controller, view, extraPath, formValues);
     }
 
     @POST
@@ -104,28 +107,9 @@ public class JAXPostHandler {
     public String handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                              @PathParam("controller") String controller, @PathParam("view") String view,
                              @PathParam("path") String extraPath,
-                             MultivaluedMap<String, Object> formValues) {
+                             MultivaluedMap<String, String> formValues) {
 
-        // create the context
-        CDIWebContext context = new CDIWebContext(req, resp, extraPath, formValues);
-        cdiWebContextHolder.set(context);
-
-        try {
-            ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
-
-            controllerResolver.executeView(RequestType.POST, view);
-
-            if (context.isWillInclude()) {
-                return showView(req, controllerResolver.getController(), controller, context.getIncludeView());
-            }
-
-            return null;
-        } catch (FilterStopException e) {
-            // stop execution
-            return null;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues));
     }
 
     @GET
@@ -149,6 +133,70 @@ public class JAXPostHandler {
             return null;
         } catch (Exception e) {
             throw new HttpErrorException(Response.Status.NOT_FOUND, e);
+        }
+    }
+
+    @POST
+    @Path("/rerender/{controller}/{view}{sep:/?}{path:.*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, String> handleRerenderPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+                                               @PathParam("controller") String controller,
+                                               @PathParam("view") String view, @PathParam("path") String extraPath,
+                                               MultivaluedMap<String, String> formValues)
+            throws HttpErrorException {
+        String output = handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues));
+
+        List<String> reRenderList = formValues.get("reRenderList");
+
+        Document document = Jsoup.parse(output);
+
+        Map<String, String> pageMap = new HashMap<String, String>();
+        for (String id : reRenderList) {
+            Elements elements = document.select("#"+id);
+
+            pageMap.put(id, elements.html());
+        }
+
+        return pageMap;
+    }
+
+    private MultivaluedMap<String, Object> rewriteStringToObject(MultivaluedMap<String, String> values) {
+        MultivaluedMap<String, Object> map = new MultivaluedMapImpl<String, Object>();
+
+        if (values != null) {
+            for (Map.Entry<String, List<String>> entry : values.entrySet()) {
+                for (String s : entry.getValue()) {
+                    map.add(entry.getKey(), s);
+                }
+            }
+        }
+
+        return map;
+    }
+    
+    private String handleCommonPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+                             @PathParam("controller") String controller,
+                             @PathParam("view") String view, @PathParam("path") String extraPath,
+                             MultivaluedMap<String, Object> formValues) {
+        // create the context
+        CDIWebContext context = new CDIWebContext(req, resp, extraPath, formValues);
+        cdiWebContextHolder.set(context);
+
+        try {
+            ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
+
+            controllerResolver.executeView(RequestType.POST, view);
+
+            if (context.isWillInclude()) {
+                return showView(req, controllerResolver.getController(), controller, context.getIncludeView());
+            }
+
+            return null;
+        } catch (FilterStopException e) {
+            // stop execution
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -212,9 +260,7 @@ public class JAXPostHandler {
             // set the resolver
             context.put("resourceResolver", resourceResolver);
 
-            System.out.println("Listing beans");
             for (Class clazz : BootstrapCheckerExtension.webScopedBeans) {
-                System.out.println("bean: " + clazz);
                 String webName = ((Web) clazz.getAnnotation(Web.class)).value();
 
                 // get the qualifiers from that bean, so it gets injected no matter what
@@ -264,8 +310,6 @@ public class JAXPostHandler {
                 template = resourceResolver.resolveTemplate("layout", layout);
                 Velocity.evaluate(context, w, controller + "/" + view, template);
             }
-
-            System.out.println(" template : " + w);
 
             return w.toString();
         } catch (Exception e) {

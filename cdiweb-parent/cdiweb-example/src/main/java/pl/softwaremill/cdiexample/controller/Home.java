@@ -13,6 +13,8 @@ import pl.softwaremill.cdiweb.controller.annotation.Post;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Home page controller
@@ -65,6 +67,16 @@ public class Home extends ControllerBean implements Serializable {
         person.setLastName("Szymanski");
 
         return person;
+    }
+    
+    @Json
+    public Map<String, String> showJSONMap() {
+        Map<String, String> map= new HashMap<String, String>();
+        map.put("test", "this is test");
+        map.put("post", "this is post");
+        map.put("most", "this is most");
+
+        return map;
     }
     
     public void notWorking() {}
@@ -162,5 +174,17 @@ public class Home extends ControllerBean implements Serializable {
         loginBean.logout();
 
         redirect("index");
+    }
+
+    @Get
+    public void rerender() {
+
+    }
+
+    @Post
+    public void doReRender() {
+        doAutoBinding("person.name");
+
+        includeView("rerender");
     }
 }

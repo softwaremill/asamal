@@ -41,9 +41,6 @@ public class RegionDirective extends Directive {
             throw new ParseErrorException("The region has to specify a name");
         }
 
-        System.out.println("regionName = " + regionName);
-        System.out.println("node.value(context) = " + node.jjtGetChild(1).literal());
-
         context.put(REGION+regionName, node.jjtGetChild(1).literal());
 
         return true;

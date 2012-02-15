@@ -9,6 +9,23 @@
         #{end}
     </ul>
 
+    <div id="helo">
+        <h3>Helo</h3>
+
+        <ul>
+            <li>Not very
+            <li>XML compliant
+        </ul>
+    </div>
+
+    <span id="melo">
+        <h3>Melo</h3>
+
+        And some more
+
+        <a href="$tag.jsonLink('home', 'showJSONMap')">JSON Map</a>
+    </span>
+
     <a href="$tag.link("home", "register")">Register</a>
 
     #renderPartial("partial")
