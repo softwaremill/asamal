@@ -43,11 +43,17 @@ public class TagHelper {
                 append("/").append(view).toString();
     }
 
-    public String reRenderLink(String controller, String view) {
+    public String reRender(String controller, String view, String elementList, String reRenderList) {
         StringWriter sw = new StringWriter();
 
-        return sw.append(contextPath).append("/rerender/").append(controller).
-                append("/").append(view).toString();
+        return sw.append("doAjaxPost('")
+                // url
+                .append(contextPath).append("/rerender/").append(controller).append("/").append(view).append("', ")
+                // element list
+                .append(elementList).append(", ")
+                // rerendering list
+                .append(reRenderList).append(")")
+                .toString();
     }
     
     public String jsLink(String jsName) {

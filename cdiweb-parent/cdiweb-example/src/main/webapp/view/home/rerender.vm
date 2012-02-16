@@ -11,10 +11,8 @@
     <form id="testform" method="post" action="$tag.formAction('home', 'doReRender')">
         <input type="text" name="person.name"/>
         <input type="submit" value="Normal Post"/>
-        <a href="#"
-           onclick="return doPost('$tag.reRenderLink("home", "doReRender")', 'testform', ['output', 'footer'])" >
-            Ajax Post
-        </a>
+        <input type="button" value="Ajax Post"
+           onclick="return $tag.reRender("home", "doReRender", "'testform'", "['output', 'footer']")" />
     </form>
 
     <div id="footer">
