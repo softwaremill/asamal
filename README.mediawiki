@@ -1,18 +1,18 @@
-= CDIWeb - lightweight JEE6 web framework ==
+= Asamal - lightweight JEE6 web framework ==
 
 == What is it ? ==
 
-CDWeb is a Proof Of Concept web framework build completely on top of the JEE6 stack.
+Asamal is a Proof Of Concept web framework build completely on top of the JEE6 stack.
 
 The aim is to build an (almost)completely functional web framework in a finite time.
 
 == Modules ==
 
-=== [[cdiweb]] ===
+=== [[asamal]] ===
 
 This is the actual framework
 
-=== [[cdiweb-example]] ===
+=== [[asamal-example]] ===
 
 An example application, written simultaneusly with the framework.
 

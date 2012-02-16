@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pl.softwaremill</groupId>
-    <artifactId>cdiweb-parent</artifactId>
+    <artifactId>asamal-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>cdiweb-parent</name>
+    <name>asamal-parent</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -50,9 +50,9 @@
     </dependencies>
 
     <modules>
-        <module>cdiweb</module>
-        <module>cdiweb-example</module>
-        <module>cdiweb-integration-tests</module>
+        <module>asamal</module>
+        <module>asamal-example</module>
+        <module>asamal-integration-tests</module>
     </modules>
 
     <repositories>
