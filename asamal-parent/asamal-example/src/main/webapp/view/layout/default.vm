@@ -20,7 +20,7 @@
     </style>
     <link href="$tag.cssLink("bootstrap-responsive.css")" rel="stylesheet">
 
-    $tag.cdiWebLinks()
+    $tag.asamalLinks()
 </head>
 
 <body>
@@ -33,7 +33,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="#">CDIWeb Example App</a>
+            <a class="brand" href="#">Asamal Example App</a>
 
             <div class="nav-collapse">
                 <ul class="nav">
