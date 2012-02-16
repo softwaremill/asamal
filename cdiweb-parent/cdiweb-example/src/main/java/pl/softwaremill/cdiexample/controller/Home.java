@@ -183,7 +183,7 @@ public class Home extends ControllerBean implements Serializable {
 
     @Post
     public void doReRender() {
-        doAutoBinding("person.name");
+        doOptionalAutoBinding("person.name", "person.lastName");
 
         includeView("rerender");
     }

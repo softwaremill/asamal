@@ -53,25 +53,36 @@ public abstract class ControllerBean {
     }
 
     protected void doAutoBinding(String... parameterNames) {
+        doAutoBinding(false, parameterNames);
+    }
+
+    protected void doOptionalAutoBinding(String... parameterNames) {
+        doAutoBinding(true, parameterNames);
+    }
+
+    protected void doAutoBinding(boolean optionalParams, String... parameterNames) {
         for (String parameterName : parameterNames) {
             if (!getParameterNames().contains(parameterName)) {
-                throw new NoSuchParameterException("There is no parameter " + parameterName);
-            }
-            try {
-                List<Object> values = getObjectParameterValues(parameterName);
-
-                Object toSet = values;
-
-                if (!Collection.class.isAssignableFrom(
-                        PropertyUtils.getPropertyDescriptor(this, parameterName).getPropertyType()) && 
-                        values.size() == 1) {
-                    // if field is not a collection and only one element, unpack it
-                    toSet = values.get(0);
+                if (!optionalParams) {
+                    throw new NoSuchParameterException("There is no parameter " + parameterName);
                 }
+            } else {
+                try {
+                    List<Object> values = getObjectParameterValues(parameterName);
 
-                BeanUtils.setProperty(this, parameterName, toSet);
-            } catch (Exception e) {
-                throw new AutobindingException(e);
+                    Object toSet = values;
+
+                    if (!Collection.class.isAssignableFrom(
+                            PropertyUtils.getPropertyDescriptor(this, parameterName).getPropertyType()) &&
+                            values.size() == 1) {
+                        // if field is not a collection and only one element, unpack it
+                        toSet = values.get(0);
+                    }
+
+                    BeanUtils.setProperty(this, parameterName, toSet);
+                } catch (Exception e) {
+                    throw new AutobindingException(e);
+                }
             }
         }
     }
