@@ -187,4 +187,9 @@ public class Home extends ControllerBean implements Serializable {
 
         includeView("rerender");
     }
+
+    @Post
+    public void doPartialReRender() {
+        doOptionalAutoBinding("person.name", "person.lastName");
+    }
 }

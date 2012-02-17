@@ -25,14 +25,13 @@
         <div id="name">User name: $!controller.person.name</div>
         <div id="lastname">User last name: $!controller.person.lastName</div>
 
-        <form id="testformPartial" method="post" action="$tag.formAction('home', 'doReRender')"
-              class="form-horizontal">
+        <form id="testformPartial" method="post" class="form-horizontal">
             <label>Name</label>
             <input type="text" name="person.name"/>
             <label>Last Name</label>
             <input id="inlastname" type="text" name="person.lastName"/>
             <input type="button" value="Ajax Post"
-                   onclick="return $tag.reRender("home", "doReRender", "'inlastname'", "['name', 'lastname']")" />
+                   onclick="return $tag.reRender("home", "doPartialReRender", "'inlastname'", "['name', 'lastname']")" />
         </form>
     </div>
 

@@ -52,6 +52,9 @@ public class JAXPostHandler {
     private ResourceResolver.Factory resourceResolverFactory;
 
     private final static ThreadLocal<AsamalContext> asamalContextHolder = new ThreadLocal<AsamalContext>();
+    
+    private static final String FROM_CONTROLLER = "asamalFromController";
+    private static final String FROM_VIEW = "asamalFromView";
 
     @Inject
     public JAXPostHandler(ResourceResolver.Factory resourceResolverFactory) {
@@ -195,6 +198,10 @@ public class JAXPostHandler {
 
             if (context.isWillInclude()) {
                 return showView(req, controllerResolver.getController(), controller, context.getIncludeView());
+            } else if (formValues.containsKey(FROM_CONTROLLER) && formValues.containsKey(FROM_VIEW)) {
+                // include the previous view
+                return showView(req, controllerResolver.getController(), (String)formValues.getFirst(FROM_CONTROLLER),
+                        (String)formValues.getFirst(FROM_VIEW));
             }
 
             return null;
@@ -288,8 +295,8 @@ public class JAXPostHandler {
             }
 
             // put some context
-            context.put("tag", new TagHelper(req.getContextPath()));
-            context.put("pageTitle", controllerBean.getPageTitle());
+            context.put(ContextConstants.TAG, new TagHelper(req.getContextPath(), context));
+            context.put(ContextConstants.PAGE_TITLE, controllerBean.getPageTitle());
             context.put(ContextConstants.CONTROLLER, controllerBean);
             context.put(ContextConstants.VIEW, view);
 
