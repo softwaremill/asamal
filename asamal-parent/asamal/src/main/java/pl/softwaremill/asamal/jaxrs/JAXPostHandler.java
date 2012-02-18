@@ -7,6 +7,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ContextConstants;
@@ -22,6 +23,7 @@ import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.asamal.servlet.AsamalListener;
 import pl.softwaremill.asamal.velocity.LayoutDirective;
 import pl.softwaremill.asamal.velocity.TagHelper;
+import pl.softwaremill.asamal.viewhash.ViewDescriptor;
 import pl.softwaremill.common.cdi.security.SecurityConditionException;
 import pl.softwaremill.common.util.dependency.D;
 
@@ -39,10 +41,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: szimano
@@ -53,16 +52,17 @@ public class JAXPostHandler {
     private ResourceResolver.Factory resourceResolverFactory;
 
     private final static ThreadLocal<AsamalContext> asamalContextHolder = new ThreadLocal<AsamalContext>();
-    
-    private static final String FROM_CONTROLLER = "asamalFromController";
-    private static final String FROM_VIEW = "asamalFromView";
+
+    public static final String VIEWHASH = "asamalViewHash";
+    public static final String VIEWHASH_MAP = VIEWHASH + "Map";
 
     @Inject
     public JAXPostHandler(ResourceResolver.Factory resourceResolverFactory) {
         this.resourceResolverFactory = resourceResolverFactory;
     }
 
-    public JAXPostHandler() {}
+    public JAXPostHandler() {
+    }
 
     @GET
     @Path("/")
@@ -81,7 +81,7 @@ public class JAXPostHandler {
     @GET
     @Path("/asamal/{path:.*}")
     public Object handleStaticCCDWebGet(@Context HttpServletRequest req, @PathParam("path") String path) {
-        return Thread.currentThread().getContextClassLoader().getResourceAsStream("/resources/"+path);
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream("/resources/" + path);
     }
 
     @POST
@@ -90,9 +90,8 @@ public class JAXPostHandler {
     public String handlePostFormData(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                                      @PathParam("controller") String controller, @PathParam("view") String view,
                                      @PathParam("path") String extraPath,
-                                     MultipartFormDataInput multiInput) {
+                                     MultipartFormDataInput multiInput) throws HttpErrorException {
         // create a multivalued map, to pass to the regulas post method
-
         MultivaluedMap<String, Object> formValues = new MultivaluedMapImpl<String, Object>();
 
         for (Map.Entry<String, List<InputPart>> entry : multiInput.getFormDataMap().entrySet()) {
@@ -108,9 +107,9 @@ public class JAXPostHandler {
                 }
             }
         }
-        System.out.println("formValues = " + formValues.keySet());
+
         try {
-            return handleCommonPost(req, resp, controller, view, extraPath, formValues, true);
+            return handleCommonPost(req, resp, controller, view, extraPath, formValues, false);
         } catch (IllegalIncludeRedirectException e) {
             // this will never happen
             throw new RuntimeException(e);
@@ -122,10 +121,10 @@ public class JAXPostHandler {
     public String handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                              @PathParam("controller") String controller, @PathParam("view") String view,
                              @PathParam("path") String extraPath,
-                             MultivaluedMap<String, String> formValues) {
+                             MultivaluedMap<String, String> formValues) throws HttpErrorException {
 
         try {
-            return handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues), true);
+            return handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues), false);
         } catch (IllegalIncludeRedirectException e) {
             // this will never happen
             throw new RuntimeException(e);
@@ -160,15 +159,15 @@ public class JAXPostHandler {
     @Path("/rerender/{controller}/{view}{sep:/?}{path:.*}")
     @Produces(MediaType.APPLICATION_JSON)
     public Map<String, String> handleRerenderPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
-                                               @PathParam("controller") String controller,
-                                               @PathParam("view") String view, @PathParam("path") String extraPath,
-                                               MultivaluedMap<String, String> formValues)
+                                                  @PathParam("controller") String controller,
+                                                  @PathParam("view") String view, @PathParam("path") String extraPath,
+                                                  MultivaluedMap<String, String> formValues)
             throws HttpErrorException {
 
         String output = null;
         try {
             output = handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues),
-                    false);
+                    true);
         } catch (IllegalIncludeRedirectException e) {
             throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
         }
@@ -179,7 +178,7 @@ public class JAXPostHandler {
 
         Map<String, String> pageMap = new HashMap<String, String>();
         for (String id : reRenderList) {
-            Elements elements = document.select("#"+id);
+            Elements elements = document.select("#" + id);
 
             pageMap.put(id, elements.html());
         }
@@ -200,12 +199,30 @@ public class JAXPostHandler {
 
         return map;
     }
-    
+
     private String handleCommonPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
-                             @PathParam("controller") String controller,
-                             @PathParam("view") String view, @PathParam("path") String extraPath,
-                             MultivaluedMap<String, Object> formValues, boolean allowIncludeAndRedirect)
-                             throws IllegalIncludeRedirectException {
+                                    @PathParam("controller") String controller,
+                                    @PathParam("view") String view, @PathParam("path") String extraPath,
+                                    MultivaluedMap<String, Object> formValues, boolean reRenderingPost)
+            throws IllegalIncludeRedirectException, HttpErrorException {
+        // for all post queries, they have to include the view hash
+        List<Object> viewHashes = formValues.get(VIEWHASH);
+        if (viewHashes != null) {
+            // now check all fo them (if there's > 1, then probably user is sending a field with the same name
+            // - he might be trying to cheat the system, so we're gonna show him it's not good ;-)
+
+            Map<String, ViewDescriptor> viewHashMap = getViewHashMap(req);
+            for (Object viewHash : viewHashes) {
+                if (!viewHashMap.containsKey(viewHash)) {
+                    throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, "View hash " + viewHash +
+                            " was not found in the ViewHashMap.");
+                }
+            }
+        } else {
+            throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR,
+                    "There is no viewHash send for this post query");
+        }
+
         // create the context
         AsamalContext context = new AsamalContext(req, resp, extraPath, formValues);
         asamalContextHolder.set(context);
@@ -215,17 +232,19 @@ public class JAXPostHandler {
 
             controllerResolver.executeView(RequestType.POST, view);
 
-            if (!allowIncludeAndRedirect && (context.isWillInclude() || context.isWillRedirect())) {
+            if (reRenderingPost && (context.isWillInclude() || context.isWillRedirect())) {
                 // do not allow this
                 throw new IllegalIncludeRedirectException("Redirect and include is not allowed");
             }
 
             if (context.isWillInclude()) {
                 return showView(req, controllerResolver.getController(), controller, context.getIncludeView());
-            } else if (formValues.containsKey(FROM_CONTROLLER) && formValues.containsKey(FROM_VIEW)) {
+            } else if (reRenderingPost) {
                 // include the previous view
-                return showView(req, controllerResolver.getController(), (String)formValues.getFirst(FROM_CONTROLLER),
-                        (String)formValues.getFirst(FROM_VIEW));
+                ViewDescriptor viewDescriptor = getViewHashMap(req).get(formValues.getFirst(VIEWHASH));
+
+                return showView(req, controllerResolver.getController(), viewDescriptor.getController(),
+                        viewDescriptor.getView());
             }
 
             return null;
@@ -289,10 +308,16 @@ public class JAXPostHandler {
     private String showView(HttpServletRequest req, ControllerBean controllerBean, String controller, String view)
             throws HttpErrorException {
         try {
+            // create new view hash
+
+            String viewHash = createNewViewHash(req, controller, view);
 
             ResourceResolver resourceResolver = resourceResolverFactory.create(req);
 
             VelocityContext context = new VelocityContext();
+
+            // set the viewHash
+            context.put(VIEWHASH, viewHash);
 
             // set the resolver
             context.put("resourceResolver", resourceResolver);
@@ -348,7 +373,25 @@ public class JAXPostHandler {
                 Velocity.evaluate(context, w, controller + "/" + view, template);
             }
 
-            return w.toString();
+            String outputHtml = w.toString();
+
+            Document document = Jsoup.parse(outputHtml);
+
+            Elements elements = document.select("form");
+
+            for (Element element : elements) {
+                if (element.attr("method").toLowerCase().equals("post")) {
+                    Element formInputWithHash = document.createElement("input");
+                    formInputWithHash.attr("type", "hidden");
+                    formInputWithHash.attr("name", VIEWHASH);
+                    formInputWithHash.val(viewHash);
+
+                    element.appendChild(formInputWithHash);
+                }
+            }
+
+            // and return it
+            return document.html();
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -359,5 +402,31 @@ public class JAXPostHandler {
     @javax.enterprise.inject.Produces
     public AsamalContext produceAsamalContext() {
         return asamalContextHolder.get();
+    }
+
+    private String createNewViewHash(HttpServletRequest request, String controller, String view) {
+        ViewDescriptor viewDescriptor = new ViewDescriptor(controller, view);
+
+        String viewHash = UUID.randomUUID().toString();
+
+        Map<String, ViewDescriptor> viewHashMap = getViewHashMap(request);
+
+        viewHashMap.put(viewHash, viewDescriptor);
+
+        return viewHash;
+    }
+
+    private Map<String, ViewDescriptor> getViewHashMap(HttpServletRequest request) {
+        Map<String, ViewDescriptor> viewHashMap = (Map<String, ViewDescriptor>) request.getSession()
+                .getAttribute(VIEWHASH_MAP);
+
+        if (viewHashMap == null) {
+            // the hash map is not yet defined
+            // the map is synchronized, because one user might actually perform simultaneous requests
+            request.getSession().setAttribute(VIEWHASH_MAP, viewHashMap =
+                    Collections.synchronizedMap(new HashMap<String, ViewDescriptor>()));
+        }
+
+        return viewHashMap;
     }
 }

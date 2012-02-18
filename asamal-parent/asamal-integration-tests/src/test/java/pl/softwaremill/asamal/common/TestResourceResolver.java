@@ -15,11 +15,19 @@ import java.io.InputStream;
  */
 @CreatedWith(ResourceResolver.Factory.class)
 public class TestResourceResolver implements ResourceResolver {
+    
+    public static String returnHtml = null;
 
     public TestResourceResolver(HttpServletRequest request) {
     }
 
     public String resolveTemplate(String controller, String view) throws IOException {
+        if (returnHtml != null) {
+            String toRet = returnHtml;
+            returnHtml = null;
+            
+            return toRet;
+        }
         return controller + "/" + view;
     }
 

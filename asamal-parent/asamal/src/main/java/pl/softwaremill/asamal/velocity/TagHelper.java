@@ -3,6 +3,7 @@ package pl.softwaremill.asamal.velocity;
 import org.apache.velocity.VelocityContext;
 import pl.softwaremill.asamal.controller.ContextConstants;
 import pl.softwaremill.asamal.controller.ControllerBean;
+import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 
 import java.io.StringWriter;
 
@@ -59,10 +60,8 @@ public class TagHelper {
                 .append(elementList).append(", ")
                 // rerendering list
                 .append(reRenderList).append(", '")
-                // controller
-                .append(((ControllerBean) velocityContext.get(ContextConstants.CONTROLLER)).getName()).append("', '")
-                // view
-                .append((String)velocityContext.get(ContextConstants.VIEW)).append("')")
+                // viewHash
+                .append((String)velocityContext.get(JAXPostHandler.VIEWHASH)).append("')")
                 .toString();
     }
     

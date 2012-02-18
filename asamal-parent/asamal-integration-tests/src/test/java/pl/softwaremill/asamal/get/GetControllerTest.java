@@ -7,10 +7,13 @@ import org.testng.annotations.Test;
 import pl.softwaremill.asamal.ControllerTest;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
+import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.exception.HttpErrorException;
 import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.common.util.dependency.D;
+
+import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
 
@@ -39,6 +42,45 @@ public class GetControllerTest extends ControllerTest {
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testMethod");
-        assertThat(output).isEqualTo("get/testMethod");
+        assertThat(output).isEqualTo("<html>\n" +
+                " <head></head>\n" +
+                " <body>\n" +
+                "  get/testMethod\n" +
+                " </body>\n" +
+                "</html>");
+    }
+
+    @Test
+    public void shouldAddHiddenTypeWithViewHash() throws HttpErrorException {
+
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+        TestResourceResolver.returnHtml =
+                "<html><body>" +
+                        "<form type='POST' action='action'>" +
+                        "<input type='text'/>" +
+                        "</form>" +
+                        "</body></html>";
+
+        // when
+        String output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+
+        // then
+        assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testMethod");
+        Map viewHashMap = (Map) session.getAttribute(JAXPostHandler.VIEWHASH_MAP);
+
+        // check that only one viewHash was created
+        assertThat(viewHashMap.keySet()).hasSize(1);
+
+        assertThat(output).isEqualTo("<html>\n" +
+                " <head></head>\n" +
+                " <body>\n" +
+                "  <form type=\"POST\" action=\"action\">\n" +
+                "   <input type=\"text\" />\n" +
+                "   <input type=\"hidden\" name=\"asamalViewHash\" value=\""+
+                    viewHashMap.keySet().iterator().next() +"\" />\n" +
+                "  </form>\n" +
+                " </body>\n" +
+                "</html>");
     }
 }

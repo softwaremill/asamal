@@ -3,6 +3,7 @@ package pl.softwaremill.asamal.post;
 import org.jboss.arquillian.api.Deployment;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -44,9 +45,14 @@ public class PostControllerTest extends ControllerTest {
 
         // given
         JAXPostHandler postHandler = getPostHandler();
+        addViewHash("view-hash", "post", "doPost");
 
         // when
-        String output = postHandler.handlePost(req, resp, "post", "doPost", null, null);
+        String output = postHandler.handlePost(req, resp, "post", "doPost", null, new MultivaluedMapImpl<String, String>(){
+            {
+                put(JAXPostHandler.VIEWHASH, Arrays.asList("view-hash"));
+            }
+        });
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("doPost");
@@ -60,6 +66,7 @@ public class PostControllerTest extends ControllerTest {
 
         // given
         JAXPostHandler postHandler = getPostHandler();
+        addViewHash("view-hash", "post", "doFormDataPost");
 
         MultipartFormDataInput dataInput = mock(MultipartFormDataInput.class);
         Map<String, List<InputPart>> formValues = mock(Map.class);
@@ -71,6 +78,8 @@ public class PostControllerTest extends ControllerTest {
         entries.add(new EntryImpl<String, List<InputPart>>("b",
                 input(new InputPartImpl("b", MediaType.TEXT_PLAIN_TYPE),
                       new InputPartImpl("c", MediaType.TEXT_PLAIN_TYPE))));
+        entries.add(new EntryImpl<String, List<InputPart>>(JAXPostHandler.VIEWHASH,
+                input(new InputPartImpl("view-hash", MediaType.TEXT_PLAIN_TYPE))));
 
         when(formValues.entrySet()).thenReturn(entries);
 

@@ -1,6 +1,6 @@
-function doAjaxPost(url, elementIds, reRenderList, fromController, fromView) {
+function doAjaxPost(url, elementIds, reRenderList, viewHash) {
 
-    input = "asamalFromController="+fromController+"&asamalFromView="+fromView;
+    input = "";
 
     // elementIds an be either array or a sinle element
     if (elementIds instanceof Array) {
@@ -22,8 +22,12 @@ function doAjaxPost(url, elementIds, reRenderList, fromController, fromView) {
         input += "&reRenderList="+reRenderList
     }
 
-    // finally make the post
-    $.post(url, input,
+    if (input.search("&asamalViewHash=") < 0) {
+        input += "&asamalViewHash=" + viewHash
+    }
+
+    // finally make the post (substring input, to get rid of leading &)
+    $.post(url, input.substring(1),
         function(page){
             $.each(page, function(id, html){
                 $("#"+id).html(html);
