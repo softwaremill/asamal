@@ -17,6 +17,7 @@ import pl.softwaremill.asamal.controller.cdi.BootstrapCheckerExtension;
 import pl.softwaremill.asamal.controller.cdi.ControllerResolver;
 import pl.softwaremill.asamal.controller.cdi.RequestType;
 import pl.softwaremill.asamal.exception.HttpErrorException;
+import pl.softwaremill.asamal.exception.IllegalIncludeRedirectException;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.asamal.servlet.AsamalListener;
 import pl.softwaremill.asamal.velocity.LayoutDirective;
@@ -108,7 +109,12 @@ public class JAXPostHandler {
             }
         }
         System.out.println("formValues = " + formValues.keySet());
-        return handleCommonPost(req, resp, controller, view, extraPath, formValues);
+        try {
+            return handleCommonPost(req, resp, controller, view, extraPath, formValues, true);
+        } catch (IllegalIncludeRedirectException e) {
+            // this will never happen
+            throw new RuntimeException(e);
+        }
     }
 
     @POST
@@ -118,7 +124,12 @@ public class JAXPostHandler {
                              @PathParam("path") String extraPath,
                              MultivaluedMap<String, String> formValues) {
 
-        return handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues));
+        try {
+            return handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues), true);
+        } catch (IllegalIncludeRedirectException e) {
+            // this will never happen
+            throw new RuntimeException(e);
+        }
     }
 
     @GET
@@ -153,7 +164,14 @@ public class JAXPostHandler {
                                                @PathParam("view") String view, @PathParam("path") String extraPath,
                                                MultivaluedMap<String, String> formValues)
             throws HttpErrorException {
-        String output = handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues));
+
+        String output = null;
+        try {
+            output = handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues),
+                    false);
+        } catch (IllegalIncludeRedirectException e) {
+            throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
+        }
 
         List<String> reRenderList = formValues.get("reRenderList");
 
@@ -186,7 +204,8 @@ public class JAXPostHandler {
     private String handleCommonPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                              @PathParam("controller") String controller,
                              @PathParam("view") String view, @PathParam("path") String extraPath,
-                             MultivaluedMap<String, Object> formValues) {
+                             MultivaluedMap<String, Object> formValues, boolean allowIncludeAndRedirect)
+                             throws IllegalIncludeRedirectException {
         // create the context
         AsamalContext context = new AsamalContext(req, resp, extraPath, formValues);
         asamalContextHolder.set(context);
@@ -195,6 +214,11 @@ public class JAXPostHandler {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
             controllerResolver.executeView(RequestType.POST, view);
+
+            if (!allowIncludeAndRedirect && (context.isWillInclude() || context.isWillRedirect())) {
+                // do not allow this
+                throw new IllegalIncludeRedirectException("Redirect and include is not allowed");
+            }
 
             if (context.isWillInclude()) {
                 return showView(req, controllerResolver.getController(), controller, context.getIncludeView());

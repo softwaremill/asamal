@@ -9,7 +9,7 @@
     </div>
 
     <div class="well">
-        <form id="testform" method="post" action="$tag.formAction('home', 'doReRender')">
+        <form id="testform" method="post" action="$tag.formAction('home', 'doNormalRender')">
             <input type="text" name="person.name"/>
             <input type="submit" value="Normal Post"/>
             <input type="button" value="Ajax Post"
