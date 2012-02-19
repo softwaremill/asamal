@@ -32,8 +32,6 @@ Just run (you will need maven 3+)
 
  mvn archetype:generate -DarchetypeArtifactId=asamal-quickstart -DarchetypeGroupId=pl.softwaremill.asamal -DarchetypeVersion=1-SNAPSHOT -DarchetypeRepository=http://tools.softwaremill.pl/nexus/content/repositories/snapshots/
 
-Open you generated pom.xml, and change ${asamal.version} (will dissapear soon) to 1-SNAPSHOT
-
 and then run mvn install - this will produce a war, which you will be able to deploy on JBoss 7.x (just copy to ${JBOSS_HOME}/standalone/deployments )
 
 === Controllers ===
