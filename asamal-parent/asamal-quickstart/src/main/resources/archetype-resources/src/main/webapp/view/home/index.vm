@@ -1,0 +1,16 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+${symbol_pound}layout('default')
+
+${symbol_pound}region('content')
+    <h1>Welcome to home!</h1>
+
+    <h2>You have successfully created your Asamal Bootstrap</h2>
+
+    <ul>
+        ${symbol_pound}{foreach}(${symbol_dollar}item in ${symbol_dollar}list)
+            <li>${symbol_dollar}item</li>
+        ${symbol_pound}{end}
+    </ul>
+${symbol_pound}end

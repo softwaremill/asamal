@@ -6,13 +6,12 @@
     <parent>
         <artifactId>asamal-parent</artifactId>
         <groupId>pl.softwaremill</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1-SNAPSHOT</version>
     </parent>
     <groupId>pl.softwaremill</groupId>
     <artifactId>asamal</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${parent.version}</version>
     <name>asamal</name>
-    <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
