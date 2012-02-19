@@ -70,6 +70,7 @@
 
     <scm>
         <developerConnection>scm:git@github.com:softwaremill/asamal.git</developerConnection>
+        <connection>scm:git://github.com/softwaremill/asamal.git</connection>
         <tag>HEAD</tag>
     </scm>
 
