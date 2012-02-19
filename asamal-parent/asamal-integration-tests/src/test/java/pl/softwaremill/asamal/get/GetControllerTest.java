@@ -57,7 +57,7 @@ public class GetControllerTest extends ControllerTest {
         JAXPostHandler postHandler = getPostHandler();
         TestResourceResolver.returnHtml =
                 "<html><body>" +
-                        "<form type='POST' action='action'>" +
+                        "<form method='POST' action='action'>" +
                         "<input type='text'/>" +
                         "</form>" +
                         "</body></html>";
@@ -75,7 +75,7 @@ public class GetControllerTest extends ControllerTest {
         assertThat(output).isEqualTo("<html>\n" +
                 " <head></head>\n" +
                 " <body>\n" +
-                "  <form type=\"POST\" action=\"action\">\n" +
+                "  <form method=\"POST\" action=\"action\">\n" +
                 "   <input type=\"text\" />\n" +
                 "   <input type=\"hidden\" name=\"asamalViewHash\" value=\""+
                     viewHashMap.keySet().iterator().next() +"\" />\n" +
