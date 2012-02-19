@@ -9,7 +9,7 @@
         <version>1-SNAPSHOT</version>
     </parent>
 
-    <groupId>pl.softwaremill</groupId>
+    <groupId>pl.softwaremill.asamal</groupId>
     <artifactId>asamal-quickstart</artifactId>
     <version>${parent.version}</version>
     <packaging>maven-archetype</packaging>
