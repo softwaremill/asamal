@@ -22,8 +22,6 @@
         }
     </style>
     <link href="${symbol_dollar}tag.cssLink("bootstrap-responsive.css")" rel="stylesheet">
-
-    ${symbol_dollar}tag.asamalLinks()
 </head>
 
 <body>

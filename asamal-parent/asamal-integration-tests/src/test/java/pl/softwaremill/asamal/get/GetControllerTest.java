@@ -43,7 +43,9 @@ public class GetControllerTest extends ControllerTest {
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testMethod");
         assertThat(output).isEqualTo("<html>\n" +
-                " <head></head>\n" +
+                " <head>\n" +
+                "  <script type=\"text/javascript\" src=\"null/asamal/asamal.js\"></script>\n" +
+                " </head>\n" +
                 " <body>\n" +
                 "  get/testMethod\n" +
                 " </body>\n" +
@@ -51,7 +53,7 @@ public class GetControllerTest extends ControllerTest {
     }
 
     @Test
-    public void shouldAddHiddenTypeWithViewHash() throws HttpErrorException {
+    public void shouldAddHiddenTypeWithViewHashAndAsamalJS() throws HttpErrorException {
 
         // given
         JAXPostHandler postHandler = getPostHandler();
@@ -73,7 +75,9 @@ public class GetControllerTest extends ControllerTest {
         assertThat(viewHashMap.keySet()).hasSize(1);
 
         assertThat(output).isEqualTo("<html>\n" +
-                " <head></head>\n" +
+                " <head>\n" +
+                "  <script type=\"text/javascript\" src=\"null/asamal/asamal.js\"></script>\n" +
+                " </head>\n" +
                 " <body>\n" +
                 "  <form method=\"POST\" action=\"action\">\n" +
                 "   <input type=\"text\" />\n" +

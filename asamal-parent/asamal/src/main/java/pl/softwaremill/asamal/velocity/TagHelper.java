@@ -68,13 +68,6 @@ public class TagHelper {
     public String jsLink(String jsName) {
         return staticLink("js", jsName);
     }
-
-    public String asamalLinks() {
-        StringWriter sw = new StringWriter();
-
-        return sw.append("<script type='text/javascript' src='")
-                .append(contextPath).append("/asamal/asamal.js'></script>\n").toString();
-    }
     
     public String cssLink(String cssName) {
         return staticLink("css", cssName);

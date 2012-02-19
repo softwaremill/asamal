@@ -19,8 +19,6 @@
         }
     </style>
     <link href="$tag.cssLink("bootstrap-responsive.css")" rel="stylesheet">
-
-    $tag.asamalLinks()
 </head>
 
 <body>

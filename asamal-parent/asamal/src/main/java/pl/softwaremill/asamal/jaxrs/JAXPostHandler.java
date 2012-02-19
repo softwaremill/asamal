@@ -375,28 +375,42 @@ public class JAXPostHandler {
 
             String outputHtml = w.toString();
 
-            Document document = Jsoup.parse(outputHtml);
-
-            Elements elements = document.select("form");
-
-            for (Element element : elements) {
-                if (element.attr("method").toLowerCase().equals("post")) {
-                    Element formInputWithHash = document.createElement("input");
-                    formInputWithHash.attr("type", "hidden");
-                    formInputWithHash.attr("name", VIEWHASH);
-                    formInputWithHash.val(viewHash);
-
-                    element.appendChild(formInputWithHash);
-                }
-            }
-
-            // and return it
-            return document.html();
+            //finally enhance the html by adding some asamal magic
+            return enhanceOutputHtml(req, outputHtml, viewHash);
         } catch (Exception e) {
             e.printStackTrace();
 
             throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
         }
+    }
+    
+    private String enhanceOutputHtml(HttpServletRequest request, String html, String viewHash) {
+        Document document = Jsoup.parse(html);
+
+        // for every POST form, add viewHash in hidden element
+        Elements elements = document.select("form");
+
+        for (Element element : elements) {
+            if (element.attr("method").toLowerCase().equals("post")) {
+                Element formInputWithHash = document.createElement("input");
+                formInputWithHash.attr("type", "hidden");
+                formInputWithHash.attr("name", VIEWHASH);
+                formInputWithHash.val(viewHash);
+
+                element.appendChild(formInputWithHash);
+            }
+        }
+        
+        // in the head add asamal resource links
+        Element head = document.select("head").get(0);
+
+        Element asamalJS = document.createElement("script");
+        asamalJS.attr("type", "text/javascript");
+        asamalJS.attr("src", request.getContextPath() + "/asamal/asamal.js");
+
+        head.appendChild(asamalJS);
+
+        return document.html();
     }
 
     @javax.enterprise.inject.Produces
