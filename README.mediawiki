@@ -22,6 +22,10 @@ This is probably the best thing to look at if you would like to try it out yours
 
 Integration tests
 
+=== [[asamal-quickstart]] ===
+
+Maven 3+ archetype, to kickstart your own project using asamal.
+
 == User Guide ==
 
 === Quick Start ===
