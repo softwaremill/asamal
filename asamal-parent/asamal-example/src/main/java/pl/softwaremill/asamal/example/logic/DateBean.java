@@ -1,8 +1,7 @@
 package pl.softwaremill.asamal.example.logic;
 
-import pl.softwaremill.asamal.controller.annotation.Web;
-
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import java.io.Serializable;
 
 import java.util.Date;
@@ -10,7 +9,7 @@ import java.util.Date;
 /**
  * User: szimano
  */
-@Web("date")
+@Named("date")
 @SessionScoped
 public class DateBean implements Serializable {
 

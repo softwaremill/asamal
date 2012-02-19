@@ -1,7 +1,5 @@
 package pl.softwaremill.asamal.example.logic.auth;
 
-import pl.softwaremill.asamal.controller.annotation.Web;
-
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -14,7 +12,6 @@ import java.util.Map;
  * User: szimano
  */
 @SessionScoped
-@Web("login")
 @Named("login")
 public class LoginBean implements Serializable {
     

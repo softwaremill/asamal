@@ -2,12 +2,12 @@ package pl.softwaremill.asamal.controller.cdi;
 
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
-import pl.softwaremill.asamal.controller.annotation.Web;
 
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
@@ -21,7 +21,7 @@ import java.util.Set;
 public class BootstrapCheckerExtension implements Extension, Serializable {
 
     //todo put those beans somwhere else
-    public static final Set<Class> webScopedBeans = new HashSet<Class>();
+    public static final Set<Class> namedBeans = new HashSet<Class>();
 
     public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event) {
         for (Annotation annotation : event.getAnnotatedType().getAnnotations()) {
@@ -40,8 +40,8 @@ public class BootstrapCheckerExtension implements Extension, Serializable {
             }
 
             // remember web scoped beans
-            if (Web.class.isAssignableFrom(annotation.annotationType())) {
-                webScopedBeans.add(event.getAnnotatedType().getJavaClass());
+            if (Named.class.isAssignableFrom(annotation.annotationType())) {
+                namedBeans.add(event.getAnnotatedType().getJavaClass());
             }
         }
     }

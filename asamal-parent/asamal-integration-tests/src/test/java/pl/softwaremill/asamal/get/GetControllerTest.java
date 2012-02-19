@@ -28,6 +28,7 @@ public class GetControllerTest extends ControllerTest {
                 .addClass(GetTestController.class)
                 .addClass(ResourceResolver.Factory.class)
                 .addClass(ResourceResolver.class)
+                .addClass(TestNamedBean.class)
                 .addPackage(TestResourceResolver.class.getPackage());
     }
 
@@ -86,5 +87,21 @@ public class GetControllerTest extends ControllerTest {
                 "  </form>\n" +
                 " </body>\n" +
                 "</html>");
+    }
+
+    @Test
+    public void shouldIncludeNamedBeansInContext() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+        TestResourceResolver.returnHtml =
+                "<html><body>" +
+                        "$testNamedBean.value" +
+                        "</body></html>";
+
+        // when
+        String output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+
+        // then
+        assertThat(output).contains("Some Value From Named Bean");
     }
 }

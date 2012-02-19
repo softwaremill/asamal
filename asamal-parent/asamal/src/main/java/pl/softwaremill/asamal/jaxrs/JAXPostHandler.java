@@ -13,7 +13,6 @@ import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ContextConstants;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.FilterStopException;
-import pl.softwaremill.asamal.controller.annotation.Web;
 import pl.softwaremill.asamal.controller.cdi.BootstrapCheckerExtension;
 import pl.softwaremill.asamal.controller.cdi.ControllerResolver;
 import pl.softwaremill.asamal.controller.cdi.RequestType;
@@ -29,6 +28,7 @@ import pl.softwaremill.common.util.dependency.D;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
@@ -322,8 +322,8 @@ public class JAXPostHandler {
             // set the resolver
             context.put("resourceResolver", resourceResolver);
 
-            for (Class clazz : BootstrapCheckerExtension.webScopedBeans) {
-                String webName = ((Web) clazz.getAnnotation(Web.class)).value();
+            for (Class clazz : BootstrapCheckerExtension.namedBeans) {
+                String webName = ((Named) clazz.getAnnotation(Named.class)).value();
 
                 // get the qualifiers from that bean, so it gets injected no matter what
                 BeanManager bm = (BeanManager) req.getServletContext().getAttribute(AsamalListener.BEAN_MANAGER);

@@ -10,12 +10,14 @@ import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
 import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
+import pl.softwaremill.asamal.servlet.AsamalListener;
 import pl.softwaremill.asamal.viewhash.ViewDescriptor;
 import pl.softwaremill.common.util.dependency.BeanManagerDependencyProvider;
 import pl.softwaremill.common.util.dependency.D;
 
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -48,6 +50,7 @@ public class ControllerTest extends Arquillian {
     protected HttpServletResponse resp = mock(HttpServletResponse.class);
 
     protected HttpSession session;
+    protected ServletContext servletContext = mock(ServletContext.class);
     
 
     @BeforeMethod
@@ -60,6 +63,10 @@ public class ControllerTest extends Arquillian {
         session = new MockHttpSession();
 
         when(req.getSession()).thenReturn(session);
+        when(req.getServletContext()).thenReturn(servletContext);
+
+        // this is used to resolve BM by the JAXPostHandler
+        when(servletContext.getAttribute(AsamalListener.BEAN_MANAGER)).thenReturn(bm);
     }
 
     @AfterClass
