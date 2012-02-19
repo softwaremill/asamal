@@ -18,7 +18,7 @@
         <dependency>
             <artifactId>asamal</artifactId>
             <groupId>pl.softwaremill</groupId>
-            <version>${asamal-version}</version>
+            <version>1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
