@@ -67,7 +67,8 @@ public class FlashScopeFilter implements Filter {
     }
 
     private boolean isStaticCall(HttpServletRequest request) {
-        return request.getRequestURI().startsWith(request.getContextPath()+"/static");
+        return request.getRequestURI().startsWith(request.getContextPath()+"/static") ||
+                request.getRequestURI().startsWith(request.getContextPath()+"/asamal");
     }
 
     public void init(FilterConfig filterConfig) throws ServletException {
