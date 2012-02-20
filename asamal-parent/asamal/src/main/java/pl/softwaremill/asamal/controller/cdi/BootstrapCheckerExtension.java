@@ -20,8 +20,7 @@ import java.util.Set;
  */
 public class BootstrapCheckerExtension implements Extension, Serializable {
 
-    //todo put those beans somwhere else
-    public static final Set<Class> namedBeans = new HashSet<Class>();
+    private Set<Class> namedBeans = new HashSet<Class>();
 
     public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event) {
         for (Annotation annotation : event.getAnnotatedType().getAnnotations()) {
@@ -54,5 +53,9 @@ public class BootstrapCheckerExtension implements Extension, Serializable {
         }
 
         return false;
+    }
+
+    public Set<Class> getNamedBeans() {
+        return namedBeans;
     }
 }

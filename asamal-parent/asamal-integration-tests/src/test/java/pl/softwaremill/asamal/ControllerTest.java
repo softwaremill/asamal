@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeMethod;
 import pl.softwaremill.asamal.common.AsamalContextProducer;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
+import pl.softwaremill.asamal.controller.cdi.BootstrapCheckerExtension;
 import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.asamal.servlet.AsamalListener;
@@ -45,6 +46,9 @@ public class ControllerTest extends Arquillian {
 
     @Inject
     protected AsamalContextProducer asamalContextProducer;
+
+    @Inject
+    protected BootstrapCheckerExtension bootstrapCheckerExtension;
 
     protected HttpServletRequest req = mock(HttpServletRequest.class);
     protected HttpServletResponse resp = mock(HttpServletResponse.class);
@@ -85,7 +89,7 @@ public class ControllerTest extends Arquillian {
         TestResourceResolver resourceResolver = new TestResourceResolver(req);
         when(factory.create((HttpServletRequest) anyObject())).thenReturn(resourceResolver);
 
-        return new JAXPostHandler(factory);
+        return new JAXPostHandler(factory, bootstrapCheckerExtension);
     }
 
     protected void addViewHash(String viewHash, String controller, String view) {

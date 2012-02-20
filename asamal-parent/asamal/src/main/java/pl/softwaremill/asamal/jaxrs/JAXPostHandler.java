@@ -56,9 +56,13 @@ public class JAXPostHandler {
     public static final String VIEWHASH = "asamalViewHash";
     public static final String VIEWHASH_MAP = VIEWHASH + "Map";
 
+    private BootstrapCheckerExtension bootstrapCheckerExtension;
+
     @Inject
-    public JAXPostHandler(ResourceResolver.Factory resourceResolverFactory) {
+    public JAXPostHandler(ResourceResolver.Factory resourceResolverFactory,
+                          BootstrapCheckerExtension bootstrapCheckerExtension) {
         this.resourceResolverFactory = resourceResolverFactory;
+        this.bootstrapCheckerExtension = bootstrapCheckerExtension;
     }
 
     public JAXPostHandler() {
@@ -322,8 +326,8 @@ public class JAXPostHandler {
             // set the resolver
             context.put("resourceResolver", resourceResolver);
 
-            for (Class clazz : BootstrapCheckerExtension.namedBeans) {
-                String webName = ((Named) clazz.getAnnotation(Named.class)).value();
+            for (Class clazz : bootstrapCheckerExtension.getNamedBeans()) {
+                String name = ((Named) clazz.getAnnotation(Named.class)).value();
 
                 // get the qualifiers from that bean, so it gets injected no matter what
                 BeanManager bm = (BeanManager) req.getServletContext().getAttribute(AsamalListener.BEAN_MANAGER);
@@ -336,7 +340,7 @@ public class JAXPostHandler {
                     }
                 }
 
-                context.put(webName, D.inject(clazz, qualifiers.toArray(new Annotation[qualifiers.size()])));
+                context.put(name, D.inject(clazz, qualifiers.toArray(new Annotation[qualifiers.size()])));
             }
 
             for (Map.Entry<String, Object> param : controllerBean.getParams().entrySet()) {
