@@ -79,13 +79,13 @@ public class AsamalContext {
      * Gets the parameter's single (or first) value
      *
      * @param key Name of the parameter
-     * @return Value
+     * @return Value or null if it doesn't exist
      */
     public String getParameter(String key) {
         if (formValueMap == null) {
             String[] values = request.getParameterMap().get(key);
 
-            return (values.length == 0 ? null : values[0]);
+            return (values == null || values.length == 0 ? null : values[0]);
         }
         return (String) formValueMap.getFirst(key);
     }
@@ -102,17 +102,29 @@ public class AsamalContext {
      * Gets all the values of a single parameter
      *
      * @param key Name of the parameter
-     * @return List of values
+     * @return List of values, or null if no such parameter
      */
     public List<String> getParameterValues(String key) {
         if (formValueMap == null) {
-            return Arrays.asList(request.getParameterMap().get(key));
+            if (request.getParameterMap().containsKey(key)) {
+                return Arrays.asList(request.getParameterMap().get(key));
+            }
+            else {
+                return null;
+            }
         }
-        List<String> values = new ArrayList<String>();
-        for (Object obj : formValueMap.get(key)) {
-            values.add(obj.toString());
+
+        if (formValueMap.containsKey(key)) {
+            List<String> values = new ArrayList<String>();
+
+            for (Object obj : formValueMap.get(key)) {
+                values.add(obj.toString());
+            }
+
+            return values;
         }
-        return values;
+
+        return null;
     }
 
     /**
