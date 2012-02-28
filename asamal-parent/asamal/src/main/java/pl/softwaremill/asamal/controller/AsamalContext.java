@@ -89,6 +89,7 @@ public class AsamalContext {
         }
         return (String) formValueMap.getFirst(key);
     }
+
     public Object getObjectParameter(String key) {
         if (formValueMap == null) {
             String[] values = request.getParameterMap().get(key);

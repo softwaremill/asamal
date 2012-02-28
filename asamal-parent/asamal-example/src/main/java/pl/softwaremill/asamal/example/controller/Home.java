@@ -2,13 +2,13 @@ package pl.softwaremill.asamal.example.controller;
 
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
-import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
-import pl.softwaremill.asamal.example.logic.auth.LoginBean;
-import pl.softwaremill.asamal.example.model.Person;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Json;
 import pl.softwaremill.asamal.controller.annotation.Post;
+import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
+import pl.softwaremill.asamal.example.logic.auth.LoginBean;
+import pl.softwaremill.asamal.example.model.Person;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -49,7 +49,7 @@ public class Home extends ControllerBean implements Serializable {
     public void index() {
         System.out.println("Running index controller !");
 
-        setParameter("list", Arrays.asList("One", "Two", "Three"));
+        putInContext("list", Arrays.asList("One", "Two", "Three"));
 
         System.out.println("Extra path: "+Arrays.toString(getExtraPath()));
     }

@@ -40,7 +40,7 @@ public abstract class ControllerBean {
         return name;
     }
 
-    protected void setParameter(String key, Object value) {
+    protected void putInContext(String key, Object value) {
         params.put(key, value);
     }
 
