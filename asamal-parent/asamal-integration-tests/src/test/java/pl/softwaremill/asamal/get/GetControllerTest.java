@@ -7,12 +7,12 @@ import org.testng.annotations.Test;
 import pl.softwaremill.asamal.ControllerTest;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
-import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.exception.HttpErrorException;
 import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.common.util.dependency.D;
 
+import java.util.Locale;
 import java.util.Map;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -103,5 +103,39 @@ public class GetControllerTest extends ControllerTest {
 
         // then
         assertThat(output).contains("Some Value From Named Bean");
+    }
+
+    @Test
+    public void shouldUseI18nProperlyInDefault() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+        TestResourceResolver.returnHtml =
+                "<html><body>" +
+                        "$m['helo']" +
+                        "</body></html>";
+        Locale.setDefault(Locale.ENGLISH);
+
+        // when
+        String output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+
+        // then
+        assertThat(output).contains("Helo!");
+    }
+
+    @Test
+    public void shouldUseI18nProperlyInSpecificLocale() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+        TestResourceResolver.returnHtml =
+                "<html><body>" +
+                        "$m['helo']" +
+                        "</body></html>";
+        Locale.setDefault(Locale.GERMAN);
+
+        // when
+        String output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+
+        // then
+        assertThat(output).contains("Guten Morgen!");
     }
 }

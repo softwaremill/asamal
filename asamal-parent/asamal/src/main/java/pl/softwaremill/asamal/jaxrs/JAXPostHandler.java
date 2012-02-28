@@ -329,6 +329,10 @@ public class JAXPostHandler {
             // set the resolver
             context.put("resourceResolver", resourceResolver);
 
+            // set i18n messages
+            context.put("m", convertResourceBundleToMap(ResourceBundle.getBundle("messages")));
+
+
             for (Class clazz : bootstrapCheckerExtension.getNamedBeans()) {
                 String name = ((Named) clazz.getAnnotation(Named.class)).value();
 
@@ -449,5 +453,23 @@ public class JAXPostHandler {
         }
 
         return viewHashMap;
+    }
+
+    /**
+     * Convert ResourceBundle into a Map object.
+     *
+     * @param resource a resource bundle to convert.
+     * @return Map a map version of the resource bundle.
+     */
+    private Map<String, String> convertResourceBundleToMap(ResourceBundle resource) {
+        Map<String, String> map = new HashMap<String, String>();
+
+        Enumeration<String> keys = resource.getKeys();
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            map.put(key, resource.getString(key));
+        }
+
+        return map;
     }
 }
