@@ -15,4 +15,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Qualifier
 public @interface Post {
+
+    /**
+     * If this is set to true, then application won't require the viewHash to be present.
+     *
+     * This will be ignored for reRender posts.
+     */
+    boolean skipViewHash() default false;
 }

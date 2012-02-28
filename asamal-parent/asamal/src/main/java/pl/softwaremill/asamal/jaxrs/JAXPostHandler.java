@@ -209,23 +209,6 @@ public class JAXPostHandler {
                                     @PathParam("view") String view, @PathParam("path") String extraPath,
                                     MultivaluedMap<String, Object> formValues, boolean reRenderingPost)
             throws IllegalIncludeRedirectException, HttpErrorException {
-        // for all post queries, they have to include the view hash
-        List<Object> viewHashes = formValues.get(VIEWHASH);
-        if (viewHashes != null) {
-            // now check all fo them (if there's > 1, then probably user is sending a field with the same name
-            // - he might be trying to cheat the system, so we're gonna show him it's not good ;-)
-
-            Map<String, ViewDescriptor> viewHashMap = getViewHashMap(req);
-            for (Object viewHash : viewHashes) {
-                if (!viewHashMap.containsKey(viewHash)) {
-                    throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, "View hash " + viewHash +
-                            " was not found in the ViewHashMap.");
-                }
-            }
-        } else {
-            throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR,
-                    "There is no viewHash send for this post query");
-        }
 
         // create the context
         AsamalContext context = new AsamalContext(req, resp, extraPath, formValues);
@@ -233,6 +216,26 @@ public class JAXPostHandler {
 
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
+
+            if (reRenderingPost || !controllerResolver.skipViewHash(view)) {
+                // for all post queries, they have to include the view hash
+                List<Object> viewHashes = formValues.get(VIEWHASH);
+                if (viewHashes != null) {
+                    // now check all fo them (if there's > 1, then probably user is sending a field with the same name
+                    // - he might be trying to cheat the system, so we're gonna show him it's not good ;-)
+
+                    Map<String, ViewDescriptor> viewHashMap = getViewHashMap(req);
+                    for (Object viewHash : viewHashes) {
+                        if (!viewHashMap.containsKey(viewHash)) {
+                            throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, "View hash " + viewHash +
+                                    " was not found in the ViewHashMap.");
+                        }
+                    }
+                } else {
+                    throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR,
+                            "There is no viewHash send for this post query");
+                }
+            }
 
             controllerResolver.executeView(RequestType.POST, view);
 
@@ -387,7 +390,7 @@ public class JAXPostHandler {
             throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
         }
     }
-    
+
     private String enhanceOutputHtml(HttpServletRequest request, String html, String viewHash) {
         Document document = Jsoup.parse(html);
 
@@ -404,7 +407,7 @@ public class JAXPostHandler {
                 element.appendChild(formInputWithHash);
             }
         }
-        
+
         // in the head add asamal resource links
         Element head = document.select("head").get(0);
 

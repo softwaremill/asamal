@@ -30,4 +30,9 @@ public class PostTestController extends ControllerBean {
         assertThat(getParameterValues("a")).containsExactly("a");
         assertThat(getParameterValues("b")).containsExactly("b", "c");
     }
+
+    @Post(skipViewHash = true)
+    public void doPostWithoutViewHashCheck() {
+        recorder.getMethodsCalled().add("doPostWithoutViewHashCheck");
+    }
 }

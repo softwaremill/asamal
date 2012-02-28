@@ -93,6 +93,32 @@ public class PostControllerTest extends ControllerTest {
         assertThat(output).isEqualTo(null);
     }
 
+    @Test(expectedExceptions = RuntimeException.class,
+            expectedExceptionsMessageRegExp = ".*There is no viewHash send for this post query")
+    public void shouldFailWhenNoViewHash() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+        addViewHash("view-hash", "post", "doFormDataPost");
+
+        // when
+        String output = postHandler.handlePost(req, resp, "post", "doPost", null,
+                new MultivaluedMapImpl<String, String>());
+    }
+
+    @Test
+    public void shouldPassWhenNoViewHashWithViewHashSkipped() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+        addViewHash("view-hash", "post", "doPost");
+
+        // when
+        String output = postHandler.handlePost(req, resp, "post", "doPostWithoutViewHashCheck", null,
+                new MultivaluedMapImpl<String, String>());
+
+        // then
+        assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("doPostWithoutViewHashCheck");
+    }
+
     public List<InputPart> input(InputPart... part) {
         return Arrays.asList(part);
     }

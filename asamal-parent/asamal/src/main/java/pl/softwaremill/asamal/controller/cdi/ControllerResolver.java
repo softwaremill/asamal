@@ -7,6 +7,7 @@ import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.FilterStopException;
 import pl.softwaremill.asamal.controller.annotation.ControllerImpl;
 import pl.softwaremill.asamal.controller.annotation.Filters;
+import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.common.util.dependency.D;
 
 import java.lang.reflect.InvocationTargetException;
@@ -76,5 +77,9 @@ public class ControllerResolver {
 
     public ControllerBean getController() {
         return controller;
+    }
+
+    public boolean skipViewHash(String view) throws NoSuchMethodException {
+        return controller.getRealClass().getDeclaredMethod(view).getAnnotation(Post.class).skipViewHash();
     }
 }
