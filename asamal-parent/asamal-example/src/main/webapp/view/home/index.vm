@@ -1,7 +1,7 @@
 #layout('default')
 
 #region('content')
-    <h1>Welcome to home!</h1>
+    <h1>$m['welcome.home']</h1>
 
     <ul>
         #{foreach}($item in $list)
@@ -10,7 +10,7 @@
     </ul>
 
     <div id="helo">
-        <h3>Helo</h3>
+        <h3>$m['helo']</h3>
 
         <ul>
             <li>Not very
