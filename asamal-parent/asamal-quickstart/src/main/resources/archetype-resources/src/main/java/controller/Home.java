@@ -28,6 +28,6 @@ public class Home extends ControllerBean implements Serializable {
     public void index() {
         System.out.println("Running index controller !");
 
-        setParameter("list", Arrays.asList("One", "Two", "Three"));
+        putInContext("list", Arrays.asList("One", "Two", "Three"));
     }
 }
