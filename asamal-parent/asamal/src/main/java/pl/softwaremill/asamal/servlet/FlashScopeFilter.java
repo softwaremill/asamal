@@ -1,6 +1,13 @@
 package pl.softwaremill.asamal.servlet;
 
-import javax.servlet.*;
+import pl.softwaremill.asamal.controller.AsamalContext;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -53,7 +60,7 @@ public class FlashScopeFilter implements Filter {
             Enumeration e = httpRequest.getAttributeNames();
             while (e.hasMoreElements()) {
                 String paramName = (String) e.nextElement();
-                if (paramName.startsWith("flash.")) {
+                if (paramName.startsWith(AsamalContext.FLASH_PREFIX)) {
                     Object value = request.getAttribute(paramName);
                     paramName = paramName.substring(6, paramName.length());
                     flashParams.put(paramName, value);

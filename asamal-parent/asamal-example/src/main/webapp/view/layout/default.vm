@@ -1,3 +1,51 @@
+#macro(success $key)
+    #if($success[$key])
+    <div class="alert alert-success">
+        <ul>
+            #foreach($m in $success[$key])
+                <li>$m</li>
+            #end
+        </ul>
+    </div>
+    #end
+#end
+
+#macro(info $key)
+    #if($info[$key])
+    <div class="alert alert-info">
+        <ul>
+            #foreach($m in $info[$key])
+                <li>$m</li>
+            #end
+        </ul>
+    </div>
+    #end
+#end
+
+#macro(err $key)
+    #if($err[$key])
+    <div class="alert alert-error">
+        <ul>
+            #foreach($m in $err[$key])
+                <li>$m</li>
+            #end
+        </ul>
+    </div>
+    #end
+#end
+
+#macro(warn $key)
+    #if($warn[$key])
+    <div class="alert alert-block">
+        <ul>
+            #foreach($m in $warn[$key])
+                <li>$m</li>
+            #end
+        </ul>
+    </div>
+    #end
+#end
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,27 +79,22 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="#">Asamal Example App</a>
+            <a class="brand" href="#">Tickets Registration</a>
 
             <div class="nav-collapse">
                 <ul class="nav">
                     <li #if($controller.name == 'home' && $view == 'index')class="active"#end>
                         <a href="$tag.link('home', 'index')">Home</a></li>
-                    <li #if($controller.name == 'home' && $view == 'register')class="active"#end>
-                        <a href="$tag.link('home', 'register')">Register</a></li>
-                    <li #if($controller.name == 'home' && $view == 'rerender')class="active"#end>
-                        <a href="$tag.link('home', 'rerender')">ReRender</a></li>
-                    <li #if($controller.name == 'school' && $view == 'index')class="active"#end>
-                        <a href="$tag.link('school', 'index')">School</a></li>
-                    <li><a href="$tag.jsonLink('home', 'showJSON')">JSON</a></li>
+                    <li #if($controller.name == 'login' && $view == 'register')class="active"#end>
+                        <a href="$tag.link('login', 'register')">Register</a></li>
                 </ul>
 
                 <p class="navbar-text pull-right">
                     #if($login.loggedIn)
                         Logged in as $login.user.username
-                        <a href="$tag.link('home', 'logout')">Logout</a></p>
+                        <a href="$tag.link('login', 'logout')">Logout</a></p>
                     #else
-                        <a href="$tag.link('home', 'login')">Log in</a>
+                        <a href="$tag.link('login', 'login')">Log in</a>
                     #end
             </div>
             <!--/.nav-collapse -->
@@ -62,42 +105,10 @@
 <div class="container">
 
     <div id="messages">
-        #if($success)
-            <div class="alert alert-success">
-                <ul>
-                    #foreach($m in $success)
-                        <li>$m</li>
-                    #end
-                </ul>
-            </div>
-        #end
-        #if($warn)
-            <div class="alert alert-block">
-                <ul>
-                    #foreach($m in $warn)
-                        <li>$m</li>
-                    #end
-                </ul>
-            </div>
-        #end
-        #if($err)
-            <div class="alert alert-error">
-                <ul>
-                    #foreach($m in $err)
-                        <li>$m</li>
-                    #end
-                </ul>
-            </div>
-        #end
-        #if($info)
-            <div class="alert alert-info">
-                <ul>
-                    #foreach($m in $info)
-                        <li>$m</li>
-                    #end
-                </ul>
-            </div>
-        #end
+        #success('*')
+        #warn('*')
+        #err('*')
+        #info('*')
     </div>
 
     #includeRegion('content')

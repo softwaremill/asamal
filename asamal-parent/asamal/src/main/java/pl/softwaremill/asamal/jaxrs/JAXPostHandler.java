@@ -31,7 +31,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -41,7 +46,14 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.UUID;
 
 /**
  * User: szimano
@@ -245,6 +257,11 @@ public class JAXPostHandler {
             }
 
             if (context.isWillInclude()) {
+                // remove the messages from the flash, otherwise they will show up twice
+                for (AsamalContext.MessageSeverity ms : AsamalContext.MessageSeverity.values()) {
+                    req.removeAttribute(AsamalContext.FLASH_PREFIX + ms.name());
+                }
+
                 return showView(req, controllerResolver.getController(), controller, context.getIncludeView());
             } else if (reRenderingPost) {
                 // include the previous view

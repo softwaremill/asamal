@@ -1,0 +1,21 @@
+#layout('default')
+
+#region('content')
+<h1>$m['register.pleaseregister']</h1>
+
+<div class="well">
+    <form method="POST" action="$tag.formAction("login", "doRegister")" class="form-horizontal">
+        <label>$m['register.enter.email']</label>
+        <input type="text" name="user.username" value="$!controller.user.username"/>
+        #err('user.username')
+        <label>$m['register.enter.password']</label>
+        <input type="password" name="password" value=""/>
+        #err('user.password')
+        <label>$m['register.enter.password2']</label>
+        <input type="password" name="password2" value=""/>
+        <label>$m['register.submit']</label>
+        <input type="submit" value="$m['register.register']"/>
+    </form>
+
+</div>
+#end

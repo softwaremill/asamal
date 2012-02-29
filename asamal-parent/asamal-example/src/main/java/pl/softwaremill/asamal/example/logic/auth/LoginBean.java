@@ -1,10 +1,12 @@
 package pl.softwaremill.asamal.example.logic.auth;
 
+import pl.softwaremill.asamal.example.model.User;
+import pl.softwaremill.asamal.example.service.user.UserService;
+
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Bean for authenticating the user
@@ -14,13 +16,9 @@ import java.util.Map;
 @SessionScoped
 @Named("login")
 public class LoginBean implements Serializable {
-    
-    private static final Map<String, String> users = new HashMap<String, String>();
-    
-    static {
-        users.put("admin", "admin");
-        users.put("test", "test");
-    }
+
+    @Inject
+    private UserService userService;
 
     private User user;
 
@@ -29,17 +27,11 @@ public class LoginBean implements Serializable {
     }
 
     public boolean isAdmin() {
-        return user != null && "admin".equals(user.getUsername());
+        return user != null && user.isAdmin();
     }
 
-    public boolean doLogin(String login, String password) {
-        if (password == null) {
-            return false;
-        }
-        
-        if (password.equals(users.get(login))) {
-            user = new User(login, password);
-        }
+    public boolean doLogin(String username, String password) {
+        user = userService.authenticate(username, password);
         
         return isLoggedIn();
     }

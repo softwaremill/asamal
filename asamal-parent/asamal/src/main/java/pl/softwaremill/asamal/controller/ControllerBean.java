@@ -7,7 +7,15 @@ import pl.softwaremill.asamal.controller.exception.AutobindingException;
 import pl.softwaremill.asamal.controller.exception.NoSuchParameterException;
 
 import javax.inject.Inject;
-import java.util.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Base Controller bean
@@ -175,6 +183,13 @@ public abstract class ControllerBean {
     }
 
     /**
+     * Will add a message under a specific key into the flash scope
+     */
+    public void addMessageToFlash(String key, String msg, AsamalContext.MessageSeverity severity) {
+        context.addMessageToFlash(key, msg, severity);
+    }
+
+    /**
      * This will include another view once the view's method is finished
      *
      * @param view View to include
@@ -227,5 +242,19 @@ public abstract class ControllerBean {
         } else {
             return (Class<? extends ControllerBean>) getClass().getSuperclass();
         }
+    }
+    
+    public <T> boolean validateBean(String validationPrefix, T bean) {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+
+        Set<ConstraintViolation<T>> violations = validator.validate(bean);
+
+        for (ConstraintViolation<T> violation : violations) {
+            addMessageToFlash(validationPrefix + "." + violation.getPropertyPath().toString(),
+                    violation.getMessage(),
+                    AsamalContext.MessageSeverity.ERR);
+        }
+        return violations.isEmpty();
     }
 }

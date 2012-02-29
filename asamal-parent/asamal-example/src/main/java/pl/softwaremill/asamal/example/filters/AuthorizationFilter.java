@@ -1,8 +1,8 @@
 package pl.softwaremill.asamal.example.filters;
 
-import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.AsamalFilter;
+import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 
 import javax.inject.Inject;
 
@@ -28,7 +28,7 @@ public class AuthorizationFilter implements AsamalFilter {
     public void doFilter() {
         if (!loginBean.isLoggedIn()) {
             context.addObjectToFlash(PREVIOUS_URI, context.getCurrentLink());
-            context.redirect("home", "login");
+            context.redirect("login", "login");
         }
     }
 }

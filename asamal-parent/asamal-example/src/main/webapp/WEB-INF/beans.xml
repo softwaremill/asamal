@@ -4,5 +4,6 @@
     <interceptors>
         <class>pl.softwaremill.common.cdi.security.SecurityInterceptor</class>
         <class>pl.softwaremill.common.cdi.security.SecurityResultInterceptor</class>
+        <class>pl.softwaremill.common.cdi.transaction.TransactionalInterceptor</class>
     </interceptors>
 </beans>

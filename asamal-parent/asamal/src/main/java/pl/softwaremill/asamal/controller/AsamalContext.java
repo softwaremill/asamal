@@ -1,5 +1,8 @@
 package pl.softwaremill.asamal.controller;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MultivaluedMap;
@@ -15,7 +18,7 @@ import java.util.Set;
  * User: szimano
  */
 public class AsamalContext {
-    private static final String FLASH_PREFIX = "flash.";
+    public static final String FLASH_PREFIX = "flash.";
 
     private HttpServletRequest request;
     private HttpServletResponse response;
@@ -174,22 +177,7 @@ public class AsamalContext {
      * @param severity Severity
      */
     public void addMessageToFlash(String msg, MessageSeverity severity) {
-        List<String> msgsFlash = (List<String>) request.getAttribute(FLASH_PREFIX + severity.name());
-        List<String> msgsNonFlash = (List<String>) request.getAttribute(severity.name());
-
-        // remember those when doing redirect
-        if (msgsFlash == null) {
-            msgsFlash = new ArrayList<String>();
-            request.setAttribute(FLASH_PREFIX + severity.name(), msgsFlash);
-        }
-        // remember those for includes
-        if (msgsNonFlash == null) {
-            msgsNonFlash = new ArrayList<String>();
-            request.setAttribute(severity.name(), msgsNonFlash);
-        }
-
-        msgsFlash.add(msg);
-        msgsNonFlash.add(msg);
+        addMessageToFlash("*", msg, severity);
     }
 
     /**
@@ -250,6 +238,26 @@ public class AsamalContext {
             return o;
         }
         return formValueMap.get(parameterName);
+    }
+
+    public void addMessageToFlash(String key, String msg, MessageSeverity severity) {
+        Multimap<String, String> msgsFlash = (Multimap<String, String>) request.getAttribute(FLASH_PREFIX +
+                severity.name());
+        Multimap<String, String> msgsNonFlash = (Multimap<String, String>) request.getAttribute(severity.name());
+
+        // remember those when doing redirect
+        if (msgsFlash == null) {
+            msgsFlash = HashMultimap.create();
+            request.setAttribute(FLASH_PREFIX + severity.name(), msgsFlash);
+        }
+        // remember those for includes
+        if (msgsNonFlash == null) {
+            msgsNonFlash = HashMultimap.create();
+            request.setAttribute(severity.name(), msgsNonFlash);
+        }
+
+        msgsFlash.put(key, msg);
+        msgsNonFlash.put(key, msg);
     }
 
     public enum MessageSeverity {
