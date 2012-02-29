@@ -1,6 +1,7 @@
-package pl.softwaremill.asamal.example.model;
+package pl.softwaremill.asamal.example.model.security;
 
 import org.hibernate.validator.constraints.Email;
+import pl.softwaremill.asamal.example.model.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,6 +26,15 @@ public class User extends BaseEntity {
 
     @Column(name = "admin", nullable = false)
     private boolean admin = false;
+
+    public User(String username, String password, boolean admin) {
+        this.username = username;
+        this.password = password;
+        this.admin = admin;
+    }
+
+    public User() {
+    }
 
     public String getUsername() {
         return username;

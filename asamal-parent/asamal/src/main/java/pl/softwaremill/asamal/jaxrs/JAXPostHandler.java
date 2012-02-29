@@ -1,7 +1,8 @@
 package pl.softwaremill.asamal.jaxrs;
 
-import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.apache.velocity.tools.ToolContext;
+import org.apache.velocity.tools.ToolManager;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
@@ -338,7 +339,8 @@ public class JAXPostHandler {
 
             ResourceResolver resourceResolver = resourceResolverFactory.create(req);
 
-            VelocityContext context = new VelocityContext();
+            ToolManager toolManager = new ToolManager(true, true);
+            ToolContext context = toolManager.createContext();
 
             // set the viewHash
             context.put(VIEWHASH, viewHash);

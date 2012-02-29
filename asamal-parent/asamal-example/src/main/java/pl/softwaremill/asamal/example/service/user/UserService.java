@@ -1,6 +1,6 @@
 package pl.softwaremill.asamal.example.service.user;
 
-import pl.softwaremill.asamal.example.model.User;
+import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.service.hash.StringHasher;
 import pl.softwaremill.common.cdi.transaction.Transactional;
 

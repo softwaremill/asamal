@@ -67,6 +67,9 @@
         }
     </style>
     <link href="$tag.cssLink("bootstrap-responsive.css")" rel="stylesheet">
+
+    <script src="$tag.jsLink("jquery-min-1.7.1.js")"></script>
+    <script src="$tag.jsLink("jquery-ui-1.8.18.custom.min.js")"></script>
 </head>
 
 <body>
@@ -87,6 +90,10 @@
                         <a href="$tag.link('home', 'index')">Home</a></li>
                     <li #if($controller.name == 'login' && $view == 'register')class="active"#end>
                         <a href="$tag.link('login', 'register')">Register</a></li>
+                    #if($login.admin)
+                        <li #if($controller.name == 'admin' && $view == 'tickets')class="active"#end>
+                            <a href="$tag.link('admin', 'tickets')">Tickets</a></li>
+                    #end
                 </ul>
 
                 <p class="navbar-text pull-right">
@@ -123,7 +130,6 @@
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="$tag.jsLink("jquery-min-1.7.1.js")"></script>
 <script src="$tag.jsLink("bootstrap.min.js")"></script>
 
 </body>

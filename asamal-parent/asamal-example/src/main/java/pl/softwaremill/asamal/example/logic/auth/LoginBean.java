@@ -1,6 +1,6 @@
 package pl.softwaremill.asamal.example.logic.auth;
 
-import pl.softwaremill.asamal.example.model.User;
+import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.service.user.UserService;
 
 import javax.enterprise.context.SessionScoped;

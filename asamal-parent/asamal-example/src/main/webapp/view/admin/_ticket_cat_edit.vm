@@ -1,0 +1,25 @@
+<label>Name</label>
+<input type="textbox" name="ticketCat.name" value="$!ticketCat.name"/>
+<label>Description</label>
+<textarea rows="10" name="ticketCat.description">
+$!ticketCat.description
+</textarea>
+#if($ticketCat.totalCategory == false)
+    <label>From Date</label>
+    <input id="fromDate" type="textbox" name="ticketCat.fromDate"
+           value="$!date.format("yyyy-MM-dd", $ticketCat.fromDate)"/>
+    <label>To Date</label>
+    <input id="toDate" type="textbox" name="ticketCat.toDate"
+           value="$!date.format("yyyy-MM-dd", $ticketCat.toDate)"/>
+    <label>Price</label>
+    <input type="textbox" name="ticketCat.price" value="$!ticketCat.price"/>
+#end
+<label>Number of tickets</label>
+<input type="textbox" name="ticketCat.numberOfTickets" value="$!ticketCat.numberOfTickets"/>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#fromDate").datepicker({ dateFormat: "yy-mm-dd" });
+        $("#toDate").datepicker({ dateFormat: "yy-mm-dd" });
+    });
+</script>

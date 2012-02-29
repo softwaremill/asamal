@@ -1,0 +1,50 @@
+#layout('default')
+
+#region('content')
+    <h1>$m['welcome.tickets']</h1>
+
+    <div id="tickets">
+        <table class="table table-striped">
+            <tr>
+                <th>Name</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Number of tickets</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+            #foreach($ticketCategory in $tickets.ticketCategories)
+                <tr>
+                    <td>$!ticketCategory.name</td>
+                    <td>$!date.format("yyyy-MM-dd", $ticketCategory.fromDate)</td>
+                    <td>$!date.format("yyyy-MM-dd", $ticketCategory.toDate)</td>
+                    <td>$!ticketCategory.numberOfTickets</td>
+                    <td>$!ticketCategory.description</td>
+                    <td>$!ticketCategory.price PLN</td>
+                    <td>
+                        <a href="$tag.link("admin", "editTicketCat")/$ticketCategory.id">Edit</a>
+                        #if($ticketCategory.totalCategory == false)
+                            <form id="deleteCategory$ticketCategory.id">
+                                <input type="hidden" value="$ticketCategory.id" name="id">
+                            </form>
+                            <a href="#"
+                               onclick="if (confirm('Are you sure to delete $ticketCategory.name ?')) {$tag.reRender("admin", "deleteTicketCategory", "'deleteCategory$ticketCategory.id'", "'tickets'")}">
+                                Delete
+                            </a>
+                        #end
+                    </td>
+                </tr>
+            #end
+        </table>
+
+        <form class="form-horizontal" id="ticketForm">
+            #renderPartial('ticket_cat_edit')
+
+            <input type="submit"
+                   onclick="return $tag.reRender("admin", "addTicketCategory", "'ticketForm'", "'tickets'")"
+                   value="Add Ticket Category"/>
+        </form>
+    </div>
+
+#end

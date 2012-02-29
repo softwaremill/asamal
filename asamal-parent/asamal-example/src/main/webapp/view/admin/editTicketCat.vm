@@ -1,0 +1,16 @@
+#layout('default')
+
+#region('content')
+    <h1>$m['welcome.tickets']</h1>
+
+    <div id="tickets">
+        <form class="form-horizontal" id="ticketForm" method="post"
+              action="$tag.formAction("admin", "editTicketCategory")">
+
+            #renderPartial('ticket_cat_edit')
+
+            <input type="submit" value="Update Ticket Category"/>
+        </form>
+    </div>
+
+#end

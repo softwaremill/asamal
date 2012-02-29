@@ -5,7 +5,7 @@ import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
-import pl.softwaremill.asamal.example.model.User;
+import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.service.hash.StringHasher;
 import pl.softwaremill.asamal.example.service.user.UserService;
 

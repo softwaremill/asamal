@@ -1,8 +1,6 @@
 package pl.softwaremill.asamal.velocity;
 
-import org.apache.velocity.VelocityContext;
-import pl.softwaremill.asamal.controller.ContextConstants;
-import pl.softwaremill.asamal.controller.ControllerBean;
+import org.apache.velocity.context.Context;
 import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 
 import java.io.StringWriter;
@@ -15,9 +13,9 @@ import java.io.StringWriter;
 public class TagHelper {
 
     private final String contextPath;
-    private final VelocityContext velocityContext;
+    private final Context velocityContext;
 
-    public TagHelper(String contextPath, VelocityContext velocityContext) {
+    public TagHelper(String contextPath, Context velocityContext) {
         this.contextPath = contextPath;
         this.velocityContext = velocityContext;
     }
