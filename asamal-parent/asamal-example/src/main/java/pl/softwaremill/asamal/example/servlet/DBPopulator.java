@@ -5,6 +5,7 @@ import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.hash.StringHasher;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.asamal.example.service.user.UserService;
@@ -33,10 +34,14 @@ public class DBPopulator implements ServletContextListener{
         userService.createNewUser(new User("szimano@szimano.org", stringHasher.encode("szimano"), true));
 
         // create main tickets
-        ticketService.addTicketCategory(new TicketCategory(new Date(0l), null, 100, TicketCategory.ALL_CATEGORY,
-                "Total number of tickets", 0));
-        ticketService.addTicketCategory(new TicketCategory(new Date(), new Date(), 50, "Early Birds",
-                "Early Birds", 300));
+        try {
+            ticketService.addTicketCategory(new TicketCategory(new Date(0l), null, 100, TicketCategory.ALL_CATEGORY,
+                    "Total number of tickets", 0));
+            ticketService.addTicketCategory(new TicketCategory(new Date(), new Date(), 50, "Early Birds",
+                    "Early Birds", 300));
+        } catch (TicketsExceededException e) {
+            throw new RuntimeException(e);
+        }
 
         // set converter
         DateTimeConverter dtConverter = new DateConverter();

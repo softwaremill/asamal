@@ -19,6 +19,7 @@ import pl.softwaremill.asamal.controller.cdi.ControllerResolver;
 import pl.softwaremill.asamal.controller.cdi.RequestType;
 import pl.softwaremill.asamal.exception.HttpErrorException;
 import pl.softwaremill.asamal.exception.IllegalIncludeRedirectException;
+import pl.softwaremill.asamal.i18n.Messages;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.asamal.servlet.AsamalListener;
 import pl.softwaremill.asamal.velocity.LayoutDirective;
@@ -49,11 +50,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.UUID;
 
 /**
@@ -349,7 +348,7 @@ public class JAXPostHandler {
             context.put("resourceResolver", resourceResolver);
 
             // set i18n messages
-            context.put("m", convertResourceBundleToMap(ResourceBundle.getBundle("messages")));
+            context.put("m", new Messages());
 
 
             for (Class clazz : bootstrapCheckerExtension.getNamedBeans()) {
@@ -472,23 +471,5 @@ public class JAXPostHandler {
         }
 
         return viewHashMap;
-    }
-
-    /**
-     * Convert ResourceBundle into a Map object.
-     *
-     * @param resource a resource bundle to convert.
-     * @return Map a map version of the resource bundle.
-     */
-    private Map<String, String> convertResourceBundleToMap(ResourceBundle resource) {
-        Map<String, String> map = new HashMap<String, String>();
-
-        Enumeration<String> keys = resource.getKeys();
-        while (keys.hasMoreElements()) {
-            String key = keys.nextElement();
-            map.put(key, resource.getString(key));
-        }
-
-        return map;
     }
 }

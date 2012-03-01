@@ -5,6 +5,7 @@ import org.apache.commons.beanutils.PropertyUtils;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.exception.AutobindingException;
 import pl.softwaremill.asamal.controller.exception.NoSuchParameterException;
+import pl.softwaremill.asamal.i18n.Messages;
 
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
@@ -15,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
@@ -30,8 +32,13 @@ public abstract class ControllerBean {
 
     private String name;
 
+    private ResourceBundle resourceBundle = ResourceBundle.getBundle("messages");
+
     @Inject
     protected AsamalContext context;
+
+    @Inject
+    private Messages messages;
 
     protected ControllerBean() {
     }
@@ -256,5 +263,9 @@ public abstract class ControllerBean {
                     AsamalContext.MessageSeverity.ERR);
         }
         return violations.isEmpty();
+    }
+    
+    public String getFromMessageBundle(String key, Object... params) {
+        return messages.getFromBundle(key, params);
     }
 }

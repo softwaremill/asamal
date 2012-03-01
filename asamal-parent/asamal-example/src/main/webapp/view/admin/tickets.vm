@@ -42,7 +42,7 @@
             #renderPartial('ticket_cat_edit')
 
             <input type="submit"
-                   onclick="return $tag.reRender("admin", "addTicketCategory", "'ticketForm'", "'tickets'")"
+                   onclick="return $tag.reRender("admin", "addTicketCategory", "'ticketForm'", "['tickets', 'messages']")"
                    value="Add Ticket Category"/>
         </form>
     </div>

@@ -1,8 +1,11 @@
 package pl.softwaremill.asamal.example.service.ticket;
 
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
+import pl.softwaremill.asamal.i18n.Messages;
 import pl.softwaremill.common.cdi.transaction.Transactional;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,6 +16,9 @@ public class TicketService {
 
     @PersistenceContext
     private EntityManager entityManager;
+    
+    @Inject
+    private Messages messages;
 
     @Transactional
     public List<TicketCategory> getTicketCategories() {
@@ -20,7 +26,23 @@ public class TicketService {
     }
 
     @Transactional
-    public void addTicketCategory(TicketCategory ticketCategory) {
+    public void addTicketCategory(TicketCategory ticketCategory) throws TicketsExceededException{
+        // check first if it won't be too much, once we add it
+        if (!ticketCategory.getName().equals(TicketCategory.ALL_CATEGORY)) {
+            Long maxAllowed = getAllTicketCategory().getNumberOfTickets().longValue();
+
+            Long allocatedTickets = countAllocatedTickets();
+
+            if (allocatedTickets == null)
+                allocatedTickets = 0l;
+
+            long totalNewNumber = allocatedTickets + ticketCategory.getNumberOfTickets();
+
+            if (maxAllowed < totalNewNumber) {
+                throw new TicketsExceededException(messages.getFromBundle("tickets.number.exceeded",
+                        maxAllowed - allocatedTickets));
+            }
+        }
         entityManager.persist(ticketCategory);
     }
 
@@ -49,5 +71,13 @@ public class TicketService {
             throw new RuntimeException("You cannot delete ALL category !");
         }
         entityManager.remove(category);
+    }
+
+    @Transactional
+    public Long countAllocatedTickets() {
+        return (Long) entityManager.createQuery(
+                "select sum(t.numberOfTickets) from TicketCategory t where t.name != :all")
+                .setParameter("all", TicketCategory.ALL_CATEGORY)
+                .getSingleResult();
     }
 }

@@ -6,6 +6,7 @@ import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.cdi.security.Secure;
 
@@ -47,9 +48,13 @@ public class Admin extends ControllerBean{
         doAutoBinding("ticketCat.name", "ticketCat.description", "ticketCat.fromDate", "ticketCat.toDate",
                 "ticketCat.numberOfTickets", "ticketCat.price");
 
-        ticketService.addTicketCategory(ticketCat);
+        try {
+            ticketService.addTicketCategory(ticketCat);
 
-        addMessageToFlash("Ticket Category added succesfuly", AsamalContext.MessageSeverity.SUCCESS);
+            addMessageToFlash("Ticket Category added succesfuly", AsamalContext.MessageSeverity.SUCCESS);
+        } catch (TicketsExceededException e) {
+            addMessageToFlash(e.getMessage(), AsamalContext.MessageSeverity.ERR);
+        }
     }
 
     @Post
