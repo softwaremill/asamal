@@ -3,7 +3,7 @@
 #region('content')
     <h1>$m['tickets.welcome']</h1>
 
-    <div id="ticket-buy-form" class="well">
+    <div id="tickets" class="well">
         <h2>$m['tickets.details.invoice']</h2>
         <form class="form-horizontal" action="$tag.formAction('tickets', 'doBuy')" method="post">
             <label>$m['tickets.buy.name']</label>
@@ -26,15 +26,24 @@
                 #end
             </select>
             <h3>$m['tickets.buy']</h3>
-            #foreach($ticketCat in $controller.availableCategories)
-                $ticketCat.name
-                <select>
-                    <option label="-" value="0"/>
-                    #foreach( $i in [1..$controller.getMaxTickets($ticketCat)] )
-                    <option label="$i" value="$i"/>
+            <div id="tickets-form">
+                #foreach($ticketCat in $c.availableCategories)
+                    $ticketCat.name
+                    <select id="numberOfTickets-$ticketCat.idName"
+                            onchange="$tag.reRender("tickets", "changeNumber", "'numberOfTickets-$ticketCat.idName'", "'tickets-form'")"
+                            name="numberOfTickets-$ticketCat.idName">
+                        <option label="-" value="0"/>
+                        #foreach( $i in [1..$c.getMaxTickets($ticketCat)] )
+                        <option label="$i" value="$i" #if($i == $ticketsToBuy[$ticketCat.idName])selected #end/>
+                        #end
+                    </select>
+                    #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])
+                        <h4>Attendee $i</h4>
+
+                        #renderPartial('attendee')
                     #end
-                </select>
-            #end
+                #end
+            </div>
         </form>
     </div>
 #end

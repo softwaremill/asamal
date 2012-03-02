@@ -87,16 +87,16 @@
 
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li #if($controller.name == 'home' && $view == 'index')class="active"#end>
+                    <li #if($c.name == 'home' && $view == 'index')class="active"#end>
                         <a href="$tag.link('home', 'index')">Home</a></li>
-                    <li #if($controller.name == 'tickets' && $view == 'buy')class="active"#end>
+                    <li #if($c.name == 'tickets' && $view == 'buy')class="active"#end>
                         <a href="$tag.link('tickets', 'buy')">Buy Tickets</a></li>
                     #if($login.loggedIn == false)
-                        <li #if($controller.name == 'login' && $view == 'register')class="active"#end>
+                        <li #if($c.name == 'login' && $view == 'register')class="active"#end>
                             <a href="$tag.link('login', 'register')">Register</a></li>
                     #end
                     #if($login.admin)
-                        <li #if($controller.name == 'admin' && $view == 'tickets')class="active"#end>
+                        <li #if($c.name == 'admin' && $view == 'tickets')class="active"#end>
                             <a href="$tag.link('admin', 'tickets')">Tickets</a></li>
                     #end
                 </ul>

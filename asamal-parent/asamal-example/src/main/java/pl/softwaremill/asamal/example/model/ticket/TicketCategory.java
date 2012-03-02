@@ -8,6 +8,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Set;
 
@@ -114,5 +116,16 @@ public class TicketCategory extends BaseEntity {
 
     public void setTickets(Set<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    /**
+     * ID friendly transformed name (no spaces, urlencoded)
+     */
+    public String getIdName() {
+        try {
+            return URLEncoder.encode(name.replaceAll(" ", ""), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
