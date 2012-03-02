@@ -8,6 +8,7 @@ import pl.softwaremill.asamal.ControllerTest;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
 import pl.softwaremill.asamal.exception.HttpErrorException;
+import pl.softwaremill.asamal.i18n.Messages;
 import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.common.util.dependency.D;
@@ -29,6 +30,7 @@ public class GetControllerTest extends ControllerTest {
                 .addClass(ResourceResolver.Factory.class)
                 .addClass(ResourceResolver.class)
                 .addClass(TestNamedBean.class)
+                .addClass(Messages.class)
                 .addPackage(TestResourceResolver.class.getPackage());
     }
 

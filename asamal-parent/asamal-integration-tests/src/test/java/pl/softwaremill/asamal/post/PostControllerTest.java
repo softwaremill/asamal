@@ -12,6 +12,7 @@ import pl.softwaremill.asamal.ControllerTest;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
 import pl.softwaremill.asamal.exception.HttpErrorException;
+import pl.softwaremill.asamal.i18n.Messages;
 import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.common.util.dependency.D;
@@ -20,7 +21,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -37,6 +42,7 @@ public class PostControllerTest extends ControllerTest {
                 .addClass(PostTestController.class)
                 .addClass(ResourceResolver.Factory.class)
                 .addClass(ResourceResolver.class)
+                .addClass(Messages.class)
                 .addPackage(TestResourceResolver.class.getPackage());
     }
 
