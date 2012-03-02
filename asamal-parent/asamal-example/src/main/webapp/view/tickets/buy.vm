@@ -1,0 +1,40 @@
+#layout('default')
+
+#region('content')
+    <h1>$m['tickets.welcome']</h1>
+
+    <div id="ticket-buy-form" class="well">
+        <h2>$m['tickets.details.invoice']</h2>
+        <form class="form-horizontal" action="$tag.formAction('tickets', 'doBuy')" method="post">
+            <label>$m['tickets.buy.name']</label>
+            <input type="text"/>
+            <label>$m['tickets.buy.company']</label>
+            <input type="text"/>
+            <label>$m['tickets.buy.vat']</label>
+            <input type="text"/>
+            <label>$m['tickets.buy.address']</label>
+            <input type="text"/>
+            <label>$m['tickets.buy.postal']</label>
+            <input type="text"/>
+            <label>$m['tickets.buy.city']</label>
+            <input type="text"/>
+            <label>$m['tickets.buy.country']</label>
+            <select>
+                <option label="-" value=""/>
+                #foreach($country in $countries.countries)
+                    <option label="$country.name" value="$country.name"/>
+                #end
+            </select>
+            <h3>$m['tickets.buy']</h3>
+            #foreach($ticketCat in $controller.availableCategories)
+                $ticketCat.name
+                <select>
+                    <option label="-" value="0"/>
+                    #foreach( $i in [1..$controller.getMaxTickets($ticketCat)] )
+                    <option label="$i" value="$i"/>
+                    #end
+                </select>
+            #end
+        </form>
+    </div>
+#end

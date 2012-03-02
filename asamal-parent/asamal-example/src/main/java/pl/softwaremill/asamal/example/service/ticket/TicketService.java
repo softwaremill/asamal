@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 import java.util.List;
 
 @Named("tickets")
@@ -79,5 +80,29 @@ public class TicketService {
                 "select sum(t.numberOfTickets) from TicketCategory t where t.name != :all")
                 .setParameter("all", TicketCategory.ALL_CATEGORY)
                 .getSingleResult();
+    }
+    
+    @Transactional
+    public List<TicketCategory> getAvailableCategories() {
+        return entityManager.createQuery(
+                "select t from TicketCategory t where t.name != :all and :now between t.fromDate and t.toDate")
+                .setParameter("now", new Date())
+                .setParameter("all", TicketCategory.ALL_CATEGORY)
+                .getResultList();
+    }
+
+    @Transactional
+    public TicketCategory getTicketCategory(String name) {
+        return (TicketCategory) entityManager.createQuery("select t from TicketCategory t where t.name = :name")
+                .setParameter("name", name)
+                .getSingleResult();
+    }
+    
+    @Transactional
+    public Integer getSoldTicketsInCategory(TicketCategory ticketCategory) {
+        return ((Long) entityManager.createQuery(
+                "select count(t) from Ticket t where t.ticketCategory = :ticketCategory")
+                .setParameter("ticketCategory", ticketCategory)
+                .getSingleResult()).intValue();
     }
 }

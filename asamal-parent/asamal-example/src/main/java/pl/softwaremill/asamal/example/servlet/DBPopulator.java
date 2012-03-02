@@ -37,7 +37,9 @@ public class DBPopulator implements ServletContextListener{
         try {
             ticketService.addTicketCategory(new TicketCategory(new Date(0l), null, 100, TicketCategory.ALL_CATEGORY,
                     "Total number of tickets", 0));
-            ticketService.addTicketCategory(new TicketCategory(new Date(), new Date(), 50, "Early Birds",
+            ticketService.addTicketCategory(
+                    new TicketCategory(new Date(),
+                            new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), 50, "Early Birds",
                     "Early Birds", 300));
         } catch (TicketsExceededException e) {
             throw new RuntimeException(e);

@@ -4,10 +4,12 @@ import pl.softwaremill.asamal.example.model.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Stores different ticket categories with the numbers
@@ -37,6 +39,9 @@ public class TicketCategory extends BaseEntity {
     
     @Column(name = "price", nullable = false)
     private Integer price;
+    
+    @OneToMany(mappedBy = "ticketCategory")
+    private Set<Ticket> tickets;
 
     public TicketCategory(Date fromDate, Date toDate, Integer numberOfTickets, String name, String description,
                           Integer price) {
@@ -103,32 +108,11 @@ public class TicketCategory extends BaseEntity {
         this.price = price;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof TicketCategory)) return false;
-
-        TicketCategory that = (TicketCategory) o;
-
-        if (description != null ? !description.equals(that.description) : that.description != null) return false;
-        if (fromDate != null ? !fromDate.equals(that.fromDate) : that.fromDate != null) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (numberOfTickets != null ? !numberOfTickets.equals(that.numberOfTickets) : that.numberOfTickets != null)
-            return false;
-        if (price != null ? !price.equals(that.price) : that.price != null) return false;
-        if (toDate != null ? !toDate.equals(that.toDate) : that.toDate != null) return false;
-
-        return true;
+    public Set<Ticket> getTickets() {
+        return tickets;
     }
 
-    @Override
-    public int hashCode() {
-        int result = fromDate != null ? fromDate.hashCode() : 0;
-        result = 31 * result + (toDate != null ? toDate.hashCode() : 0);
-        result = 31 * result + (numberOfTickets != null ? numberOfTickets.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (price != null ? price.hashCode() : 0);
-        return result;
+    public void setTickets(Set<Ticket> tickets) {
+        this.tickets = tickets;
     }
 }
