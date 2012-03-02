@@ -345,10 +345,10 @@ public class JAXPostHandler {
             context.put(VIEWHASH, viewHash);
 
             // set the resolver
-            context.put("resourceResolver", resourceResolver);
+            context.put(ContextConstants.RESOURCE_RESOLVER, resourceResolver);
 
             // set i18n messages
-            context.put("m", new Messages());
+            context.put(ContextConstants.MESSAGES, new Messages());
 
 
             for (Class clazz : bootstrapCheckerExtension.getNamedBeans()) {

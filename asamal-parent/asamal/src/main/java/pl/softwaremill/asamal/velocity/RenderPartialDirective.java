@@ -5,6 +5,7 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.parser.node.Node;
+import pl.softwaremill.asamal.controller.ContextConstants;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 
@@ -45,6 +46,6 @@ public class RenderPartialDirective extends AbstractVelocityEvaluator {
         }
 
         return ((ResourceResolver) context.get("resourceResolver")).resolvePartial(
-                ((ControllerBean) context.get("controller")).getName(), partialName);
+                ((ControllerBean) context.get(ContextConstants.CONTROLLER)).getName(), partialName);
     }
 }
