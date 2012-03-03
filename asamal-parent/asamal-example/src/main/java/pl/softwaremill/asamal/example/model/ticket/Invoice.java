@@ -33,11 +33,14 @@ public class Invoice extends BaseEntity{
     @Column(name = "city")
     private String city;
 
+    @Column(name = "country")
+    private String country;
+    
     public Invoice() {
     }
 
     public Invoice(Set<Ticket> tickets, String name, String companyName, String vat, String address,
-                   String postalCode, String city) {
+                   String postalCode, String city, String country) {
         this.tickets = tickets;
         this.name = name;
         this.companyName = companyName;
@@ -45,6 +48,7 @@ public class Invoice extends BaseEntity{
         this.address = address;
         this.postalCode = postalCode;
         this.city = city;
+        this.country = country;
     }
 
     public Set<Ticket> getTickets() {
@@ -101,5 +105,13 @@ public class Invoice extends BaseEntity{
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

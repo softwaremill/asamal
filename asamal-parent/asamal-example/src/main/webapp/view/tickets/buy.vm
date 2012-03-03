@@ -5,21 +5,21 @@
 
     <div id="tickets" class="well">
         <h2>$m['tickets.details.invoice']</h2>
-        <form class="form-horizontal" action="$tag.formAction('tickets', 'doBuy')" method="post">
+        <form class="form-horizontal" action="$tag.formAction('tickets', 'doBuy')" method="post" id="ticketForm">
             <label>$m['tickets.buy.name']</label>
-            <input type="text"/>
+            <input type="text" name="invoice.name"/>
             <label>$m['tickets.buy.company']</label>
-            <input type="text"/>
+            <input type="text" name="invoice.companyName"/>
             <label>$m['tickets.buy.vat']</label>
-            <input type="text"/>
+            <input type="text" name="invoice.vat"/>
             <label>$m['tickets.buy.address']</label>
-            <input type="text"/>
+            <input type="text" name="invoice.address"/>
             <label>$m['tickets.buy.postal']</label>
-            <input type="text"/>
+            <input type="text" name="invoice.postalCode"/>
             <label>$m['tickets.buy.city']</label>
-            <input type="text"/>
+            <input type="text" name="invoice.city"/>
             <label>$m['tickets.buy.country']</label>
-            <select>
+            <select name="invoice.country">
                 <option label="-" value=""/>
                 #foreach($country in $countries.countries)
                     <option label="$country.name" value="$country.name"/>
@@ -27,21 +27,26 @@
             </select>
             <h3>$m['tickets.buy']</h3>
             <div id="tickets-form">
+                #set($catNo = 0)
+
                 #foreach($ticketCat in $c.availableCategories)
                     $ticketCat.name
                     <select id="numberOfTickets-$ticketCat.idName"
-                            onchange="$tag.reRender("tickets", "changeNumber", "'numberOfTickets-$ticketCat.idName'", "'tickets-form'")"
+                            onchange="$tag.reRender("tickets", "changeNumber", "'ticketForm'", "'tickets-form'")"
                             name="numberOfTickets-$ticketCat.idName">
                         <option label="-" value="0"/>
                         #foreach( $i in [1..$c.getMaxTickets($ticketCat)] )
                         <option label="$i" value="$i" #if($i == $ticketsToBuy[$ticketCat.idName])selected #end/>
                         #end
                     </select>
+
                     #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])
                         <h4>Attendee $i</h4>
 
                         #renderPartial('attendee')
                     #end
+
+                    #set($catNo = $catNo + 1)
                 #end
             </div>
         </form>

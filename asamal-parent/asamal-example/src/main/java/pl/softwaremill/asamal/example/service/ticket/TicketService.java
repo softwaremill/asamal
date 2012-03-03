@@ -85,7 +85,7 @@ public class TicketService {
     @Transactional
     public List<TicketCategory> getAvailableCategories() {
         return entityManager.createQuery(
-                "select t from TicketCategory t where t.name != :all and :now between t.fromDate and t.toDate")
+                "select t from TicketCategory t where t.name != :all and :now between t.fromDate and t.toDate order by t.name")
                 .setParameter("now", new Date())
                 .setParameter("all", TicketCategory.ALL_CATEGORY)
                 .getResultList();
