@@ -1,8 +1,11 @@
 package pl.softwaremill.asamal.controller.testcontrollers;
 
+import org.junit.Ignore;
+
 /**
  * User: szimano
  */
+@Ignore
 public class TestPojo {
     private String test;
 
