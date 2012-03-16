@@ -2,11 +2,14 @@ package pl.softwaremill.asamal.example.model.security;
 
 import org.hibernate.validator.constraints.Email;
 import pl.softwaremill.asamal.example.model.BaseEntity;
+import pl.softwaremill.asamal.example.model.ticket.Invoice;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 /**
  * Entity for storing all system users
@@ -26,6 +29,9 @@ public class User extends BaseEntity {
 
     @Column(name = "admin", nullable = false)
     private boolean admin = false;
+
+    @OneToMany(mappedBy = "user")
+    private Set<Invoice> invoices;
 
     public User(String username, String password, boolean admin) {
         this.username = username;

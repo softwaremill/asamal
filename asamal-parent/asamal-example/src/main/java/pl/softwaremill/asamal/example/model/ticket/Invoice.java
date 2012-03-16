@@ -1,9 +1,15 @@
 package pl.softwaremill.asamal.example.model.ticket;
 
 import pl.softwaremill.asamal.example.model.BaseEntity;
+import pl.softwaremill.asamal.example.model.security.User;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Set;
@@ -12,7 +18,7 @@ import java.util.Set;
 @Table(name = "INVOICE")
 public class Invoice extends BaseEntity{
 
-    @OneToMany(mappedBy = "invoice")
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private Set<Ticket> tickets;
 
     @Column(name = "name")
@@ -35,12 +41,20 @@ public class Invoice extends BaseEntity{
 
     @Column(name = "country")
     private String country;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "satus")
+    private InvoiceStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
     
     public Invoice() {
     }
 
     public Invoice(Set<Ticket> tickets, String name, String companyName, String vat, String address,
-                   String postalCode, String city, String country) {
+                   String postalCode, String city, String country, InvoiceStatus status, User user) {
         this.tickets = tickets;
         this.name = name;
         this.companyName = companyName;
@@ -49,6 +63,8 @@ public class Invoice extends BaseEntity{
         this.postalCode = postalCode;
         this.city = city;
         this.country = country;
+        this.status = status;
+        this.user = user;
     }
 
     public Set<Ticket> getTickets() {
@@ -113,5 +129,21 @@ public class Invoice extends BaseEntity{
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public InvoiceStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(InvoiceStatus status) {
+        this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

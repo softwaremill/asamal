@@ -2,18 +2,20 @@ package pl.softwaremill.asamal.example.model.ticket;
 
 import pl.softwaremill.asamal.example.model.BaseEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Set;
 
 @Entity
 @Table(name = "TICKET")
 public class Ticket extends BaseEntity{
 
-    @OneToMany(mappedBy = "ticket")
-    private Set<Attendee> attendees;
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
 
     @ManyToOne
     private Invoice invoice;
@@ -21,12 +23,13 @@ public class Ticket extends BaseEntity{
     @ManyToOne
     private TicketCategory ticketCategory;
 
-    public Set<Attendee> getAttendees() {
-        return attendees;
+    public Ticket() {
     }
 
-    public void setAttendees(Set<Attendee> attendees) {
-        this.attendees = attendees;
+    public Ticket(String firstName, String lastName, TicketCategory ticketCategory) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.ticketCategory = ticketCategory;
     }
 
     public Invoice getInvoice() {
@@ -35,5 +38,29 @@ public class Ticket extends BaseEntity{
 
     public void setInvoice(Invoice invoice) {
         this.invoice = invoice;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public TicketCategory getTicketCategory() {
+        return ticketCategory;
+    }
+
+    public void setTicketCategory(TicketCategory ticketCategory) {
+        this.ticketCategory = ticketCategory;
     }
 }

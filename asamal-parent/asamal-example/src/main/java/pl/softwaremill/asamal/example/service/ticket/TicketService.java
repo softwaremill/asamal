@@ -1,5 +1,6 @@
 package pl.softwaremill.asamal.example.service.ticket;
 
+import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.i18n.Messages;
@@ -104,5 +105,10 @@ public class TicketService {
                 "select count(t) from Ticket t where t.ticketCategory = :ticketCategory")
                 .setParameter("ticketCategory", ticketCategory)
                 .getSingleResult()).intValue();
+    }
+
+    @Transactional
+    public void addInvoice(Invoice invoice) {
+        entityManager.persist(invoice);
     }
 }

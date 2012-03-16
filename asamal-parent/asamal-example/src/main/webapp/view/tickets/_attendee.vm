@@ -2,13 +2,15 @@
     #set($ticketNo = $i - 1)
 
     <label>Name</label>
-    <input type="text" name="attendeesByCategory[$catNo][$ticketNo].firstName"
-            value="$!c.attendeesByCategory[$catNo][$ticketNo].firstName"/>
+    <input type="text" name="ticketsByCategory[$catNo][$ticketNo].firstName"
+            value="$!c.ticketsByCategory[$catNo][$ticketNo].firstName"/>
+    #err("attendeesByCategory[$catNo][$ticketNo].lastName")
     <label>Last Name</label>
-    <input type="text" name="attendeesByCategory[$catNo][$ticketNo].lastName"
-           value="$!c.attendeesByCategory[$catNo][$ticketNo].lastName"/>
-    <label>Occupation</label>
-    <input type="text"/>
-    <label>Sex</label>
-    <input type="text"/>
+    <input type="text" name="ticketsByCategory[$catNo][$ticketNo].lastName"
+           value="$!c.ticketsByCategory[$catNo][$ticketNo].lastName"/>
+    #err("attendeesByCategory[$catNo][$ticketNo].lastName")
+##    <label>Occupation</label>
+##    <input type="text"/>
+##    <label>Sex</label>
+##    <input type="text"/>
 </div>

@@ -15,24 +15,34 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sml.common.version>63</sml.common.version>
         <slf4j.version>1.5.10</slf4j.version>
+        <arquillian.version>1.0.0.CR7</arquillian.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
 
+        <!-- Google: Guava & Gson -->
         <dependency>
-            <groupId>pl.softwaremill.common</groupId>
-            <artifactId>softwaremill-test-arquillian</artifactId>
-            <version>${sml.common.version}</version>
-            <scope>test</scope>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>11.0</version>
         </dependency>
-
         <dependency>
-            <groupId>org.easytesting</groupId>
-            <artifactId>fest-assert</artifactId>
-            <version>1.4</version>
-            <scope>test</scope>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>1.5</version>
         </dependency>
-
 
         <!-- logging -->
         <dependency>
@@ -45,6 +55,82 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- testing -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.core</groupId>
+            <artifactId>arquillian-core-spi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.test</groupId>
+            <artifactId>arquillian-test-spi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-container-test-spi</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-api</artifactId>
+            <version>1.1.Final</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core</artifactId>
+            <version>1.1.1.Final</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- full JEE spec -->
+        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-6.0</artifactId>
+            <type>pom</type>
+            <scope>provided</scope>
+            <version>1.0.0.Final</version>
         </dependency>
 
     </dependencies>

@@ -1,6 +1,6 @@
 package pl.softwaremill.asamal.post;
 
-import org.jboss.arquillian.api.Deployment;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;

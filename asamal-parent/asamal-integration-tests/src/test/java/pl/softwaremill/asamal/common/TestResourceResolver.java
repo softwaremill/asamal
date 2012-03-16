@@ -1,10 +1,10 @@
 package pl.softwaremill.asamal.common;
 
-import org.apache.tools.ant.filters.StringInputStream;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.common.cdi.autofactory.CreatedWith;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -36,6 +36,6 @@ public class TestResourceResolver implements ResourceResolver {
     }
 
     public InputStream resolveFile(String path) {
-        return new StringInputStream(path);
+        return new ByteArrayInputStream(path.getBytes());
     }
 }

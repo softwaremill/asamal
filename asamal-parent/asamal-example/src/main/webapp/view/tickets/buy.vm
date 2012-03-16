@@ -8,16 +8,22 @@
         <form class="form-horizontal" action="$tag.formAction('tickets', 'doBuy')" method="post" id="ticketForm">
             <label>$m['tickets.buy.name']</label>
             <input type="text" name="invoice.name"/>
+            #err('invoice.name')
             <label>$m['tickets.buy.company']</label>
             <input type="text" name="invoice.companyName"/>
+            #err('invoice.companyName')
             <label>$m['tickets.buy.vat']</label>
             <input type="text" name="invoice.vat"/>
+            #err('invoice.vat')
             <label>$m['tickets.buy.address']</label>
             <input type="text" name="invoice.address"/>
+            #err('invoice.address')
             <label>$m['tickets.buy.postal']</label>
             <input type="text" name="invoice.postalCode"/>
+            #err('invoice.postalCode')
             <label>$m['tickets.buy.city']</label>
             <input type="text" name="invoice.city"/>
+            #err('invoice.city')
             <label>$m['tickets.buy.country']</label>
             <select name="invoice.country">
                 <option label="-" value=""/>
@@ -25,6 +31,7 @@
                     <option label="$country.name" value="$country.name"/>
                 #end
             </select>
+            #err('invoice.country')
             <h3>$m['tickets.buy']</h3>
             <div id="tickets-form">
                 #set($catNo = 0)
@@ -49,6 +56,7 @@
                     #set($catNo = $catNo + 1)
                 #end
             </div>
+            <input type="submit" value="$m['tickets.buy.submit']"/>
         </form>
     </div>
 #end

@@ -1,6 +1,6 @@
 package pl.softwaremill.asamal;
 
-import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockHttpSession;
+import org.apache.struts.mock.MockHttpSession;
 import org.jboss.arquillian.testng.Arquillian;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -22,12 +22,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

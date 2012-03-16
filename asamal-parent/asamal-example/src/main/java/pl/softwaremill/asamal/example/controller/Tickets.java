@@ -1,13 +1,15 @@
 package pl.softwaremill.asamal.example.controller;
 
+import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
-import pl.softwaremill.asamal.example.model.ticket.Attendee;
+import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -36,10 +38,12 @@ public class Tickets extends ControllerBean implements Serializable {
     
     private Invoice invoice = new Invoice();
     
-    private List<Ticket> tickets;
     private List<TicketCategory> availableCategories;
 
-    private Attendee[][] attendeesByCategory;
+    private Ticket[][] ticketsByCategory;
+
+    @Inject
+    private LoginBean loginBean;
     
     @Get
     public void buy() {
@@ -60,21 +64,48 @@ public class Tickets extends ControllerBean implements Serializable {
         putInContext("ticketsToBuy", toBuy);
     }
 
+    @Post
+    public void doBuy() {
+        bindTickets();
+
+        boolean allGood = validateBean("invoice", invoice);
+
+        invoice.setStatus(InvoiceStatus.UNPAID);
+        invoice.setUser(loginBean.getUser());
+
+        for (int i = 0; i < ticketsByCategory.length; i++) {
+            for (int j = 0; j < ticketsByCategory[i].length; j++) {
+                if (!validateBean("attendeesByCategory["+i+"]["+j+"]", ticketsByCategory[i][j])) {
+                    allGood = false;
+                }
+            }
+        }
+
+        if (!allGood) {
+            addMessageToFlash(getFromMessageBundle("tickets.validation.errors"), AsamalContext.MessageSeverity.ERR);
+
+            includeView("buy");
+        }
+        else {
+            ticketService.addInvoice(invoice);
+        }
+    }
+
     private void bindTickets() {
         // initiate first
 
-        attendeesByCategory = new Attendee[getAvailableCategories().size()][];
+        ticketsByCategory = new Ticket[getAvailableCategories().size()][];
         ArrayList<String> paramNames = new ArrayList<String>();
 
         for (int i = 0; i < getAvailableCategories().size(); i++) {
             int numberOfAttendees = Integer.parseInt(
                     getParameter(NUMBER_OF_TICKETS_PREFIX + getAvailableCategories().get(i).getIdName())
             );
-            attendeesByCategory[i] = new Attendee[numberOfAttendees];
+            ticketsByCategory[i] = new Ticket[numberOfAttendees];
             for (int j = 0; j < numberOfAttendees; j++) {
-                attendeesByCategory[i][j] = new Attendee();
+                ticketsByCategory[i][j] = new Ticket();
                 
-                String attendeePrefix = "attendeesByCategory["+i+"]["+j+"]";
+                String attendeePrefix = "ticketsByCategory["+i+"]["+j+"]";
                 paramNames.add(attendeePrefix+".firstName");
                 paramNames.add(attendeePrefix+".lastName");
             }
@@ -103,12 +134,12 @@ public class Tickets extends ControllerBean implements Serializable {
         return (ticketsLeft > maxTickets) ? maxTickets : ticketsLeft;
     }
 
-    public Attendee[][] getAttendeesByCategory() {
-        return attendeesByCategory;
+    public Ticket[][] getTicketsByCategory() {
+        return ticketsByCategory;
     }
 
-    public void setAttendeesByCategory(Attendee[][] attendeesByCategory) {
-        this.attendeesByCategory = attendeesByCategory;
+    public void setTicketsByCategory(Ticket[][] ticketsByCategory) {
+        this.ticketsByCategory = ticketsByCategory;
     }
 
     public Invoice getInvoice() {
