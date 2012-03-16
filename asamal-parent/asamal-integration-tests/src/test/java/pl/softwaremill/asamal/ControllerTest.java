@@ -1,10 +1,8 @@
 package pl.softwaremill.asamal;
 
 import org.apache.struts.mock.MockHttpSession;
-import org.jboss.arquillian.testng.Arquillian;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.junit.After;
+import org.junit.Before;
 import pl.softwaremill.asamal.common.AsamalContextProducer;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
@@ -32,7 +30,7 @@ import static org.mockito.Mockito.when;
 /**
  * User: szimano
  */
-public class ControllerTest extends Arquillian {
+public class ControllerTest {
 
     private BeanManagerDependencyProvider depProvider;
 
@@ -55,7 +53,7 @@ public class ControllerTest extends Arquillian {
     protected ServletContext servletContext = mock(ServletContext.class);
     
 
-    @BeforeMethod
+    @Before
     public void setup() {
         if (depProvider == null) {
             depProvider = new BeanManagerDependencyProvider(bm);
@@ -71,12 +69,12 @@ public class ControllerTest extends Arquillian {
         when(servletContext.getAttribute(AsamalListener.BEAN_MANAGER)).thenReturn(bm);
     }
 
-    @AfterClass
+    @After
     public void cleanup() {
         D.unregister(depProvider);
     }
 
-    @AfterMethod
+    @After
     public void clear() {
         testRecorder.clear();
         asamalContextProducer.clear();

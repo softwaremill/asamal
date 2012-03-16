@@ -1,0 +1,12 @@
+TICKET_CATEGORY:
+  - id: 1
+    number_of_tickets: 10
+    name: "test"
+    description: "test ticket category"
+    price: 100
+
+USER:
+  - id: 1
+    username: "tomek"
+    password: "butter"
+    admin: 0

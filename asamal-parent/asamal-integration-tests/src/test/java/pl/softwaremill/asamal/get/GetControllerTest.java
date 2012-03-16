@@ -1,9 +1,11 @@
 package pl.softwaremill.asamal.get;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import pl.softwaremill.asamal.ControllerTest;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
@@ -21,6 +23,7 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * User: szimano
  */
+@RunWith(Arquillian.class)
 public class GetControllerTest extends ControllerTest {
 
     @Deployment

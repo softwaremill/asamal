@@ -1,7 +1,7 @@
 package pl.softwaremill.asamal.controller.testcontrollers;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
+import org.junit.After;
+import org.junit.Test;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.exception.AutobindingException;
@@ -30,7 +30,7 @@ public class AutoBindControllerTest extends ControllerBean {
         this.testPojo = testPojo;
     }
 
-    @AfterMethod
+    @After
     public void cleanUp() {
         testPojo = null;
     }
@@ -57,7 +57,7 @@ public class AutoBindControllerTest extends ControllerBean {
         assertThat(testPojo.getInTest().getIntest()).isEqualTo("intest");
     }
 
-    @Test(expectedExceptions = NoSuchParameterException.class)
+    @Test(expected = NoSuchParameterException.class)
     public void shouldShowCorrectMessageOnNonExistingParameter() {
         // given
         testPojo = new TestPojo();
@@ -86,7 +86,7 @@ public class AutoBindControllerTest extends ControllerBean {
         assertThat(testPojo.getTest()).isNull();
     }
 
-    @Test(expectedExceptions = AutobindingException.class)
+    @Test(expected = AutobindingException.class)
     public void shouldThrowExceptionWhenBeanNull() {
         // given
         AsamalContext context = mock(AsamalContext.class);

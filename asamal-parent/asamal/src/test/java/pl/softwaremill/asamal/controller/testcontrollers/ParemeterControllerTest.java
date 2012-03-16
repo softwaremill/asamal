@@ -1,16 +1,14 @@
 package pl.softwaremill.asamal.controller.testcontrollers;
 
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
-import pl.softwaremill.asamal.controller.exception.AutobindingException;
-import pl.softwaremill.asamal.controller.exception.NoSuchParameterException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

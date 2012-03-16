@@ -1,13 +1,15 @@
 package pl.softwaremill.asamal.post;
 
 import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import pl.softwaremill.asamal.ControllerTest;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
@@ -34,6 +36,7 @@ import static org.mockito.Mockito.when;
 /**
  * User: szimano
  */
+@RunWith(Arquillian.class)
 public class PostControllerTest extends ControllerTest {
 
     @Deployment
@@ -99,8 +102,8 @@ public class PostControllerTest extends ControllerTest {
         assertThat(output).isEqualTo(null);
     }
 
-    @Test(expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = ".*There is no viewHash send for this post query")
+    @Test(expected = RuntimeException.class)
+            //FIXME expectedExceptionsMessageRegExp = ".*There is no viewHash send for this post query")
     public void shouldFailWhenNoViewHash() throws HttpErrorException {
         // given
         JAXPostHandler postHandler = getPostHandler();
