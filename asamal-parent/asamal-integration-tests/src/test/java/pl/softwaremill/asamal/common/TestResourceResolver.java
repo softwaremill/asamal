@@ -1,5 +1,6 @@
 package pl.softwaremill.asamal.common;
 
+import org.junit.Ignore;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.common.cdi.autofactory.CreatedWith;
 
@@ -14,6 +15,7 @@ import java.io.InputStream;
  * User: szimano
  */
 @CreatedWith(ResourceResolver.Factory.class)
+@Ignore
 public class TestResourceResolver implements ResourceResolver {
     
     public static String returnHtml = null;

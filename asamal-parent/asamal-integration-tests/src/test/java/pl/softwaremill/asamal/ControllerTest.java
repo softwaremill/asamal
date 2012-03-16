@@ -3,6 +3,7 @@ package pl.softwaremill.asamal;
 import org.apache.struts.mock.MockHttpSession;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import pl.softwaremill.asamal.common.AsamalContextProducer;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.when;
 /**
  * User: szimano
  */
+@Ignore
 public class ControllerTest {
 
     private BeanManagerDependencyProvider depProvider;
