@@ -4,7 +4,6 @@ import org.apache.struts.mock.MockHttpSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
-import pl.softwaremill.asamal.common.AsamalContextProducer;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
 import pl.softwaremill.asamal.controller.cdi.BootstrapCheckerExtension;
@@ -43,10 +42,10 @@ public class ControllerTest {
     protected TestRecorder testRecorder;
 
     @Inject
-    protected AsamalContextProducer asamalContextProducer;
+    protected BootstrapCheckerExtension bootstrapCheckerExtension;
 
     @Inject
-    protected BootstrapCheckerExtension bootstrapCheckerExtension;
+    protected MockAsamalProducers producers;
 
     protected HttpServletRequest req = mock(HttpServletRequest.class);
     protected HttpServletResponse resp = mock(HttpServletResponse.class);
@@ -79,7 +78,7 @@ public class ControllerTest {
     @After
     public void clear() {
         testRecorder.clear();
-        asamalContextProducer.clear();
+        producers.clear();
     }
 
     protected JAXPostHandler getPostHandler() {
@@ -87,7 +86,7 @@ public class ControllerTest {
         TestResourceResolver resourceResolver = new TestResourceResolver(req);
         when(factory.create((HttpServletRequest) anyObject())).thenReturn(resourceResolver);
 
-        return new JAXPostHandler(factory, bootstrapCheckerExtension);
+        return new JAXPostHandler(factory, bootstrapCheckerExtension, producers);
     }
 
     protected void addViewHash(String viewHash, String controller, String view) {

@@ -10,6 +10,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import pl.softwaremill.asamal.AsamalParameters;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ContextConstants;
 import pl.softwaremill.asamal.controller.ControllerBean;
@@ -20,6 +21,7 @@ import pl.softwaremill.asamal.controller.cdi.RequestType;
 import pl.softwaremill.asamal.exception.HttpErrorException;
 import pl.softwaremill.asamal.exception.IllegalIncludeRedirectException;
 import pl.softwaremill.asamal.i18n.Messages;
+import pl.softwaremill.asamal.producers.AsamalProducers;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.asamal.servlet.AsamalListener;
 import pl.softwaremill.asamal.velocity.LayoutDirective;
@@ -63,18 +65,19 @@ public class JAXPostHandler {
 
     private ResourceResolver.Factory resourceResolverFactory;
 
-    private final static ThreadLocal<AsamalContext> asamalContextHolder = new ThreadLocal<AsamalContext>();
-
     public static final String VIEWHASH = "asamalViewHash";
     public static final String VIEWHASH_MAP = VIEWHASH + "Map";
 
     private BootstrapCheckerExtension bootstrapCheckerExtension;
+    private AsamalProducers asamalProducers;
 
     @Inject
     public JAXPostHandler(ResourceResolver.Factory resourceResolverFactory,
-                          BootstrapCheckerExtension bootstrapCheckerExtension) {
+                          BootstrapCheckerExtension bootstrapCheckerExtension,
+                          AsamalProducers asamalProducers) {
         this.resourceResolverFactory = resourceResolverFactory;
         this.bootstrapCheckerExtension = bootstrapCheckerExtension;
+        this.asamalProducers = asamalProducers;
     }
 
     public JAXPostHandler() {
@@ -83,7 +86,7 @@ public class JAXPostHandler {
     @GET
     @Path("/")
     public String handleRootGet(@Context HttpServletRequest request, @Context HttpServletResponse response) {
-        new AsamalContext(request, response, null, null).redirect("home", "index");
+        new AsamalContext(request, response, null).redirect("home", "index");
 
         return null;
     }
@@ -156,8 +159,9 @@ public class JAXPostHandler {
             throws HttpErrorException {
 
         // create the context
-        AsamalContext context = new AsamalContext(req, resp, extraPath, null);
-        asamalContextHolder.set(context);
+        createContext(req, resp, extraPath);
+
+        createParamateres(req, null);
 
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
@@ -223,8 +227,8 @@ public class JAXPostHandler {
             throws IllegalIncludeRedirectException, HttpErrorException {
 
         // create the context
-        AsamalContext context = new AsamalContext(req, resp, extraPath, formValues);
-        asamalContextHolder.set(context);
+        AsamalContext context = createContext(req, resp, extraPath);
+        createParamateres(req, formValues);
 
         try {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
@@ -289,8 +293,8 @@ public class JAXPostHandler {
             throws HttpErrorException {
 
         // create the context
-        AsamalContext context = new AsamalContext(req, resp, extraPath, null);
-        asamalContextHolder.set(context);
+        AsamalContext context = createContext(req, resp, extraPath);
+        createParamateres(req, null);
 
         ControllerBean controllerBean = null;
 
@@ -442,11 +446,6 @@ public class JAXPostHandler {
         return document.html();
     }
 
-    @javax.enterprise.inject.Produces
-    public AsamalContext produceAsamalContext() {
-        return asamalContextHolder.get();
-    }
-
     private String createNewViewHash(HttpServletRequest request, String controller, String view) {
         ViewDescriptor viewDescriptor = new ViewDescriptor(controller, view);
 
@@ -471,5 +470,16 @@ public class JAXPostHandler {
         }
 
         return viewHashMap;
+    }
+
+    private AsamalContext createContext(HttpServletRequest req, HttpServletResponse resp, String extraPath) {
+        AsamalContext context = new AsamalContext(req, resp, extraPath);
+        asamalProducers.setAsamalContext(context);
+
+        return context;
+    }
+
+    private void createParamateres(HttpServletRequest req, MultivaluedMap<String, Object> formValues) {
+        asamalProducers.setAsamalParameters(new AsamalParameters(req, formValues));
     }
 }

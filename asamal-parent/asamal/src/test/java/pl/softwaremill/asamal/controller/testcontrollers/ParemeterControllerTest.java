@@ -1,6 +1,5 @@
 package pl.softwaremill.asamal.controller.testcontrollers;
 
-import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import org.junit.Test;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
@@ -24,7 +23,7 @@ public class ParemeterControllerTest extends ControllerBean {
         // given
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameterMap()).thenReturn(new HashMap<String, String[]>());
-        context = new AsamalContext(request, mock(HttpServletResponse.class), null, null);
+        context = new AsamalContext(request, mock(HttpServletResponse.class), null);
 
         // when
         String parameter = getParameter("non-existing");
@@ -38,8 +37,7 @@ public class ParemeterControllerTest extends ControllerBean {
     @Test
     public void shouldReturnNullForNonExistingParamsFromParamMap() {
         // given
-        context = new AsamalContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class), null,
-                new MultivaluedMapImpl<String, Object>());
+        context = new AsamalContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class), null);
 
         // when
         String parameter = getParameter("non-existing");

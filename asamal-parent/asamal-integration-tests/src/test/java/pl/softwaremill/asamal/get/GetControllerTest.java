@@ -7,6 +7,8 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import pl.softwaremill.asamal.ControllerTest;
+import pl.softwaremill.asamal.MockAsamalParameters;
+import pl.softwaremill.asamal.MockAsamalProducers;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
 import pl.softwaremill.asamal.exception.HttpErrorException;
@@ -15,6 +17,7 @@ import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.common.util.dependency.D;
 
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -34,6 +37,7 @@ public class GetControllerTest extends ControllerTest {
                 .addClass(ResourceResolver.class)
                 .addClass(TestNamedBean.class)
                 .addClass(Messages.class)
+                .addClass(MockAsamalProducers.class)
                 .addPackage(TestResourceResolver.class.getPackage());
     }
 
@@ -143,4 +147,66 @@ public class GetControllerTest extends ControllerTest {
         // then
         assertThat(output).contains("Guten Morgen!");
     }
+
+    @Test
+    public void shouldPassAnnotatedParams() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+        producers.setMockAsamalParameters(new MockAsamalParameters(new HashMap<String, Object>(){{
+            put("param", "testParamContent");
+        }}));
+
+        // when
+        String output = postHandler.handleGet(req, resp, "get", "testWithParams", null);
+
+        // then
+        assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testWithParams_testParamContent");
+    }
+
+    @Test
+    public void shouldPassAnnotatedObjectParams() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+        producers.setMockAsamalParameters(new MockAsamalParameters(new HashMap<String, Object>(){{
+            put("param", new Object[]{"This", "is", "it"});
+        }}));
+
+        // when
+        String output = postHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
+
+        // then
+        assertThat(D.inject(TestRecorder.class).getMethodsCalled())
+                .containsOnly("testWithObjectParamsRequired_[This, is, it]");
+    }
+
+    @Test
+    public void shouldReturnNullOnNonExistingAnnotatedParam() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+
+        // when
+        String output = postHandler.handleGet(req, resp, "get", "testWithParams", null);
+
+        // then
+        assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testWithParams_null");
+    }
+
+    @Test(expected = HttpErrorException.class)
+    public void shouldFailIfNoRequiredParam() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+
+        // when
+        String output = postHandler.handleGet(req, resp, "get", "testWithParamsRequired", null);
+    }
+
+    @Test(expected = HttpErrorException.class)
+    public void shouldFailIfNoRequiredObjectParam() throws HttpErrorException {
+        // given
+        JAXPostHandler postHandler = getPostHandler();
+
+        // when
+        String output = postHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
+    }
+
 }

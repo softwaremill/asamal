@@ -2,6 +2,7 @@ package pl.softwaremill.asamal.controller.testcontrollers;
 
 import org.junit.After;
 import org.junit.Test;
+import pl.softwaremill.asamal.AsamalParameters;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.exception.AutobindingException;
@@ -40,14 +41,14 @@ public class AutoBindControllerTest extends ControllerBean {
         // given
         testPojo = new TestPojo();
 
-        AsamalContext context = mock(AsamalContext.class);
-        when(context.getObjectParameterValues("testPojo.test")).thenReturn(
-                Collections.singletonList((Object)"testPojo"));
-        when(context.getObjectParameterValues("testPojo.inTest.intest"))
-                .thenReturn(Collections.singletonList((Object)"intest"));
-        when(context.getParameterNames()).thenReturn(new HashSet<String>(Arrays.asList("testPojo.test",
+        AsamalParameters parameters = mock(AsamalParameters.class);
+        when(parameters.getObjectParameterValues("testPojo.test")).thenReturn(
+                Collections.singletonList((Object) "testPojo"));
+        when(parameters.getObjectParameterValues("testPojo.inTest.intest"))
+                .thenReturn(Collections.singletonList((Object) "intest"));
+        when(parameters.getParameterNames()).thenReturn(new HashSet<String>(Arrays.asList("testPojo.test",
                 "testPojo.inTest.intest")));
-        setContext(context);
+        setParameters(parameters);
 
         // when
         doAutoBinding("testPojo.test", "testPojo.inTest.intest");
@@ -74,10 +75,10 @@ public class AutoBindControllerTest extends ControllerBean {
         // given
         testPojo = new TestPojo();
 
-        AsamalContext context = mock(AsamalContext.class);
-        when(context.getParameterValues("testPojo.test")).thenReturn(null);
-        when(context.getParameterNames()).thenReturn(new HashSet<String>(Arrays.asList("testPojo.test")));
-        setContext(context);
+        AsamalParameters parameters = mock(AsamalParameters.class);
+        when(parameters.getParameterValues("testPojo.test")).thenReturn(null);
+        when(parameters.getParameterNames()).thenReturn(new HashSet<String>(Arrays.asList("testPojo.test")));
+        setParameters(parameters);
 
         // when
         doAutoBinding("testPojo.test");
@@ -89,10 +90,10 @@ public class AutoBindControllerTest extends ControllerBean {
     @Test(expected = AutobindingException.class)
     public void shouldThrowExceptionWhenBeanNull() {
         // given
-        AsamalContext context = mock(AsamalContext.class);
-        when(context.getParameterValues("testPojo.test")).thenReturn(Collections.singletonList("testPojo"));
-        when(context.getParameterNames()).thenReturn(new HashSet<String>(Arrays.asList("testPojo.test")));
-        setContext(context);
+        AsamalParameters parameters = mock(AsamalParameters.class);
+        when(parameters.getParameterValues("testPojo.test")).thenReturn(Collections.singletonList("testPojo"));
+        when(parameters.getParameterNames()).thenReturn(new HashSet<String>(Arrays.asList("testPojo.test")));
+        setParameters(parameters);
 
         // when
         doAutoBinding("testPojo.test");

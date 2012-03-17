@@ -2,6 +2,7 @@ package pl.softwaremill.asamal.controller;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import pl.softwaremill.asamal.AsamalParameters;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.exception.AutobindingException;
 import pl.softwaremill.asamal.controller.exception.NoSuchParameterException;
@@ -39,12 +40,19 @@ public abstract class ControllerBean {
 
     @Inject
     private Messages messages;
+    
+    @Inject
+    private AsamalParameters parameters;
 
     protected ControllerBean() {
     }
 
     public void setContext(AsamalContext context) {
         this.context = context;
+    }
+
+    public void setParameters(AsamalParameters parameters) {
+        this.parameters = parameters;
     }
 
     public String getName() {
@@ -102,8 +110,8 @@ public abstract class ControllerBean {
         }
     }
 
-    private List<Object> getObjectParameterValues(String parameterName) {
-        return context.getObjectParameterValues(parameterName);
+    public List<Object> getObjectParameterValues(String parameterName) {
+        return parameters.getObjectParameterValues(parameterName);
     }
 
     public String getPageTitle() {
@@ -142,7 +150,7 @@ public abstract class ControllerBean {
      * @return Value
      */
     public String getParameter(String key) {
-        return context.getParameter(key);
+        return parameters.getParameter(key);
     }
 
     /**
@@ -152,7 +160,7 @@ public abstract class ControllerBean {
      * @return List of values
      */
     public List<String> getParameterValues(String key) {
-        return context.getParameterValues(key);
+        return parameters.getParameterValues(key);
     }
 
     /**
@@ -161,7 +169,7 @@ public abstract class ControllerBean {
      * @return Set of parameter names
      */
     public Set<String> getParameterNames() {
-        return context.getParameterNames();
+        return parameters.getParameterNames();
     }
 
     /**
@@ -237,7 +245,7 @@ public abstract class ControllerBean {
     }
 
     public Object getObjectParameter(String key) {
-        return context.getObjectParameter(key);
+        return parameters.getObjectParameter(key);
     }
 
     /**
