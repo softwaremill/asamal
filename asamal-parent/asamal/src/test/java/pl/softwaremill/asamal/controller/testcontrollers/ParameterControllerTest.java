@@ -1,6 +1,7 @@
 package pl.softwaremill.asamal.controller.testcontrollers;
 
 import org.junit.Test;
+import pl.softwaremill.asamal.AsamalParameters;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.when;
 /**
  * User: szimano
  */
-public class ParemeterControllerTest extends ControllerBean {
+public class ParameterControllerTest extends ControllerBean {
 
     @Test
     public void shouldReturnNullForNonExistingParamsFromRequest() {
@@ -24,6 +25,7 @@ public class ParemeterControllerTest extends ControllerBean {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getParameterMap()).thenReturn(new HashMap<String, String[]>());
         context = new AsamalContext(request, mock(HttpServletResponse.class), null);
+        setParameters(new AsamalParameters(request, null));
 
         // when
         String parameter = getParameter("non-existing");
@@ -37,7 +39,9 @@ public class ParemeterControllerTest extends ControllerBean {
     @Test
     public void shouldReturnNullForNonExistingParamsFromParamMap() {
         // given
-        context = new AsamalContext(mock(HttpServletRequest.class), mock(HttpServletResponse.class), null);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        context = new AsamalContext(request, mock(HttpServletResponse.class), null);
+        setParameters(new AsamalParameters(request, null));
 
         // when
         String parameter = getParameter("non-existing");

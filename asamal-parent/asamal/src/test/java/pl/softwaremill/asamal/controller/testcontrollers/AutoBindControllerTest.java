@@ -65,6 +65,7 @@ public class AutoBindControllerTest extends ControllerBean {
 
         AsamalContext context = mock(AsamalContext.class);
         setContext(context);
+        setParameters(mock(AsamalParameters.class));
 
         // when
         doAutoBinding("testPojo.test");
