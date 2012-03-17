@@ -11,6 +11,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import pl.softwaremill.asamal.ControllerTest;
+import pl.softwaremill.asamal.MockAsamalProducers;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
 import pl.softwaremill.asamal.exception.HttpErrorException;
@@ -46,6 +47,7 @@ public class PostControllerTest extends ControllerTest {
                 .addClass(ResourceResolver.Factory.class)
                 .addClass(ResourceResolver.class)
                 .addClass(Messages.class)
+                .addClass(MockAsamalProducers.class)
                 .addPackage(TestResourceResolver.class.getPackage());
     }
 
