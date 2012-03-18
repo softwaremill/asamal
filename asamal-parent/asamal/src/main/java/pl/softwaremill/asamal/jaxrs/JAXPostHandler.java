@@ -1,5 +1,8 @@
 package pl.softwaremill.asamal.jaxrs;
 
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.html.simpleparser.HTMLWorker;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.tools.ToolContext;
 import org.apache.velocity.tools.ToolManager;
@@ -45,8 +48,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -281,6 +287,36 @@ public class JAXPostHandler {
             return null;
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @GET
+    @Path("/pdf/{controller}/{view}{sep:/?}{path:.*}")
+    @Produces("application/pdf")
+    public Object handlePDFGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+                               @PathParam("controller") String controller,
+                               @PathParam("view") String view, @PathParam("path") String extraPath)
+            throws HttpErrorException {
+        String page = handleGet(req, resp, controller, view, extraPath);
+
+        try {
+            com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            PdfWriter pdfWriter = PdfWriter.getInstance(document, os);
+            document.open();
+            document.addAuthor("Author of the Doc");
+            document.addCreator("Creator of the Doc");
+            document.addSubject("Subject of the Doc");
+            document.addCreationDate();
+            document.addTitle("This is the title");
+            HTMLWorker htmlWorker = new HTMLWorker(document);
+
+            htmlWorker.parse(new StringReader(page));
+            document.close();
+
+            return new ByteArrayInputStream(os.toByteArray());
+        } catch (Exception e) {
+            throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
         }
     }
 

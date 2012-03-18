@@ -40,9 +40,9 @@
                             #err('invoice.country')
 
                             <h3>$m['tickets.payment.method']</h3>
-                            <input type="radio" name="paymentMethod" value="paypal" /> $m['tickets.method.paypal']
+                            <input type="radio" name="paymentMethod" value="wait_paypal" /> $m['tickets.method.paypal']
                             <br/>
-                            <input type="radio" name="paymentMethod" value="bank" /> $m['tickets.method.bank']
+                            <input type="radio" name="paymentMethod" value="wait_transfer" /> $m['tickets.method.bank']
                         </div>
                         <div id="tickets-form" class="span6">
                             <h3>$m['tickets.buy']</h3>

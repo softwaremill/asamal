@@ -74,7 +74,16 @@ public class Tickets extends ControllerBean implements Serializable {
 
         boolean allGood = validateBean("invoice", invoice);
 
-        invoice.setStatus(InvoiceStatus.UNPAID);
+        String paymentMethod = getParameter("paymentMethod");
+
+        if (paymentMethod != null) {
+            invoice.setStatus(InvoiceStatus.valueOf(paymentMethod.toUpperCase()));
+        }
+        else {
+            allGood = false;
+            addMessageToFlash(getFromMessageBundle("tickets.choose.payment"), AsamalContext.MessageSeverity.ERR);
+        }
+
         invoice.setUser(loginBean.getUser());
 
         for (int i = 0; i < ticketsByCategory.length; i++) {

@@ -12,5 +12,5 @@ public enum InvoiceStatus {
 
     WAIT_PAYPAL,
 
-    CANCELLED
+    CANCELLED;
 }
