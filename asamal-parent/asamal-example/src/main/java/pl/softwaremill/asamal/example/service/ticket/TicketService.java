@@ -1,6 +1,8 @@
 package pl.softwaremill.asamal.example.service.ticket;
 
+import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.i18n.Messages;
@@ -110,5 +112,11 @@ public class TicketService {
     @Transactional
     public void addInvoice(Invoice invoice) {
         entityManager.persist(invoice);
+    }
+
+    @Transactional
+    public List<Ticket> getTicketsForUser(User user) {
+        return entityManager.createQuery("select t from Ticket t where t.invoice.user = :user").
+                setParameter("user", user).getResultList();
     }
 }

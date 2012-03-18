@@ -2,4 +2,28 @@
 
 #region('content')
     <h1>$m['welcome.home']</h1>
+
+    <h2>$m['home.mytickets']</h2>
+
+    <table class="table table-striped">
+        <tr>
+            <th>$m['home.ticket.category']</th>
+            <th>$m['home.ticket.name']</th>
+            <th>$m['home.ticket.lastname']</th>
+            <th>$m['home.ticket.status']</th>
+        </tr>
+        #foreach($ticket in $tickets)
+            <tr>
+                <td>$ticket.ticketCategory.name</td>
+                <td>$ticket.firstName</td>
+                <td>$ticket.lastName</td>
+                <td>$m["home.ticket.status.$ticket.invoice.status"]</td>
+            </tr>
+        #end
+        #if($tickets.isEmpty())
+            <tr>
+                <td colspan="3"><i>$m['home.tickets.notickets']</i></td>
+            </tr>
+        #end
+    </table>
 #end

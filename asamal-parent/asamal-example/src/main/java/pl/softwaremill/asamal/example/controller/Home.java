@@ -5,9 +5,11 @@ import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
+import pl.softwaremill.asamal.example.logic.auth.LoginBean;
+import pl.softwaremill.asamal.example.service.ticket.TicketService;
 
+import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * Home page controller
@@ -18,13 +20,15 @@ import java.util.Arrays;
 @Filters(AuthorizationFilter.class)
 public class Home extends ControllerBean implements Serializable {
 
+    @Inject
+    private TicketService ticketService;
+
+    @Inject
+    private LoginBean login;
+
     @Get
     public void index() {
-        System.out.println("Running index controller !");
-
-        putInContext("list", Arrays.asList("One", "Two", "Three"));
-
-        System.out.println("Extra path: "+Arrays.toString(getExtraPath()));
+        putInContext("tickets", ticketService.getTicketsForUser(login.getUser()));
     }
 
 }

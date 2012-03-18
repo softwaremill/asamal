@@ -17,9 +17,12 @@ import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Tickets controller
@@ -75,11 +78,19 @@ public class Tickets extends ControllerBean implements Serializable {
 
         for (int i = 0; i < ticketsByCategory.length; i++) {
             for (int j = 0; j < ticketsByCategory[i].length; j++) {
-                if (!validateBean("attendeesByCategory["+i+"]["+j+"]", ticketsByCategory[i][j])) {
+                if (!validateBean("ticketsByCategory["+i+"]["+j+"]", ticketsByCategory[i][j])) {
                     allGood = false;
                 }
             }
         }
+
+        // set the tickets
+
+        Set<Ticket> allTickets = new HashSet<Ticket>();
+        for (Ticket[] tickets : ticketsByCategory) {
+            allTickets.addAll(Arrays.asList(tickets));
+        }
+        invoice.setTickets(allTickets);
 
         if (!allGood) {
             addMessageToFlash(getFromMessageBundle("tickets.validation.errors"), AsamalContext.MessageSeverity.ERR);
@@ -107,7 +118,9 @@ public class Tickets extends ControllerBean implements Serializable {
             ticketsByCategory[i] = new Ticket[numberOfAttendees];
             for (int j = 0; j < numberOfAttendees; j++) {
                 ticketsByCategory[i][j] = new Ticket();
-                
+                ticketsByCategory[i][j].setTicketCategory(getAvailableCategories().get(i));
+                ticketsByCategory[i][j].setInvoice(invoice);
+
                 String attendeePrefix = "ticketsByCategory["+i+"]["+j+"]";
                 paramNames.add(attendeePrefix+".firstName");
                 paramNames.add(attendeePrefix+".lastName");
