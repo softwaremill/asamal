@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
@@ -21,7 +22,8 @@ public class Invoice extends BaseEntity{
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private Set<Ticket> tickets;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
+    @NotNull
     private String name;
 
     @Column(name = "company_name")
@@ -30,16 +32,20 @@ public class Invoice extends BaseEntity{
     @Column(name = "vat")
     private String vat;
 
-    @Column(name = "address")
+    @Column(name = "address", nullable = false)
+    @NotNull
     private String address;
 
-    @Column(name = "postal_code")
+    @Column(name = "postal_code", nullable = false)
+    @NotNull
     private String postalCode;
 
-    @Column(name = "city")
+    @Column(name = "city", nullable = false)
+    @NotNull
     private String city;
 
-    @Column(name = "country")
+    @Column(name = "country", nullable = false)
+    @NotNull
     private String country;
 
     @Enumerated(EnumType.STRING)

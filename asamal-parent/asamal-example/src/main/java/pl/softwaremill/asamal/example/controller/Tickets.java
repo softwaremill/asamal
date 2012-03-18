@@ -50,6 +50,7 @@ public class Tickets extends ControllerBean implements Serializable {
     
     @Get
     public void buy() {
+        putInContext("toBePaid", 0);
     }
 
     @Post
@@ -92,6 +93,12 @@ public class Tickets extends ControllerBean implements Serializable {
         }
         invoice.setTickets(allTickets);
 
+        if (invoice.getTickets().isEmpty()) {
+            allGood = false;
+
+            addMessageToFlash(getFromMessageBundle("tickets.no.tickets"), AsamalContext.MessageSeverity.ERR);
+        }
+
         if (!allGood) {
             addMessageToFlash(getFromMessageBundle("tickets.validation.errors"), AsamalContext.MessageSeverity.ERR);
 
@@ -100,7 +107,7 @@ public class Tickets extends ControllerBean implements Serializable {
         else {
             ticketService.addInvoice(invoice);
 
-            addMessageToFlash(getFromMessageBundle("tickets.buy.ok"), AsamalContext.MessageSeverity.SUCCESS);
+            addMessageToFlash(getFromMessageBundle("tickets.book.ok"), AsamalContext.MessageSeverity.SUCCESS);
             redirect("home", "index");
         }
     }
@@ -133,6 +140,15 @@ public class Tickets extends ControllerBean implements Serializable {
         // bind invoice
         doOptionalAutoBinding("invoice.name", "invoice.companyName", "invoice.vat",
                 "invoice.address", "invoice.postalCode", "invoice.city", "invoice.country");
+
+        // count toBePaid
+        Integer toBePaid = 0;
+
+        for (int i = 0; i < getAvailableCategories().size(); i++) {
+            toBePaid += getAvailableCategories().get(i).getPrice() * ticketsByCategory[i].length;
+        }
+
+        putInContext("toBePaid", toBePaid);
     }
 
     public List<TicketCategory> getAvailableCategories() {

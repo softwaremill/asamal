@@ -4,7 +4,8 @@
 <h1>$m['register.pleaseregister']</h1>
 
 <div class="well">
-    <form method="POST" action="$tag.formAction("login", "doRegister")" class="form-horizontal">
+    <form method="POST" action="$tag.formAction("login", "doRegister")" class="form-horizontal"
+          accept-charset="UTF-8">
         <label>$m['register.enter.email']</label>
         <input type="text" name="user.username" value="$!controller.user.username"/>
         #err('user.username')

@@ -5,58 +5,86 @@
 
     <div id="tickets" class="well">
         <h2>$m['tickets.details.invoice']</h2>
-        <form class="form-horizontal" action="$tag.formAction('tickets', 'doBuy')" method="post" id="ticketForm">
-            <label>$m['tickets.buy.name']</label>
-            <input type="text" name="invoice.name"/>
-            #err('invoice.name')
-            <label>$m['tickets.buy.company']</label>
-            <input type="text" name="invoice.companyName"/>
-            #err('invoice.companyName')
-            <label>$m['tickets.buy.vat']</label>
-            <input type="text" name="invoice.vat"/>
-            #err('invoice.vat')
-            <label>$m['tickets.buy.address']</label>
-            <input type="text" name="invoice.address"/>
-            #err('invoice.address')
-            <label>$m['tickets.buy.postal']</label>
-            <input type="text" name="invoice.postalCode"/>
-            #err('invoice.postalCode')
-            <label>$m['tickets.buy.city']</label>
-            <input type="text" name="invoice.city"/>
-            #err('invoice.city')
-            <label>$m['tickets.buy.country']</label>
-            <select name="invoice.country">
-                <option label="-" value=""/>
-                #foreach($country in $countries.countries)
-                    <option label="$country.name" value="$country.name"/>
-                #end
-            </select>
-            #err('invoice.country')
-            <h3>$m['tickets.buy']</h3>
-            <div id="tickets-form">
-                #set($catNo = 0)
+        <form class="form-horizontal" action="$tag.formAction('tickets', 'doBuy')" method="post"
+              accept-charset="UTF-8" id="ticketForm">
+            
+            <div class="row">
+                <div class="span12">
+                    <div class="row">
+                        <div class="span6">
+                            <label>$m['tickets.buy.name']</label>
+                            <input type="text" name="invoice.name"/>
+                            #err('invoice.name')
+                            <label>$m['tickets.buy.company']</label>
+                            <input type="text" name="invoice.companyName"/>
+                            #err('invoice.companyName')
+                            <label>$m['tickets.buy.vat']</label>
+                            <input type="text" name="invoice.vat"/>
+                            #err('invoice.vat')
+                            <label>$m['tickets.buy.address']</label>
+                            <input type="text" name="invoice.address"/>
+                            #err('invoice.address')
+                            <label>$m['tickets.buy.postal']</label>
+                            <input type="text" name="invoice.postalCode"/>
+                            #err('invoice.postalCode')
+                            <label>$m['tickets.buy.city']</label>
+                            <input type="text" name="invoice.city"/>
+                            #err('invoice.city')
+                            <label>$m['tickets.buy.country']</label>
+                            <select name="invoice.country">
+                                <option label="-" value=""/>
+                                #foreach($country in $countries.countries)
+                                    <option label="$country.name" value="$country.name"/>
+                                #end
+                            </select>
+                            #err('invoice.country')
 
-                #foreach($ticketCat in $c.availableCategories)
-                    $ticketCat.name
-                    <select id="numberOfTickets-$ticketCat.idName"
-                            onchange="$tag.reRender("tickets", "changeNumber", "'ticketForm'", "'tickets-form'")"
-                            name="numberOfTickets-$ticketCat.idName">
-                        <option label="-" value="0"/>
-                        #foreach( $i in [1..$c.getMaxTickets($ticketCat)] )
-                        <option label="$i" value="$i" #if($i == $ticketsToBuy[$ticketCat.idName])selected #end/>
-                        #end
-                    </select>
+                            <h3>$m['tickets.payment.method']</h3>
+                            <input type="radio" name="paymentMethod" value="paypal" /> $m['tickets.method.paypal']
+                            <br/>
+                            <input type="radio" name="paymentMethod" value="bank" /> $m['tickets.method.bank']
+                        </div>
+                        <div id="tickets-form" class="span6">
+                            <h3>$m['tickets.buy']</h3>
 
-                    #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])
-                        <h4>Attendee $i</h4>
+                            #set($catNo = 0)
 
-                        #renderPartial('attendee')
-                    #end
+                            #foreach($ticketCat in $c.availableCategories)
+                                $ticketCat.name
+                                <select id="numberOfTickets-$ticketCat.idName"
+                                        onchange="$tag.reRender("tickets", "changeNumber", "'ticketForm'", "'tickets-form'")"
+                                        name="numberOfTickets-$ticketCat.idName">
+                                    <option label="-" value="0"/>
+                                    #foreach( $i in [1..$c.getMaxTickets($ticketCat)] )
+                                    <option label="$i" value="$i" #if($i == $ticketsToBuy[$ticketCat.idName])selected #end/>
+                                    #end
+                                </select>
 
-                    #set($catNo = $catNo + 1)
-                #end
+                                <br/>
+
+                                #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])
+                                    <h4>Attendee $i</h4>
+
+                                    #renderPartial('attendee')
+                                #end
+
+                                #set($catNo = $catNo + 1)
+                            #end
+
+                            <h3>
+                                $m['tickets.totalAmount']: $toBePaid PLN
+                            </h3>
+                        </div>
+                    </div>
+                    <input type="submit" value="$m['tickets.buy.submit']"/>
+                    
+                    <div class="row-fluid">
+                        <div class="span10">
+                            <i>$m['tickets.buy.explanation']</i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <input type="submit" value="$m['tickets.buy.submit']"/>
         </form>
     </div>
 #end

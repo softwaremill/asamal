@@ -5,7 +5,8 @@
 
     <p>No account yet ? <a href="$tag.link('login', 'register')">Register now</a>.</p>
 
-    <form action="$tag.formAction('login', 'doLogin')" method="POST" class="form-horizontal">
+    <form accept-charset="UTF-8" action="$tag.formAction('login', 'doLogin')" method="POST"
+          class="form-horizontal">
         <label>$m['login.login']</label>
         <input type="text" name="login" value=""/>
         <label>$m['login.password']</label>

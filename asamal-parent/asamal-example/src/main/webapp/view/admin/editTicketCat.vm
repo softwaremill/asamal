@@ -4,7 +4,7 @@
     <h1>$m['welcome.tickets']</h1>
 
     <div id="tickets">
-        <form class="form-horizontal" id="ticketForm" method="post"
+        <form class="form-horizontal" id="ticketForm" method="post" accept-charset="UTF-8"
               action="$tag.formAction("admin", "editTicketCategory")">
 
             #renderPartial('ticket_cat_edit')

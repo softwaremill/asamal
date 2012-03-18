@@ -22,7 +22,7 @@ import java.util.Date;
 @WebListener
 @DataSourceDefinition(
         name = "java:jboss/datasources/AsamalExampleDS",
-        url = "jdbc:mysql://localhost:3306/asamal-example",
+        url = "jdbc:mysql://localhost:3306/asamal-example?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8",
         user = "root",
         className = "com.mysql.jdbc.jdbc2.optional.MysqlDataSource"
 )
@@ -43,11 +43,17 @@ public class DBPopulator implements ServletContextListener{
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 
-        if (entityManager.createQuery("select u from User u").getResultList().size() > 0) {
-            // db is populated already
-            return;
+        if (entityManager.createQuery("select u from User u").getResultList().size() == 0) {
+            populateDB();
         }
 
+        // set converter
+        DateTimeConverter dtConverter = new DateConverter();
+        dtConverter.setPattern("yyyy-MM-dd");
+        ConvertUtils.register(dtConverter, Date.class);
+    }
+
+    private void populateDB() {
         // create users
         userService.createNewUser(new User("szimano@szimano.org", stringHasher.encode("szimano"), true));
 
@@ -58,15 +64,10 @@ public class DBPopulator implements ServletContextListener{
             ticketService.addTicketCategory(
                     new TicketCategory(new Date(),
                             new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), 50, "Early Birds",
-                    "Early Birds", 300));
+                            "Early Birds", 300));
         } catch (TicketsExceededException e) {
             throw new RuntimeException(e);
         }
-
-        // set converter
-        DateTimeConverter dtConverter = new DateConverter();
-        dtConverter.setPattern("yyyy-MM-dd");
-        ConvertUtils.register(dtConverter, Date.class);
     }
 
     @Override
