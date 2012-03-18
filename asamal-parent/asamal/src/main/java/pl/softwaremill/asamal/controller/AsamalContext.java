@@ -2,6 +2,7 @@ package pl.softwaremill.asamal.controller;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import org.jboss.seam.solder.core.Veto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import java.io.IOException;
  * <p/>
  * User: szimano
  */
+@Veto
 public class AsamalContext {
     public static final String FLASH_PREFIX = "flash.";
 
@@ -22,6 +24,9 @@ public class AsamalContext {
     private boolean willInclude = false;
     
     private String includeView;
+
+    public AsamalContext() {
+    }
 
     public AsamalContext(HttpServletRequest request, HttpServletResponse response,
                          String extraPath) {

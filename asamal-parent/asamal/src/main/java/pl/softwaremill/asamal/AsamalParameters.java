@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal;
 
+import org.jboss.seam.solder.core.Veto;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
 import java.util.ArrayList;
@@ -10,11 +12,15 @@ import java.util.Set;
 /**
  * Class that unifies access to request parameters
  */
+@Veto
 public class AsamalParameters {
 
     private HttpServletRequest request;
 
     private MultivaluedMap<String, Object> formValueMap;
+
+    public AsamalParameters() {
+    }
 
     public AsamalParameters(HttpServletRequest request, MultivaluedMap<String, Object> formValueMap) {
         this.formValueMap = formValueMap;

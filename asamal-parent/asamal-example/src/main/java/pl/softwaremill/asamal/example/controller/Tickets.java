@@ -88,6 +88,9 @@ public class Tickets extends ControllerBean implements Serializable {
         }
         else {
             ticketService.addInvoice(invoice);
+
+            addMessageToFlash(getFromMessageBundle("tickets.buy.ok"), AsamalContext.MessageSeverity.SUCCESS);
+            redirect("home", "index");
         }
     }
 
