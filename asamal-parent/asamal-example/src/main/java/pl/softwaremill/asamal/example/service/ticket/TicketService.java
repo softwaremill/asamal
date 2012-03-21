@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal.example.service.ticket;
 
+import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
+import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
@@ -23,6 +25,9 @@ public class TicketService {
     
     @Inject
     private Messages messages;
+    
+    @Inject 
+    private ConfigurationBean configurationBean;
 
     @Transactional
     public List<TicketCategory> getTicketCategories() {
@@ -32,8 +37,7 @@ public class TicketService {
     @Transactional
     public void addTicketCategory(TicketCategory ticketCategory) throws TicketsExceededException{
         // check first if it won't be too much, once we add it
-        if (!ticketCategory.getName().equals(TicketCategory.ALL_CATEGORY)) {
-            Long maxAllowed = getAllTicketCategory().getNumberOfTickets().longValue();
+            Long maxAllowed = Long.parseLong(configurationBean.getProperty(Conf.TICKETS_MAX));
 
             Long allocatedTickets = countAllocatedTickets();
 
@@ -46,20 +50,13 @@ public class TicketService {
                 throw new TicketsExceededException(messages.getFromBundle("tickets.number.exceeded",
                         maxAllowed - allocatedTickets));
             }
-        }
+
         entityManager.persist(ticketCategory);
     }
 
     @Transactional
     public TicketCategory loadCategory(Long id) {
         return entityManager.find(TicketCategory.class, id);
-    }
-    
-    @Transactional
-    public TicketCategory getAllTicketCategory() {
-        return (TicketCategory) entityManager.createQuery("select t from TicketCategory t where t.name = :name")
-                .setParameter("name", TicketCategory.ALL_CATEGORY)
-                .getSingleResult();
     }
 
     @Transactional
@@ -71,26 +68,21 @@ public class TicketService {
     public void deleteTicketCategory(Long id) {
         TicketCategory category = entityManager.find(TicketCategory.class, id);
 
-        if (TicketCategory.ALL_CATEGORY.equals(category.getName())) {
-            throw new RuntimeException("You cannot delete ALL category !");
-        }
         entityManager.remove(category);
     }
 
     @Transactional
     public Long countAllocatedTickets() {
         return (Long) entityManager.createQuery(
-                "select sum(t.numberOfTickets) from TicketCategory t where t.name != :all")
-                .setParameter("all", TicketCategory.ALL_CATEGORY)
+                "select sum(t.numberOfTickets) from TicketCategory t")
                 .getSingleResult();
     }
     
     @Transactional
     public List<TicketCategory> getAvailableCategories() {
         return entityManager.createQuery(
-                "select t from TicketCategory t where t.name != :all and :now between t.fromDate and t.toDate order by t.name")
+                "select t from TicketCategory t where :now between t.fromDate and t.toDate order by t.name")
                 .setParameter("now", new Date())
-                .setParameter("all", TicketCategory.ALL_CATEGORY)
                 .getResultList();
     }
 

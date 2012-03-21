@@ -77,8 +77,6 @@ public class DBPopulator implements ServletContextListener{
 
         // create main tickets
         try {
-            ticketService.addTicketCategory(new TicketCategory(new Date(0l), null, 100, TicketCategory.ALL_CATEGORY,
-                    "Total number of tickets", 0));
             ticketService.addTicketCategory(
                     new TicketCategory(new Date(),
                             new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), 50, "Early Birds",

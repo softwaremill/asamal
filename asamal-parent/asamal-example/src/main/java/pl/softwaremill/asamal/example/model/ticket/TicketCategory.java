@@ -19,8 +19,6 @@ import java.util.Set;
 @Entity
 @Table(name = "TICKET_CATEGORY")
 public class TicketCategory extends BaseEntity {
-    
-    public static final String ALL_CATEGORY = "ALL";
 
     @Column(name = "from_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -96,10 +94,6 @@ public class TicketCategory extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isTotalCategory() {
-        return ALL_CATEGORY.equals(name);
     }
 
     public Integer getPrice() {
