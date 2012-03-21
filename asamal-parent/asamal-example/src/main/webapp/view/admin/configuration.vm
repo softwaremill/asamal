@@ -1,0 +1,13 @@
+#layout('default')
+
+#region('content')
+    <h1>$m['welcome.configuration']</h1>
+
+    <form method="post" action="$tag.formAction('admin', 'saveConfig')" accept-charset="utf-8">
+        #foreach($c in $conf.getProperties().entrySet())
+            <label>$c.key</label>
+            <input type="text" name="$c.key" value="$c.value"/>
+        #end
+        <input type="Submit" value="$m['configuration.save']">
+    </form>
+#end

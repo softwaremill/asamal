@@ -98,6 +98,8 @@
                     #if($login.admin)
                         <li #if($c.name == 'admin' && $view == 'tickets')class="active"#end>
                             <a href="$tag.link('admin', 'tickets')">Tickets</a></li>
+                        <li #if($c.name == 'admin' && $view == 'configuration')class="active"#end>
+                            <a href="$tag.link('admin', 'configuration')">Configuration</a></li>
                     #end
                 </ul>
 

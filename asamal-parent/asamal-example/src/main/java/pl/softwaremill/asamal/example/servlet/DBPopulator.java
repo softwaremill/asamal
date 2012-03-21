@@ -3,8 +3,10 @@ package pl.softwaremill.asamal.example.servlet;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
+import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.hash.StringHasher;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -36,6 +38,9 @@ public class DBPopulator implements ServletContextListener{
 
     @Inject
     private StringHasher stringHasher;
+    
+    @Inject
+    private ConfigurationService configurationService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -43,6 +48,8 @@ public class DBPopulator implements ServletContextListener{
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 
+        updateConfigurations();
+        
         if (entityManager.createQuery("select u from User u").getResultList().size() == 0) {
             populateDB();
         }
@@ -51,6 +58,17 @@ public class DBPopulator implements ServletContextListener{
         DateTimeConverter dtConverter = new DateConverter();
         dtConverter.setPattern("yyyy-MM-dd");
         ConvertUtils.register(dtConverter, Date.class);
+    }
+
+    private void updateConfigurations() {
+        // if a property doesn't exist in the db, add it with the default value
+
+        for (Conf conf : Conf.values()) {
+            if (configurationService.getProperty(conf) == null) {
+                configurationService.saveProperty(conf, conf.defaultValue);
+            }
+        }
+        
     }
 
     private void populateDB() {
