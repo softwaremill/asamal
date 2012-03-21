@@ -9,12 +9,16 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.BaseEntity;
+import pl.softwaremill.asamal.example.model.conf.Conf;
+import pl.softwaremill.asamal.example.model.conf.ConfigurationProperty;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.asamal.i18n.Messages;
@@ -41,6 +45,7 @@ public class TicketsTest {
                 .addPackage(Invoice.class.getPackage())
                 .addPackage(User.class.getPackage())
                 .addPackage(BaseEntity.class.getPackage())
+                .addClasses(ConfigurationBean.class, ConfigurationService.class, ConfigurationProperty.class, Conf.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(EmptyAsset.INSTANCE, "messages.properties")
                 .addAsManifestResource("test-persistence.xml", "persistence.xml");
