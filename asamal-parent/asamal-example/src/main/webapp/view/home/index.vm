@@ -17,7 +17,7 @@
                 <td>$ticket.ticketCategory.name</td>
                 <td>$ticket.firstName</td>
                 <td>$ticket.lastName</td>
-                <td>$m["home.ticket.status.$ticket.invoice.status"]</td>
+                <td>$m["home.ticket.status.$ticket.invoice.status"] $m["home.ticket.method.$ticket.invoice.method"]</td>
             </tr>
         #end
         #if($tickets.isEmpty())

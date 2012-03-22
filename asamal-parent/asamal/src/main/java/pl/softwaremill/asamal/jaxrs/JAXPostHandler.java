@@ -1,8 +1,6 @@
 package pl.softwaremill.asamal.jaxrs;
 
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.html.simpleparser.HTMLWorker;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.BaseFont;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.tools.ToolContext;
 import org.apache.velocity.tools.ToolManager;
@@ -13,6 +11,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 import pl.softwaremill.asamal.AsamalParameters;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ContextConstants;
@@ -45,14 +44,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -297,22 +298,22 @@ public class JAXPostHandler {
                                @PathParam("controller") String controller,
                                @PathParam("view") String view, @PathParam("path") String extraPath)
             throws HttpErrorException {
-        String page = handleGet(req, resp, controller, view, extraPath);
+        Response page = handleGet(req, resp, controller, view, extraPath);
 
         try {
-            com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4);
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
-            PdfWriter pdfWriter = PdfWriter.getInstance(document, os);
-            document.open();
-            document.addAuthor("Author of the Doc");
-            document.addCreator("Creator of the Doc");
-            document.addSubject("Subject of the Doc");
-            document.addCreationDate();
-            document.addTitle("This is the title");
-            HTMLWorker htmlWorker = new HTMLWorker(document);
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            org.w3c.dom.Document doc = builder.parse(
+                    new ByteArrayInputStream(page.getEntity().toString().getBytes("UTF-8")));
 
-            htmlWorker.parse(new StringReader(page));
-            document.close();
+            ITextRenderer renderer = new ITextRenderer();
+            renderer.getFontResolver().addFont("/Library/Fonts/Microsoft/Lucida Sans Unicode.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.setDocument(doc, null);
+
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            renderer.layout();
+            renderer.createPDF(os);
+            os.close();
 
             return new ByteArrayInputStream(os.toByteArray());
         } catch (Exception e) {
@@ -322,8 +323,8 @@ public class JAXPostHandler {
 
     @GET
     @Path("/{controller}/{view}{sep:/?}{path:.*}")
-    @Produces(MediaType.TEXT_HTML)
-    public String handleGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+//    @Produces(MediaType.TEXT_HTML)
+    public Response handleGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                             @PathParam("controller") String controller,
                             @PathParam("view") String view, @PathParam("path") String extraPath)
             throws HttpErrorException {
@@ -350,7 +351,11 @@ public class JAXPostHandler {
                     // and execute it's controller
                     controllerResolver.executeView(RequestType.GET, view);
                 }
-                return showView(req, controllerBean, controller, view);
+                String viewHTML = showView(req, controllerBean, controller, view);
+                return Response.status(Response.Status.OK)
+                        .entity(viewHTML)
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML+"; charset=UTF-8" )
+                        .build();
             }
 
             // will redirect

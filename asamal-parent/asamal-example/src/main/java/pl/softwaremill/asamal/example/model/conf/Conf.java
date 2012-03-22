@@ -8,6 +8,7 @@ public enum Conf {
     INVOICE_POSTAL_CODE("12345"),
     INVOICE_CITY("Foovaville"),
     INVOICE_COUNTRY("Barstan"),
+    INVOICE_VAT_RATE("23"),
 
     TICKETS_MAX("200")
     ;

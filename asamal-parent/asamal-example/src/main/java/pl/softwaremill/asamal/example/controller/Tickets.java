@@ -10,6 +10,7 @@ import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
+import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -18,6 +19,7 @@ import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -77,7 +79,8 @@ public class Tickets extends ControllerBean implements Serializable {
         String paymentMethod = getParameter("paymentMethod");
 
         if (paymentMethod != null) {
-            invoice.setStatus(InvoiceStatus.valueOf(paymentMethod.toUpperCase()));
+            invoice.setStatus(InvoiceStatus.UNPAID);
+            invoice.setMethod(PaymentMethod.valueOf(paymentMethod.toUpperCase()));
         }
         else {
             allGood = false;
@@ -85,6 +88,9 @@ public class Tickets extends ControllerBean implements Serializable {
         }
 
         invoice.setUser(loginBean.getUser());
+        Date dateCreated = new Date();
+        invoice.setDateCreated(dateCreated);
+        invoice.setDueDate(new Date(dateCreated.getTime() + Invoice.SEVEN_DAYS));
 
         for (int i = 0; i < ticketsByCategory.length; i++) {
             for (int j = 0; j < ticketsByCategory[i].length; j++) {

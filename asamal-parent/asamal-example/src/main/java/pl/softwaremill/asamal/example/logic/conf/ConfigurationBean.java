@@ -36,10 +36,14 @@ public class ConfigurationBean implements Serializable {
     }
     
     public String getProperty(Conf conf) {
-        return properties.get(conf);
+        return getProperties().get(conf);
     }
     
     public String getProperty(String conf) {
         return getProperty(Conf.valueOf(conf));
+    }
+    
+    public Integer getAsInt(String conf) {
+        return Integer.parseInt(getProperty(conf));
     }
 }

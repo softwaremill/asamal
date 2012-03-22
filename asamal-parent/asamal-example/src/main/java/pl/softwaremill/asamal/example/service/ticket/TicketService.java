@@ -111,4 +111,8 @@ public class TicketService {
         return entityManager.createQuery("select t from Ticket t where t.invoice.user = :user").
                 setParameter("user", user).getResultList();
     }
+
+    public Invoice loadInvoice(Long invoiceId) {
+        return entityManager.find(Invoice.class, invoiceId);
+    }
 }

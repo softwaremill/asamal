@@ -8,9 +8,5 @@ public enum InvoiceStatus {
 
     UNPAID,
 
-    WAIT_TRANSFER,
-
-    WAIT_PAYPAL,
-
     CANCELLED;
 }

@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal.example.model.ticket;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import pl.softwaremill.asamal.example.model.BaseEntity;
 import pl.softwaremill.asamal.example.model.security.User;
 
@@ -8,18 +10,24 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
 @Table(name = "INVOICE")
 public class Invoice extends BaseEntity{
+    
+    public static final int SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
-    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Ticket> tickets;
 
     @Column(name = "name", nullable = false)
@@ -49,18 +57,35 @@ public class Invoice extends BaseEntity{
     private String country;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "satus")
+    @Column(name = "status")
     private InvoiceStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "methods")
+    private PaymentMethod method;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(name = "date_created", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dateCreated;
+
+    @Column(name = "date_paid")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date datePaid;
+
+    @Column(name = "due_date")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dueDate;
     
     public Invoice() {
     }
 
     public Invoice(Set<Ticket> tickets, String name, String companyName, String vat, String address,
-                   String postalCode, String city, String country, InvoiceStatus status, User user) {
+                   String postalCode, String city, String country, InvoiceStatus status, PaymentMethod method, User user, Date dateCreated,
+                   Date datePaid) {
         this.tickets = tickets;
         this.name = name;
         this.companyName = companyName;
@@ -70,7 +95,11 @@ public class Invoice extends BaseEntity{
         this.city = city;
         this.country = country;
         this.status = status;
+        this.method = method;
         this.user = user;
+        this.dateCreated = dateCreated;
+        this.datePaid = datePaid;
+        this.dueDate = new Date(dateCreated.getTime() + SEVEN_DAYS);
     }
 
     public Set<Ticket> getTickets() {
@@ -151,5 +180,47 @@ public class Invoice extends BaseEntity{
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Date getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public Date getDatePaid() {
+        return datePaid;
+    }
+
+    public void setDatePaid(Date datePaid) {
+        this.datePaid = datePaid;
+    }
+
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public PaymentMethod getMethod() {
+        return method;
+    }
+
+    public void setMethod(PaymentMethod method) {
+        this.method = method;
+    }
+
+    public Multimap<TicketCategory, Ticket> getTicketsByCategory() {
+        Multimap<TicketCategory, Ticket> ret = HashMultimap.create();
+
+        for (Ticket ticket : tickets) {
+            ret.put(ticket.getTicketCategory(), ticket);
+        }
+
+        return ret;
     }
 }

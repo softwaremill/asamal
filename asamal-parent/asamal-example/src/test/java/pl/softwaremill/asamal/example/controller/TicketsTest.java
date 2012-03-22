@@ -16,6 +16,7 @@ import pl.softwaremill.asamal.example.model.conf.ConfigurationProperty;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
+import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
@@ -26,6 +27,7 @@ import pl.softwaremill.asamal.i18n.Messages;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -71,7 +73,7 @@ public class TicketsTest {
         tickets.add(new Ticket("Tomek", "Szymanski", tc));
 
         Invoice i = new Invoice(tickets, "Paying", "Customer", "123-456", "Address", "00123", "City", "Country",
-                InvoiceStatus.UNPAID, u);
+                InvoiceStatus.UNPAID, PaymentMethod.TRANSFER, u, new Date(), null);
         // when
         ticketService.addInvoice(i);
 
@@ -79,6 +81,7 @@ public class TicketsTest {
         i = entityManager.find(Invoice.class, i.getId());
         assertThat(i.getName()).isEqualTo("Paying");
         assertThat(i.getTickets()).hasSize(1);
+        assertThat(i.getMethod()).isEqualTo(PaymentMethod.TRANSFER);
         Ticket ticket = i.getTickets().iterator().next();
         assertThat(ticket.getFirstName()).isEqualTo("Tomek");
         assertThat(ticket.getLastName()).isEqualTo("Szymanski");
