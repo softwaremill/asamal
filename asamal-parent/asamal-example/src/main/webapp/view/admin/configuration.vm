@@ -5,7 +5,7 @@
 
     <form method="post" action="$tag.formAction('admin', 'saveConfig')" accept-charset="utf-8">
         #foreach($c in $conf.getProperties().entrySet())
-            <label>$c.key</label>
+            <label>$c.key - <i>$m["configuration.$c.key"]</i></label>
             <input type="text" name="$c.key" value="$c.value"/>
         #end
         <input type="Submit" value="$m['configuration.save']">
