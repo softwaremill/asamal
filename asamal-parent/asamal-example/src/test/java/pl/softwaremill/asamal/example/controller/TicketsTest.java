@@ -41,7 +41,7 @@ public class TicketsTest {
     {
         return ShrinkWrap.create(JavaArchive.class, "test.jar")
                 .addPackages(true, "org.fest")
-                .addPackages(true, "com.google.common.collect")
+                .addPackages(true, "com.google.common")
                 .addPackage(TicketService.class.getPackage())
                 .addPackage(TicketsExceededException.class.getPackage())
                 .addPackage(Messages.class.getPackage())
