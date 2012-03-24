@@ -9,6 +9,8 @@ public enum Conf {
     INVOICE_CITY("Foovaville"),
     INVOICE_COUNTRY("Barstan"),
     INVOICE_VAT_RATE("23"),
+    INVOICE_ID("Conference/2012/"),
+    INVOICE_CURRENCY("PLN"),
 
     TICKETS_MAX("200")
     ;

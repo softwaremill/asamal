@@ -5,29 +5,30 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <body style="font-family: 'Lucida Sans Unicode'; font-size: small;">
-    <h2 style="text-align: center">Faktura VAT / VAT Invoice nr ABE/ZAL/$invoice.id/2012</h2>
+    <h2 style="text-align: center">$m.getFromBundle('invoice.title', $invoiceType)
+        $m['invoice.title.number'] $!{proformaId}$conf.getProperty('INVOICE_ID')$invoice.id</h2>
     <div style="float: right;">
-        <h3>Sprzedawca / Seller</h3>
+        <h3>$m['invoice.seller']</h3>
         <table>
-            <tr><td>Imię i Nazwisko / Name:</td><td></td></tr>
-            <tr><td>Firma / Company:</td><td>SoftwareMill sp. z o.o.</td></tr>
-            <tr><td>NIP / VAT ID:</td><td>PL 701-021-70-58</td></tr>
-            <tr><td>Adres / Address:</td><td>Solec 81b lok. A60</td></tr>
-            <tr><td>Kod Pocztowy / Postal Code:</td><td>00-382</td></tr>
-            <tr><td>Miasto / City:</td><td>Warszawa</td></tr>
-            <tr><td>Kraj / Country:</td><td>Polska</td></tr>
+            <tr><td>$m['invoice.name']</td><td>$conf.getProperty('INVOICE_NAME')</td></tr>
+            <tr><td>$m['invoice.company']</td><td>$conf.getProperty('INVOICE_COMPANY')</td></tr>
+            <tr><td>$m['invoice.vat']</td><td>$conf.getProperty('INVOICE_VAT')</td></tr>
+            <tr><td>$m['invoice.address']</td><td>$conf.getProperty('INVOICE_ADDRESS')</td></tr>
+            <tr><td>$m['invoice.postal_code']</td><td>$conf.getProperty('INVOICE_POSTAL_CODE')</td></tr>
+            <tr><td>$m['invoice.city']</td><td>$conf.getProperty('INVOICE_CITY')</td></tr>
+            <tr><td>$m['invoice.country']</td><td>$conf.getProperty('INVOICE_COUNTRY')</td></tr>
         </table>
     </div>
     <div style="float: left;">
-        <h3>Kupujący / Buyer</h3>
+        <h3>$m['invoice.buyer']</h3>
         <table>
-            <tr><td>Imię i Nazwisko / Name:</td><td>$invoice.name</td></tr>
-            <tr><td>Firma / Company:</td><td>$invoice.companyName</td></tr>
-            <tr><td>NIP / VAT ID:</td><td>$invoice.vat</td></tr>
-            <tr><td>Adres / Address:</td><td>$invoice.address</td></tr>
-            <tr><td>Kod Pocztowy / Postal Code:</td><td>$invoice.postalCode</td></tr>
-            <tr><td>Miasto / City:</td><td>$invoice.city</td></tr>
-            <tr><td>Kraj / Country:</td><td>$invoice.country</td></tr>
+            <tr><td>$m['invoice.name']</td><td>$invoice.name</td></tr>
+            <tr><td>$m['invoice.company']</td><td>$invoice.companyName</td></tr>
+            <tr><td>$m['invoice.vat']</td><td>$invoice.vat</td></tr>
+            <tr><td>$m['invoice.address']</td><td>$invoice.address</td></tr>
+            <tr><td>$m['invoice.postal_code']</td><td>$invoice.postalCode</td></tr>
+            <tr><td>$m['invoice.city']</td><td>$invoice.city</td></tr>
+            <tr><td>$m['invoice.country']</td><td>$invoice.country</td></tr>
         </table>
     </div>
 
@@ -36,10 +37,10 @@
         <hr/>
 
         <table>
-            <tr><td>Data wystawienia / Date of issue</td><td>$date.format('yyyy-MM-dd', $invoice.dateCreated)</td></tr>
-            <tr><td>Data sprzedaży / Date of sale</td><td>$date.format('yyyy-MM-dd', $invoice.dateCreated)</td></tr>
-            <tr><td>Termin płatności / Due date</td><td>$date.format('yyyy-MM-dd', $invoice.dueDate)</td></tr>
-            <tr><td>Metoda płatności / payment method</td><td>$m["invoice.pdf.method.$invoice.method"]</td></tr>
+            <tr><td>$m['invoice.issue_date']</td><td>$date.format('yyyy-MM-dd', $invoice.dateCreated)</td></tr>
+            <tr><td>$m['invoice.sale_date']</td><td>$date.format('yyyy-MM-dd', $invoice.dateCreated)</td></tr>
+            <tr><td>$m['invoice.due_date']</td><td>$date.format('yyyy-MM-dd', $invoice.dueDate)</td></tr>
+            <tr><td>$m['invoice.payment_method']</td><td>$m["invoice.pdf.method.$invoice.method"]</td></tr>
         </table>
 
     </div>
@@ -47,14 +48,14 @@
 
     <table style="float: left; border: 1px solid black; margin-top: 20px; margin-bottom: 20px">
         <tr style="font-size: x-small; font-weight: bold;">
-            <th>Lp. No.</th>
-            <th>Nazwa / Name of Service</th>
-            <th>Ilość / Qty</th>
-            <th>Cena netto / Unit net price</th>
-            <th>Wartość netto / Total net price</th>
-            <th>Stawka VAT / VAT rate</th>
-            <th>Kwota VAT / VAT amount</th>
-            <th>Wartość brutto / Total gross price </th>
+            <th>$m['invoice.item_no']</th>
+            <th>$m['invoice.name_service']</th>
+            <th>$m['invoice.qty']</th>
+            <th>$m['invoice.unit_net_price']</th>
+            <th>$m['invoice.total_net_price']</th>
+            <th>$m['invoice.vat_rate']</th>
+            <th>$m['invoice.vat_amount']</th>
+            <th>$m['invoice.gross_price']</th>
         </tr>
         #set($ticketNo = 1)
         #set($vat = $conf.getAsInt('INVOICE_VAT_RATE'))
@@ -80,32 +81,30 @@
     <div style="float: left; width: 100%">
 
         <table>
-            <tr><td><strong>Razem do zapłaty / Total Due</strong></td><td>$number.format('#0.00', $totalAmount) PLN</td></tr>
-            <tr><td>Zapłacono / Paid</td><td>0.00 PLN</td></tr>
-            <tr><td>Pozostało do zapłaty / Outstanding</td><td>$number.format('#0.00', $totalAmount) PLN</td></tr>
+            <tr><td><strong>$m['invoice.total_due']</strong></td><td>$number.format('#0.00', $totalAmount) $conf.getProperty('INVOICE_CURRENCY')</td></tr>
+            <tr><td>$m['invoice.paid']</td><td>0.00 $conf.getProperty('INVOICE_CURRENCY')</td></tr>
+            <tr><td>$m['invoice.outstanding']</td><td>$number.format('#0.00', $totalAmount) $conf.getProperty('INVOICE_CURRENCY')</td></tr>
             <tr><td></td></tr>
-            <tr><td>Słownie / In words</td><td>$c.toString('pl', $number.format('#0.00', $totalAmount), 'PLN') <br/>
-                $c.toString('en', $number.format('#0.00', $totalAmount), 'PLN')</td></tr>
+            <tr><td>$m['invoice.inwords']</td><td>$c.toString('pl', $number.format('#0.00', $totalAmount), $conf.getProperty('INVOICE_CURRENCY')) <br/>
+                $c.toString('en', $number.format('#0.00', $totalAmount), $conf.getProperty('INVOICE_CURRENCY'))</td></tr>
         </table>
         <hr/>
 
     </div>
 
     <div style="border: 1px black solid; float: left; width: 320px; text-align: center; padding-top: 50px;">
-
+        $invoice.name
 
         <div style="font-size: x-small;">
-            Imię, nazwisko i podpis osoby upoważnionej do odebrania dokumentu<br/>
-            Signature of the person authorised to receive the invoice
+            $m['invoice.receive_signature']
         </div>
     </div>
 
-    <div style="border: 1px black solid; float: right; width: 320px; text-align: center; padding-top: 32px;">
-        Jan Zborowski
+    <div style="border: 1px black solid; float: right; width: 320px; text-align: center; padding-top: 50px;">
+        $conf.getProperty('INVOICE_NAME')
 
         <div style="font-size: x-small;">
-            Imię, nazwisko i podpis osoby upoważnionej do wystawienia dokumentu<br/>
-            Signature of the person authorised to issue the invoice
+            $m['invoice.issue_signature']
         </div>
     </div>
 </body>

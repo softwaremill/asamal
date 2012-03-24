@@ -5,6 +5,7 @@ import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 
 import javax.inject.Inject;
@@ -33,6 +34,12 @@ public class InvoiceController extends ControllerBean {
 
         putInContext("invoice", invoice);
 
+        if (invoice.getStatus() == InvoiceStatus.UNPAID) {
+            putInContext("invoiceType", "Proforma");
+            putInContext("proformaId", "PROF/");
+        } else if (invoice.getStatus() != InvoiceStatus.CANCELLED) {
+            putInContext("invoiceType", "VAT");
+        }
     }
     
     public String toString(String locale, String value, String currency) {
