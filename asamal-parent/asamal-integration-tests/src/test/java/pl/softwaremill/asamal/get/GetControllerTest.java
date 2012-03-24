@@ -17,6 +17,7 @@ import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.common.util.dependency.D;
 
+import javax.ws.rs.core.Response;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -48,11 +49,11 @@ public class GetControllerTest extends ControllerTest {
         JAXPostHandler postHandler = getPostHandler();
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testMethod");
-        assertThat(output).isEqualTo("<html>\n" +
+        assertThat(output.getEntity()).isEqualTo("<html>\n" +
                 " <head>\n" +
                 "  <script type=\"text/javascript\" src=\"null/asamal/asamal.js\"></script>\n" +
                 " </head>\n" +
@@ -75,7 +76,7 @@ public class GetControllerTest extends ControllerTest {
                         "</body></html>";
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testMethod");
@@ -84,7 +85,7 @@ public class GetControllerTest extends ControllerTest {
         // check that only one viewHash was created
         assertThat(viewHashMap.keySet()).hasSize(1);
 
-        assertThat(output).isEqualTo("<html>\n" +
+        assertThat(output.getEntity()).isEqualTo("<html>\n" +
                 " <head>\n" +
                 "  <script type=\"text/javascript\" src=\"null/asamal/asamal.js\"></script>\n" +
                 " </head>\n" +
@@ -108,10 +109,10 @@ public class GetControllerTest extends ControllerTest {
                         "</body></html>";
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
-        assertThat(output).contains("Some Value From Named Bean");
+        assertThat(output.getEntity().toString()).contains("Some Value From Named Bean");
     }
 
     @Test
@@ -125,10 +126,10 @@ public class GetControllerTest extends ControllerTest {
         Locale.setDefault(Locale.ENGLISH);
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
-        assertThat(output).contains("Helo!");
+        assertThat(output.getEntity().toString()).contains("Helo!");
     }
 
     @Test
@@ -142,10 +143,10 @@ public class GetControllerTest extends ControllerTest {
         Locale.setDefault(Locale.GERMAN);
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
-        assertThat(output).contains("Guten Morgen!");
+        assertThat(output.getEntity().toString()).contains("Guten Morgen!");
     }
 
     @Test
@@ -157,7 +158,7 @@ public class GetControllerTest extends ControllerTest {
         }}));
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testWithParams", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testWithParams", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testWithParams_testParamContent");
@@ -172,7 +173,7 @@ public class GetControllerTest extends ControllerTest {
         }}));
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled())
@@ -185,7 +186,7 @@ public class GetControllerTest extends ControllerTest {
         JAXPostHandler postHandler = getPostHandler();
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testWithParams", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testWithParams", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testWithParams_null");
@@ -197,7 +198,7 @@ public class GetControllerTest extends ControllerTest {
         JAXPostHandler postHandler = getPostHandler();
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testWithParamsRequired", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testWithParamsRequired", null);
     }
 
     @Test(expected = HttpErrorException.class)
@@ -206,7 +207,7 @@ public class GetControllerTest extends ControllerTest {
         JAXPostHandler postHandler = getPostHandler();
 
         // when
-        String output = postHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
+        Response output = postHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
     }
 
 }

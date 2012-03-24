@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal.example.controller;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.Transactional;
@@ -41,7 +43,7 @@ public class TicketsTest {
     {
         return ShrinkWrap.create(JavaArchive.class, "test.jar")
                 .addPackages(true, "org.fest")
-                .addPackages(true, "com.google.common")
+                .addClasses(Multimap.class, Multiset.class)
                 .addPackage(TicketService.class.getPackage())
                 .addPackage(TicketsExceededException.class.getPackage())
                 .addPackage(Messages.class.getPackage())

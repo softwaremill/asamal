@@ -3,6 +3,7 @@ TICKET_CATEGORY:
     number_of_tickets: 10
     name: "test"
     description: "test ticket category"
+    invoice_description: "invoice test ticket"
     price: 100
 
 USER:
