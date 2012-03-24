@@ -39,18 +39,22 @@ public class TicketCategory extends BaseEntity {
     
     @Column(name = "price", nullable = false)
     private Integer price;
+
+    @Column(name = "invoice_description", nullable = false)
+    private String invoiceDescription;
     
     @OneToMany(mappedBy = "ticketCategory")
     private Set<Ticket> tickets;
 
     public TicketCategory(Date fromDate, Date toDate, Integer numberOfTickets, String name, String description,
-                          Integer price) {
+                          Integer price, String invoiceDescription) {
         this.fromDate = fromDate;
         this.toDate = toDate;
         this.numberOfTickets = numberOfTickets;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.invoiceDescription = invoiceDescription;
     }
 
     public TicketCategory() {
@@ -110,6 +114,14 @@ public class TicketCategory extends BaseEntity {
 
     public void setTickets(Set<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public String getInvoiceDescription() {
+        return invoiceDescription;
+    }
+
+    public void setInvoiceDescription(String invoiceDescription) {
+        this.invoiceDescription = invoiceDescription;
     }
 
     /**

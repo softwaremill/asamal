@@ -42,7 +42,11 @@
             <tr><td>$m['invoice.due_date']</td><td>$date.format('yyyy-MM-dd', $invoice.dueDate)</td></tr>
             <tr><td>$m['invoice.payment_method']</td><td>$m["invoice.pdf.method.$invoice.method"]</td></tr>
         </table>
-
+        #if($invoice.method == 'TRANSFER')
+            <strong>$m['invoice.bank.name']</strong> $conf.getProperty('INVOICE_BANK_NAME')
+            <strong>$m['invoice.bank.account']</strong> $conf.getProperty('INVOICE_IBAN') <br/>
+            <strong>$m['invoice.bank.code']</strong> $conf.getProperty('INVOICE_BANK_CODE')
+        #end
     </div>
 
 
@@ -62,9 +66,9 @@
         #set($totalAmount = 0)
 
         #foreach($ticketEntry in $invoice.getTicketsByCategory().asMap().entrySet())
-            <tr>
+            <tr #if($ticketNo % 2 == 1)style='background-color: #DCDCDC;'#end>
                 <td>$ticketNo</td>
-                <td>$ticketEntry.key.name</td>
+                <td>$ticketEntry.key.invoiceDescription</td>
                 <td>$ticketEntry.value.size()</td>
                 <td>$number.format("#0.00", $ticketEntry.key.price)</td>
                 <td>$number.format("#0.00", $math.mul($ticketEntry.key.price, $ticketEntry.value.size()))</td>
@@ -92,7 +96,7 @@
 
     </div>
 
-    <div style="border: 1px black solid; float: left; width: 320px; text-align: center; padding-top: 50px;">
+    <div style="border: 1px black solid; float: left; width: 320px; text-align: center; padding-top: 30px;">
         $invoice.name
 
         <div style="font-size: x-small;">
@@ -100,7 +104,7 @@
         </div>
     </div>
 
-    <div style="border: 1px black solid; float: right; width: 320px; text-align: center; padding-top: 50px;">
+    <div style="border: 1px black solid; float: right; width: 320px; text-align: center; padding-top: 30px;">
         $conf.getProperty('INVOICE_NAME')
 
         <div style="font-size: x-small;">

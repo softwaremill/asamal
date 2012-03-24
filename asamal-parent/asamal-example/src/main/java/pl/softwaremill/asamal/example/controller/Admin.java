@@ -23,6 +23,10 @@ public class Admin extends ControllerBean{
 
     @Inject
     private TicketService ticketService;
+    
+    private final static String[] TICKET_CATEGORY_PARAMS = new String[]{"ticketCat.name", "ticketCat.description",
+            "ticketCat.fromDate", "ticketCat.toDate", "ticketCat.numberOfTickets", "ticketCat.price",
+            "ticketCat.invoiceDescription"};
 
     public TicketCategory getTicketCat() {
         return ticketCat;
@@ -48,8 +52,7 @@ public class Admin extends ControllerBean{
 
     @Post
     public void addTicketCategory() {
-        doAutoBinding("ticketCat.name", "ticketCat.description", "ticketCat.fromDate", "ticketCat.toDate",
-                "ticketCat.numberOfTickets", "ticketCat.price");
+        doAutoBinding(TICKET_CATEGORY_PARAMS);
 
         try {
             ticketService.addTicketCategory(ticketCat);
@@ -64,8 +67,7 @@ public class Admin extends ControllerBean{
     public void editTicketCategory() {
         ticketCat = (TicketCategory) getObjectFromFlash("ticketCat");
 
-        doOptionalAutoBinding("ticketCat.name", "ticketCat.description", "ticketCat.fromDate", "ticketCat.toDate",
-                "ticketCat.numberOfTickets", "ticketCat.price");
+        doOptionalAutoBinding(TICKET_CATEGORY_PARAMS);
 
         ticketService.updateTicketCategory(ticketCat);
 

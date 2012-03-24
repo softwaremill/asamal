@@ -14,7 +14,10 @@
 <input type="textbox" name="ticketCat.price" value="$!ticketCat.price"/>
 <label>Number of tickets</label>
 <input type="textbox" name="ticketCat.numberOfTickets" value="$!ticketCat.numberOfTickets"/>
-
+<label>Description on the invoice</label>
+<textarea rows="10" name="ticketCat.invoiceDescription">
+    $!ticketCat.invoiceDescription
+</textarea>
 <script type="text/javascript">
     $(document).ready(function () {
         $("#fromDate").datepicker({ dateFormat:"yy-mm-dd" });

@@ -11,6 +11,9 @@ public enum Conf {
     INVOICE_VAT_RATE("23"),
     INVOICE_ID("Conference/2012/"),
     INVOICE_CURRENCY("PLN"),
+    INVOICE_IBAN("PL 123456789101112131415"),
+    INVOICE_BANK_NAME("Bank Of The Foo"),
+    INVOICE_BANK_CODE("BXFOO"),
 
     TICKETS_MAX("200")
     ;
