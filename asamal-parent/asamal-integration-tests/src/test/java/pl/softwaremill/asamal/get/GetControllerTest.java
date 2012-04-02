@@ -74,7 +74,7 @@ public class GetControllerTest extends ControllerTest {
         GetHandler getHandler = getGetHandler();
         TestResourceResolver.returnHtml =
                 "<html><body>" +
-                        "<form method='POST' action='action'>" +
+                        "<form method='POST' action='action' accept-charset='UTF-8'>" +
                         "<input type='text'/>" +
                         "</form>" +
                         "</body></html>";
@@ -94,7 +94,7 @@ public class GetControllerTest extends ControllerTest {
                 "  <script type=\"text/javascript\" src=\"null/asamal/asamal.js\"></script>\n" +
                 " </head>\n" +
                 " <body>\n" +
-                "  <form method=\"POST\" action=\"action\">\n" +
+                "  <form method=\"POST\" action=\"action\" accept-charset=\"UTF-8\">\n" +
                 "   <input type=\"text\" />\n" +
                 "   <input type=\"hidden\" name=\"asamalViewHash\" value=\""+
                     viewHashMap.keySet().iterator().next() +"\" />\n" +
