@@ -12,9 +12,11 @@ import pl.softwaremill.asamal.MockAsamalProducers;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
 import pl.softwaremill.asamal.exception.HttpErrorException;
+import pl.softwaremill.asamal.httphandler.AsamalViewHandler;
+import pl.softwaremill.asamal.httphandler.GetHandler;
 import pl.softwaremill.asamal.i18n.Messages;
-import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
+import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import pl.softwaremill.common.util.dependency.D;
 
 import javax.ws.rs.core.Response;
@@ -39,6 +41,8 @@ public class GetControllerTest extends ControllerTest {
                 .addClass(TestNamedBean.class)
                 .addClass(Messages.class)
                 .addClass(MockAsamalProducers.class)
+                .addClass(ViewHashGenerator.class)
+                .addClass(AsamalViewHandler.class)
                 .addPackage(TestResourceResolver.class.getPackage());
     }
 
@@ -46,10 +50,10 @@ public class GetControllerTest extends ControllerTest {
     public void shouldRunCorrectGetMethod() throws HttpErrorException {
 
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testMethod");
@@ -67,7 +71,7 @@ public class GetControllerTest extends ControllerTest {
     public void shouldAddHiddenTypeWithViewHashAndAsamalJS() throws HttpErrorException {
 
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
         TestResourceResolver.returnHtml =
                 "<html><body>" +
                         "<form method='POST' action='action'>" +
@@ -76,11 +80,11 @@ public class GetControllerTest extends ControllerTest {
                         "</body></html>";
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testMethod");
-        Map viewHashMap = (Map) session.getAttribute(JAXPostHandler.VIEWHASH_MAP);
+        Map viewHashMap = (Map) session.getAttribute(ViewHashGenerator.VIEWHASH_MAP);
 
         // check that only one viewHash was created
         assertThat(viewHashMap.keySet()).hasSize(1);
@@ -102,14 +106,14 @@ public class GetControllerTest extends ControllerTest {
     @Test
     public void shouldIncludeNamedBeansInContext() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
         TestResourceResolver.returnHtml =
                 "<html><body>" +
                         "$testNamedBean.value" +
                         "</body></html>";
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
         assertThat(output.getEntity().toString()).contains("Some Value From Named Bean");
@@ -118,7 +122,7 @@ public class GetControllerTest extends ControllerTest {
     @Test
     public void shouldUseI18nProperlyInDefault() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
         TestResourceResolver.returnHtml =
                 "<html><body>" +
                         "$m['helo']" +
@@ -126,7 +130,7 @@ public class GetControllerTest extends ControllerTest {
         Locale.setDefault(Locale.ENGLISH);
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
         assertThat(output.getEntity().toString()).contains("Helo!");
@@ -135,7 +139,7 @@ public class GetControllerTest extends ControllerTest {
     @Test
     public void shouldUseI18nProperlyInSpecificLocale() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
         TestResourceResolver.returnHtml =
                 "<html><body>" +
                         "$m['helo']" +
@@ -143,7 +147,7 @@ public class GetControllerTest extends ControllerTest {
         Locale.setDefault(Locale.GERMAN);
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testMethod", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testMethod", null);
 
         // then
         assertThat(output.getEntity().toString()).contains("Guten Morgen!");
@@ -152,13 +156,13 @@ public class GetControllerTest extends ControllerTest {
     @Test
     public void shouldPassAnnotatedParams() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
         producers.setMockAsamalParameters(new MockAsamalParameters(new HashMap<String, Object>(){{
             put("param", "testParamContent");
         }}));
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testWithParams", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testWithParams", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testWithParams_testParamContent");
@@ -167,13 +171,13 @@ public class GetControllerTest extends ControllerTest {
     @Test
     public void shouldPassAnnotatedObjectParams() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
         producers.setMockAsamalParameters(new MockAsamalParameters(new HashMap<String, Object>(){{
             put("param", new Object[]{"This", "is", "it"});
         }}));
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled())
@@ -183,10 +187,10 @@ public class GetControllerTest extends ControllerTest {
     @Test
     public void shouldReturnNullOnNonExistingAnnotatedParam() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testWithParams", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testWithParams", null);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testWithParams_null");
@@ -195,19 +199,19 @@ public class GetControllerTest extends ControllerTest {
     @Test(expected = HttpErrorException.class)
     public void shouldFailIfNoRequiredParam() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testWithParamsRequired", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testWithParamsRequired", null);
     }
 
     @Test(expected = HttpErrorException.class)
     public void shouldFailIfNoRequiredObjectParam() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        GetHandler getHandler = getGetHandler();
 
         // when
-        Response output = postHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
+        Response output = getHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
     }
 
 }

@@ -1,7 +1,7 @@
 package pl.softwaremill.asamal.velocity;
 
 import org.apache.velocity.context.Context;
-import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
+import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 
 import java.io.StringWriter;
 
@@ -59,7 +59,7 @@ public class TagHelper {
                 // rerendering list
                 .append(reRenderList).append(", '")
                 // viewHash
-                .append((String)velocityContext.get(JAXPostHandler.VIEWHASH)).append("')")
+                .append((String)velocityContext.get(ViewHashGenerator.VIEWHASH)).append("')")
                 .toString();
     }
     

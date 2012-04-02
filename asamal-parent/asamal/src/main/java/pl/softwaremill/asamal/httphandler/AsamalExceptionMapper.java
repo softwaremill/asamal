@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.jaxrs;
+package pl.softwaremill.asamal.httphandler;
 
 import pl.softwaremill.asamal.exception.HttpErrorException;
 

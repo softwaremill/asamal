@@ -7,10 +7,13 @@ import org.junit.Ignore;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
 import pl.softwaremill.asamal.controller.cdi.BootstrapCheckerExtension;
-import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
+import pl.softwaremill.asamal.httphandler.AsamalViewHandler;
+import pl.softwaremill.asamal.httphandler.GetHandler;
+import pl.softwaremill.asamal.httphandler.PostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.asamal.servlet.AsamalListener;
 import pl.softwaremill.asamal.viewhash.ViewDescriptor;
+import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import pl.softwaremill.common.util.dependency.BeanManagerDependencyProvider;
 import pl.softwaremill.common.util.dependency.D;
 
@@ -45,6 +48,12 @@ public class ControllerTest {
     protected BootstrapCheckerExtension bootstrapCheckerExtension;
 
     @Inject
+    protected ViewHashGenerator viewHashGenerator;
+
+    @Inject
+    protected AsamalViewHandler viewHandler;
+
+    @Inject
     protected MockAsamalProducers producers;
 
     protected HttpServletRequest req = mock(HttpServletRequest.class);
@@ -66,7 +75,7 @@ public class ControllerTest {
         when(req.getSession()).thenReturn(session);
         when(req.getServletContext()).thenReturn(servletContext);
 
-        // this is used to resolve BM by the JAXPostHandler
+        // this is used to resolve BM by the PostHandler
         when(servletContext.getAttribute(AsamalListener.BEAN_MANAGER)).thenReturn(bm);
     }
 
@@ -81,19 +90,23 @@ public class ControllerTest {
         producers.clear();
     }
 
-    protected JAXPostHandler getPostHandler() {
+    protected PostHandler getPostHandler() {
+        return new PostHandler(producers, viewHashGenerator, viewHandler);
+    }
+
+    protected GetHandler getGetHandler() {
         ResourceResolver.Factory factory = mock(ResourceResolver.Factory.class);
         TestResourceResolver resourceResolver = new TestResourceResolver(req);
         when(factory.create((HttpServletRequest) anyObject())).thenReturn(resourceResolver);
 
-        return new JAXPostHandler(factory, bootstrapCheckerExtension, producers);
+        return new GetHandler(producers, viewHandler, factory);
     }
 
     protected void addViewHash(String viewHash, String controller, String view) {
-        Map<String, ViewDescriptor> map = (Map<String, ViewDescriptor>) session.getAttribute(JAXPostHandler.VIEWHASH_MAP);
+        Map<String, ViewDescriptor> map = (Map<String, ViewDescriptor>) session.getAttribute(ViewHashGenerator.VIEWHASH_MAP);
         
         if (map == null) {
-            session.setAttribute(JAXPostHandler.VIEWHASH_MAP, map = new HashMap<String, ViewDescriptor>());
+            session.setAttribute(ViewHashGenerator.VIEWHASH_MAP, map = new HashMap<String, ViewDescriptor>());
         }
 
         map.put(viewHash, new ViewDescriptor(controller, view));

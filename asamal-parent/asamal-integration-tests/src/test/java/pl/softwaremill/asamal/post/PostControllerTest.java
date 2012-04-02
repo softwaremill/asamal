@@ -15,20 +15,18 @@ import pl.softwaremill.asamal.MockAsamalProducers;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
 import pl.softwaremill.asamal.exception.HttpErrorException;
+import pl.softwaremill.asamal.httphandler.AsamalViewHandler;
+import pl.softwaremill.asamal.httphandler.PostHandler;
 import pl.softwaremill.asamal.i18n.Messages;
-import pl.softwaremill.asamal.jaxrs.JAXPostHandler;
 import pl.softwaremill.asamal.resource.ResourceResolver;
+import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import pl.softwaremill.common.util.dependency.D;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -48,6 +46,8 @@ public class PostControllerTest extends ControllerTest {
                 .addClass(ResourceResolver.class)
                 .addClass(Messages.class)
                 .addClass(MockAsamalProducers.class)
+                .addClass(ViewHashGenerator.class)
+                .addClass(AsamalViewHandler.class)
                 .addPackage(TestResourceResolver.class.getPackage());
     }
 
@@ -55,13 +55,13 @@ public class PostControllerTest extends ControllerTest {
     public void shouldRunCorrectPostMethod() throws HttpErrorException {
 
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        PostHandler postHandler = getPostHandler();
         addViewHash("view-hash", "post", "doPost");
 
         // when
         String output = postHandler.handlePost(req, resp, "post", "doPost", null, new MultivaluedMapImpl<String, String>(){
             {
-                put(JAXPostHandler.VIEWHASH, Arrays.asList("view-hash"));
+                put(ViewHashGenerator.VIEWHASH, Arrays.asList("view-hash"));
             }
         });
 
@@ -76,7 +76,7 @@ public class PostControllerTest extends ControllerTest {
     public void shouldRunCorrectPostFormDataMethod() throws HttpErrorException {
 
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        PostHandler postHandler = getPostHandler();
         addViewHash("view-hash", "post", "doFormDataPost");
 
         MultipartFormDataInput dataInput = mock(MultipartFormDataInput.class);
@@ -89,7 +89,7 @@ public class PostControllerTest extends ControllerTest {
         entries.add(new EntryImpl<String, List<InputPart>>("b",
                 input(new InputPartImpl("b", MediaType.TEXT_PLAIN_TYPE),
                       new InputPartImpl("c", MediaType.TEXT_PLAIN_TYPE))));
-        entries.add(new EntryImpl<String, List<InputPart>>(JAXPostHandler.VIEWHASH,
+        entries.add(new EntryImpl<String, List<InputPart>>(ViewHashGenerator.VIEWHASH,
                 input(new InputPartImpl("view-hash", MediaType.TEXT_PLAIN_TYPE))));
 
         when(formValues.entrySet()).thenReturn(entries);
@@ -108,7 +108,7 @@ public class PostControllerTest extends ControllerTest {
             //FIXME expectedExceptionsMessageRegExp = ".*There is no viewHash send for this post query")
     public void shouldFailWhenNoViewHash() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        PostHandler postHandler = getPostHandler();
         addViewHash("view-hash", "post", "doFormDataPost");
 
         // when
@@ -119,7 +119,7 @@ public class PostControllerTest extends ControllerTest {
     @Test
     public void shouldPassWhenNoViewHashWithViewHashSkipped() throws HttpErrorException {
         // given
-        JAXPostHandler postHandler = getPostHandler();
+        PostHandler postHandler = getPostHandler();
         addViewHash("view-hash", "post", "doPost");
 
         // when
