@@ -141,6 +141,9 @@ public class AsamalViewHandler {
         Elements elements = document.select("form");
 
         for (Element element : elements) {
+            // on all forms, set the UTF-8
+            element.attr("accept-charset", "UTF-8");
+
             if (element.attr("method").toLowerCase().equals("post")) {
                 Element formInputWithHash = document.createElement("input");
                 formInputWithHash.attr("type", "hidden");

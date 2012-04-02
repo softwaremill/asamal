@@ -107,6 +107,11 @@ public class TicketService {
     }
 
     @Transactional
+    public Invoice updateInvoice(Invoice invoice) {
+        return entityManager.merge(invoice);
+    }
+
+    @Transactional
     public List<Ticket> getTicketsForUser(User user) {
         return entityManager.createQuery("select t from Ticket t where t.invoice.user = :user").
                 setParameter("user", user).getResultList();
