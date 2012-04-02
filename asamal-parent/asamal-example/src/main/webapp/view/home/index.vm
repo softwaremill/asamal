@@ -11,6 +11,7 @@
             <th>$m['home.ticket.name']</th>
             <th>$m['home.ticket.lastname']</th>
             <th>$m['home.ticket.status']</th>
+            <th>$m['home.ticket.invoice']</th>
         </tr>
         #foreach($ticket in $tickets)
             <tr>
@@ -18,6 +19,7 @@
                 <td>$ticket.firstName</td>
                 <td>$ticket.lastName</td>
                 <td>$m["home.ticket.status.$ticket.invoice.status"] $m["home.ticket.method.$ticket.invoice.method"]</td>
+                <td><a href="$tag.pdf('invoice', 'pdf')/$ticket.invoice.id/invoice.pdf">$m['home.ticket.invoice']</a></td>
             </tr>
         #end
         #if($tickets.isEmpty())
