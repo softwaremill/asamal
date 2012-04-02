@@ -19,7 +19,11 @@
                 <td>$ticket.firstName</td>
                 <td>$ticket.lastName</td>
                 <td>$m["home.ticket.status.$ticket.invoice.status"] $m["home.ticket.method.$ticket.invoice.method"]</td>
-                <td><a href="$tag.pdf('invoice', 'pdf')/$ticket.invoice.id/invoice.pdf">$m['home.ticket.invoice']</a></td>
+                <td>
+                    <a href="$tag.pdf('invoice', 'pdf')/$ticket.invoice.id/${c.getInvoiceId($ticket.invoice)}.pdf">
+                        $m['home.ticket.invoice']
+                    </a>
+                </td>
             </tr>
         #end
         #if($tickets.isEmpty())
