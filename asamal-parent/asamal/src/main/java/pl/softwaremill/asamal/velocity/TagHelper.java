@@ -63,6 +63,13 @@ public class TagHelper {
                 .toString();
     }
     
+    public String pdf(String controller, String view) {
+        StringWriter sw = new StringWriter();
+
+        return sw.append(contextPath).append("/pdf/").append(controller).
+                append("/").append(view).toString();
+    }
+    
     public String jsLink(String jsName) {
         return staticLink("js", jsName);
     }
