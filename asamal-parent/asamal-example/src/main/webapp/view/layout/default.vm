@@ -95,23 +95,37 @@
                         <li #if($c.name == 'login' && $view == 'register')class="active"#end>
                             <a href="$tag.link('login', 'register')">Register</a></li>
                     #end
+
+                </ul>
+
+                <ul class="nav pull-right">
                     #if($login.admin)
-                        <li #if($c.name == 'admin' && $view == 'tickets')class="active"#end>
-                            <a href="$tag.link('admin', 'tickets')">Tickets</a></li>
-                        <li #if($c.name == 'admin' && $view == 'approvePayments')class="active"#end>
-                            <a href="$tag.link('admin', 'approvePayments')">Payments</a></li>
-                        <li #if($c.name == 'admin' && $view == 'configuration')class="active"#end>
-                            <a href="$tag.link('admin', 'configuration')">Configuration</a></li>
+                        <li class="dropdown #if($c.name == 'admin')active #end">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                Admin
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu">
+
+                                <li #if($c.name == 'admin' && $view == 'tickets')class="active"#end>
+                                    <a href="$tag.link('admin', 'tickets')">Tickets</a></li>
+                                <li #if($c.name == 'admin' && $view == 'approvePayments')class="active"#end>
+                                    <a href="$tag.link('admin', 'approvePayments')">Payments</a></li>
+                                <li #if($c.name == 'admin' && $view == 'configuration')class="active"#end>
+                                    <a href="$tag.link('admin', 'configuration')">Configuration</a></li>
+                            </ul>
+                        </li>
                     #end
                 </ul>
 
                 <p class="navbar-text pull-right">
                     #if($login.loggedIn)
                         Logged in as $login.user.username
-                        <a href="$tag.link('login', 'logout')">Logout</a></p>
+                        <a href="$tag.link('login', 'logout')">Logout</a>
                     #else
                         <a href="$tag.link('login', 'login')">Log in</a>
                     #end
+                </p>
             </div>
             <!--/.nav-collapse -->
         </div>
@@ -140,6 +154,10 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="$tag.jsLink("bootstrap.min.js")"></script>
+<script src="$tag.jsLink("bootstrap-dropdown.js")"></script>
 
+<script type="text/javascript">
+    $('.dropdown-toggle').dropdown()
+</script>
 </body>
 </html>

@@ -44,9 +44,9 @@
                         </td>
                         <td>
                             #if($invoice.status == 'UNPAID')
-                                <input type="button" value="$m['admin.approve.approve']"
+                                <input class="btn btn-success" type="button" value="$m['admin.approve.approve']"
                                        onclick="return $tag.reRender('admin', 'approve', "['invoiceId$invoice.id', 'paymentDate$invoice.id']", "'payments'")"/>
-                                <input type="button" value="$m['admin.approve.cancel']"
+                                <input class="btn btn-danger" type="button" value="$m['admin.approve.cancel']"
                                        onclick="return $tag.reRender('admin', 'cancel', "'invoiceId$invoice.id'", "'payments'")"/>
                             #end
                         </td>
