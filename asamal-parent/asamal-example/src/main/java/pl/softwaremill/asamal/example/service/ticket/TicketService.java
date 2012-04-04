@@ -3,6 +3,7 @@ package pl.softwaremill.asamal.example.service.ticket;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.security.User;
+import pl.softwaremill.asamal.example.model.ticket.Discount;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
@@ -119,5 +120,10 @@ public class TicketService {
 
     public Invoice loadInvoice(Long invoiceId) {
         return entityManager.find(Invoice.class, invoiceId);
+    }
+
+    @Transactional
+    public void addDiscount(Discount discount) {
+        entityManager.persist(discount);
     }
 }

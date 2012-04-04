@@ -7,10 +7,7 @@ import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
-import pl.softwaremill.asamal.example.model.ticket.Invoice;
-import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
-import pl.softwaremill.asamal.example.model.ticket.Ticket;
-import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.model.ticket.*;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -107,6 +104,24 @@ public class Admin extends ControllerBean{
         putInContext("invoice", invoice);
     }
 
+    private Discount discount = new Discount();
+
+    @Get
+    public void discounts() { }
+
+    @Post
+    public void addDiscount() {
+        doAutoBinding("discount.discountCode", "discount.discountAmount", "discount.numberOfUses");
+
+        boolean beanOk = validateBean("discount", discount);
+
+        if (beanOk) {
+            ticketService.addDiscount(discount);
+
+            addMessageToFlash("Discount added", AsamalContext.MessageSeverity.SUCCESS);
+        }
+    }
+
     public BigDecimal countTotalAmount(Invoice invoice) {
         BigDecimal amount = new BigDecimal("0.00");
 
@@ -174,5 +189,9 @@ public class Admin extends ControllerBean{
         configBean.setProperties(null);
 
         redirect("configuration");
+    }
+
+    public Discount getDiscount() {
+        return discount;
     }
 }

@@ -16,11 +16,7 @@ import pl.softwaremill.asamal.example.model.BaseEntity;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.conf.ConfigurationProperty;
 import pl.softwaremill.asamal.example.model.security.User;
-import pl.softwaremill.asamal.example.model.ticket.Invoice;
-import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
-import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
-import pl.softwaremill.asamal.example.model.ticket.Ticket;
-import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.model.ticket.*;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -73,7 +69,7 @@ public class TicketsTest {
 
         Set<Ticket> tickets = new HashSet<Ticket>();
 
-        tickets.add(new Ticket("Tomek", "Szymanski", tc));
+        tickets.add(new Ticket("Tomek", "Szymanski", tc, null));
 
         Invoice i = new Invoice(tickets, "Paying", "Customer", "123-456", "Address", "00123", "City", "Country",
                 InvoiceStatus.UNPAID, PaymentMethod.TRANSFER, u, new Date(), null);

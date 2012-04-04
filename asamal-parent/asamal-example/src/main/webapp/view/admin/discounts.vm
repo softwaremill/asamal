@@ -1,0 +1,21 @@
+#layout('default')
+
+#region('content')
+    <form action="$tag.formAction('admin', 'addDiscount')" method="post"
+          class="form-horizontal">
+
+        <label>Discount Code</label>
+        <input type="text" name="discount.discountCode"/>
+        #err('discount.discountCode')
+
+        <label>Discount Amount</label>
+        <input type="text" name="discount.discountAmount"/>
+        #err('discount.discountAmount')
+
+        <label>Number of Uses</label>
+        <input type="text" name="discount.numberOfUses"/>
+        #err('discount.numberOfUses')
+
+        <input type="submit" value="Add Discount"/>
+    </form>
+#end
