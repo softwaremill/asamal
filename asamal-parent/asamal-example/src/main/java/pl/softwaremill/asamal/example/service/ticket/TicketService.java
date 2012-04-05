@@ -14,6 +14,7 @@ import pl.softwaremill.common.cdi.transaction.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
@@ -129,5 +130,14 @@ public class TicketService {
 
     public List<Discount> getDiscounts() {
         return entityManager.createQuery("select d from Discount d").getResultList();
+    }
+
+    public Discount loadDiscount(String discountCode) {
+        try {
+            return (Discount) entityManager.createQuery("select d from Discount d where d.discountCode = :discountCode")
+                    .setParameter("discountCode", discountCode).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 }

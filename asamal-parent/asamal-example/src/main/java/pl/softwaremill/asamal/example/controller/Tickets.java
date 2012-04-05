@@ -8,23 +8,12 @@ import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
-import pl.softwaremill.asamal.example.model.ticket.Invoice;
-import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
-import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
-import pl.softwaremill.asamal.example.model.ticket.Ticket;
-import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.model.ticket.*;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Tickets controller
@@ -75,6 +64,27 @@ public class Tickets extends ControllerBean implements Serializable {
         bindTickets();
 
         boolean allGood = validateBean("invoice", invoice);
+
+        String discountCode = getParameter("invoice.discount");
+        Discount discount = null;
+
+        if (discountCode != null && discountCode.length() > 0) {
+            discount = ticketService.loadDiscount(discountCode);
+
+            if (discount == null) {
+                allGood = false;
+                addMessageToFlash(getFromMessageBundle("discount.code.wrong"), AsamalContext.MessageSeverity.ERR);
+            }
+            else {
+                if (discount.getNumberOfUses() > 0 && discount.getNumberOfUses() <= discount.getNumberOfTickets()) {
+                    allGood = false;
+                    addMessageToFlash(getFromMessageBundle("discount.code.expired"), AsamalContext.MessageSeverity.ERR);
+                }
+
+                invoice.setDiscount(discount);
+            }
+
+        }
 
         String paymentMethod = getParameter("paymentMethod");
 

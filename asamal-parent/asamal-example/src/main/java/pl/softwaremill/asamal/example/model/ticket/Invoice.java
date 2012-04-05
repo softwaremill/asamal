@@ -68,13 +68,16 @@ public class Invoice extends BaseEntity{
     @Column(name = "due_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dueDate;
+
+    @ManyToOne
+    private Discount discount;
     
     public Invoice() {
     }
 
     public Invoice(Set<Ticket> tickets, String name, String companyName, String vat, String address,
                    String postalCode, String city, String country, InvoiceStatus status, PaymentMethod method, User user, Date dateCreated,
-                   Date datePaid) {
+                   Date datePaid, Discount discount) {
         this.tickets = tickets;
         this.name = name;
         this.companyName = companyName;
@@ -88,6 +91,7 @@ public class Invoice extends BaseEntity{
         this.user = user;
         this.dateCreated = dateCreated;
         this.datePaid = datePaid;
+        this.discount = discount;
         this.dueDate = new Date(dateCreated.getTime() + SEVEN_DAYS);
     }
 
@@ -213,6 +217,14 @@ public class Invoice extends BaseEntity{
         return ret;
     }
 
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+    }
+
     @Override
     public String toString() {
         return "Invoice{" +
@@ -230,6 +242,7 @@ public class Invoice extends BaseEntity{
                 ", dateCreated=" + dateCreated +
                 ", datePaid=" + datePaid +
                 ", dueDate=" + dueDate +
+                ", discount=" + discount +
                 '}';
     }
 }

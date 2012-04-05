@@ -56,6 +56,9 @@
             <th>$m['invoice.name_service']</th>
             <th>$m['invoice.qty']</th>
             <th>$m['invoice.unit_net_price']</th>
+            #if($invoice.discount)
+                <th>$m['invoice.discount']</th>
+            #end
             <th>$m['invoice.total_net_price']</th>
             <th>$m['invoice.vat_rate']</th>
             <th>$m['invoice.vat_amount']</th>
@@ -71,10 +74,17 @@
                 <td>$ticketEntry.key.invoiceDescription</td>
                 <td>$ticketEntry.value.size()</td>
                 <td>$number.format("#0.00", $ticketEntry.key.price)</td>
-                <td>$number.format("#0.00", $math.mul($ticketEntry.key.price, $ticketEntry.value.size()))</td>
+                #if($invoice.discount)
+                    <td>$invoice.discount.discountAmount %</td>
+                    #set($totalNet = $math.mul($math.mul($ticketEntry.key.price, $ticketEntry.value.size()),$math.sub(1,$math.div($invoice.discount.discountAmount, 100))))
+                #else
+                    #set($totalNet = $math.mul($ticketEntry.key.price, $ticketEntry.value.size()))
+                #end
+
+                <td>$number.format("#0.00", $totalNet)</td>
                 <td>$vat %</td>
-                <td>$number.format("#0.00", $math.mul($math.mul($ticketEntry.key.price, $ticketEntry.value.size()), $math.div($vat, 100)))</td>
-                #set($totalPerCategory = $math.mul($math.mul($ticketEntry.key.price, $ticketEntry.value.size()), $math.add(1,$math.div($vat, 100))))
+                <td>$number.format("#0.00", $math.mul($totalNet, $math.div($vat, 100)))</td>
+                #set($totalPerCategory = $math.mul($totalNet, $math.add(1,$math.div($vat, 100))))
                 <td>$number.format("#0.00", $totalPerCategory)</td>
                 #set($totalAmount = $totalAmount + $totalPerCategory)
             </tr>

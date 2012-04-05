@@ -13,36 +13,52 @@
                     <div class="row">
                         <div class="span6">
                             <label>$m['tickets.buy.name']</label>
-                            <input type="text" name="invoice.name"/>
+                            <input type="text" name="invoice.name" value="$!c.invoice.name"/>
                             #err('invoice.name')
                             <label>$m['tickets.buy.company']</label>
-                            <input type="text" name="invoice.companyName"/>
+                            <input type="text" name="invoice.companyName" value="$!c.invoice.companyName"/>
                             #err('invoice.companyName')
                             <label>$m['tickets.buy.vat']</label>
-                            <input type="text" name="invoice.vat"/>
+                            <input type="text" name="invoice.vat" value="$!c.invoice.vat"/>
                             #err('invoice.vat')
                             <label>$m['tickets.buy.address']</label>
-                            <input type="text" name="invoice.address"/>
+                            <input type="text" name="invoice.address" value="$!c.invoice.address"/>
                             #err('invoice.address')
                             <label>$m['tickets.buy.postal']</label>
-                            <input type="text" name="invoice.postalCode"/>
+                            <input type="text" name="invoice.postalCode" value="$!c.invoice.postalCode"/>
                             #err('invoice.postalCode')
                             <label>$m['tickets.buy.city']</label>
-                            <input type="text" name="invoice.city"/>
+                            <input type="text" name="invoice.city" value="$!c.invoice.city"/>
                             #err('invoice.city')
                             <label>$m['tickets.buy.country']</label>
                             <select name="invoice.country">
                                 <option label="-" value=""/>
                                 #foreach($country in $countries.countries)
-                                    <option label="$country.name" value="$country.name"/>
+                                    <option label="$country.name" value="$country.name"
+                                            #if($country.name == $c.invoice.country)
+                                                selected="selected"
+                                            #end
+                                            />
                                 #end
                             </select>
                             #err('invoice.country')
 
+                            <label>$m['tickets.buy.discount']</label>
+                            <input type="text" name="invoice.discount" value="$!c.invoice.discount"/>
+                            #err('invoice.discount')
+
                             <h3>$m['tickets.payment.method']</h3>
-                            <input type="radio" name="paymentMethod" value="paypal" /> $m['tickets.method.paypal']
+                            <input type="radio" name="paymentMethod" value="paypal"
+                                #if($c.invoice.method == 'PAYPAL')
+                                   checked="true"
+                                #end
+                                    /> $m['tickets.method.paypal']
                             <br/>
-                            <input type="radio" name="paymentMethod" value="transfer" /> $m['tickets.method.bank']
+                            <input type="radio" name="paymentMethod" value="transfer"
+                                #if($c.invoice.method == 'TRANSFER')
+                                   checked="true"
+                                #end
+                                    /> $m['tickets.method.bank']
                         </div>
                         <div id="tickets-form" class="span6">
                             <h3>$m['tickets.buy']</h3>

@@ -34,7 +34,7 @@ public class Discount extends BaseEntity {
     private Integer numberOfUses;
 
     @OneToMany(mappedBy = "discount")
-    private Set<Ticket> tickets;
+    private Set<Invoice> invoices;
 
     public String getDiscountCode() {
         return discountCode;
@@ -60,11 +60,21 @@ public class Discount extends BaseEntity {
         this.numberOfUses = numberOfUses;
     }
 
-    public Set<Ticket> getTickets() {
-        return tickets;
+    public Set<Invoice> getInvoices() {
+        return invoices;
     }
 
-    public void setTickets(Set<Ticket> tickets) {
-        this.tickets = tickets;
+    public void setInvoices(Set<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    public Integer getNumberOfTickets() {
+        Integer tickets = 0;
+
+        for (Invoice invoice : invoices) {
+            tickets += invoice.getTickets().size();
+        }
+
+        return tickets;
     }
 }

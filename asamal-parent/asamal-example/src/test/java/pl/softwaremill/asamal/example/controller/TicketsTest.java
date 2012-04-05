@@ -69,10 +69,10 @@ public class TicketsTest {
 
         Set<Ticket> tickets = new HashSet<Ticket>();
 
-        tickets.add(new Ticket("Tomek", "Szymanski", tc, null));
+        tickets.add(new Ticket("Tomek", "Szymanski", tc));
 
         Invoice i = new Invoice(tickets, "Paying", "Customer", "123-456", "Address", "00123", "City", "Country",
-                InvoiceStatus.UNPAID, PaymentMethod.TRANSFER, u, new Date(), null);
+                InvoiceStatus.UNPAID, PaymentMethod.TRANSFER, u, new Date(), null, null);
         // when
         ticketService.addInvoice(i);
 

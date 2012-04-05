@@ -23,17 +23,13 @@ public class Ticket extends BaseEntity{
     @ManyToOne
     private TicketCategory ticketCategory;
 
-    @ManyToOne
-    private Discount discount;
-
     public Ticket() {
     }
 
-    public Ticket(String firstName, String lastName, TicketCategory ticketCategory, Discount discount) {
+    public Ticket(String firstName, String lastName, TicketCategory ticketCategory) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.ticketCategory = ticketCategory;
-        this.discount = discount;
     }
 
     public Invoice getInvoice() {
@@ -68,11 +64,4 @@ public class Ticket extends BaseEntity{
         this.ticketCategory = ticketCategory;
     }
 
-    public Discount getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(Discount discount) {
-        this.discount = discount;
-    }
 }
