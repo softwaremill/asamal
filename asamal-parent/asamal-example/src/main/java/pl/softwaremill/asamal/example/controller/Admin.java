@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Controller("admin")
 @Secure("#{login.admin}")
@@ -111,7 +112,11 @@ public class Admin extends ControllerBean{
 
     @Post
     public void addDiscount() {
-        doAutoBinding("discount.discountCode", "discount.discountAmount", "discount.numberOfUses");
+        doOptionalAutoBinding("discount.discountCode", "discount.discountAmount", "discount.numberOfUses");
+
+        if ("Unlimited".equals(getParameter("discount.unlimited"))) {
+            discount.setNumberOfUses(-1);
+        }
 
         boolean beanOk = validateBean("discount", discount);
 
@@ -119,6 +124,10 @@ public class Admin extends ControllerBean{
             ticketService.addDiscount(discount);
 
             addMessageToFlash("Discount added", AsamalContext.MessageSeverity.SUCCESS);
+
+            redirect("discounts");
+        } else {
+            includeView("discounts");
         }
     }
 
@@ -189,6 +198,10 @@ public class Admin extends ControllerBean{
         configBean.setProperties(null);
 
         redirect("configuration");
+    }
+
+    public List<Discount> getDiscounts() {
+        return ticketService.getDiscounts();
     }
 
     public Discount getDiscount() {

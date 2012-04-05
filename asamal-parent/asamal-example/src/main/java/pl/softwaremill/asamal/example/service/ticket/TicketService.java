@@ -126,4 +126,8 @@ public class TicketService {
     public void addDiscount(Discount discount) {
         entityManager.persist(discount);
     }
+
+    public List<Discount> getDiscounts() {
+        return entityManager.createQuery("select d from Discount d").getResultList();
+    }
 }

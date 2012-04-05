@@ -1,21 +1,47 @@
 #layout('default')
 
 #region('content')
+
+    <table>
+        <tr>
+            <th>$m['discount.code']</th>
+            <th>$m['discount.amount']</th>
+            <th>$m['discount.number']</th>
+        </tr>
+        #foreach($discount in $c.discounts)
+            <tr>
+                <td>$discount.discountCode</td>
+                <td>$discount.discountAmount</td>
+                <td>
+                    #if($discount.numberOfUses > 0)
+                        $discount.numberOfUses
+                    #else
+                        $m['discount.number.unlimited']
+                    #end
+                </td>
+            </tr>
+        #end
+    </table>
+
     <form action="$tag.formAction('admin', 'addDiscount')" method="post"
           class="form-horizontal">
 
-        <label>Discount Code</label>
+        <label>$m['discount.code']</label>
         <input type="text" name="discount.discountCode"/>
         #err('discount.discountCode')
 
-        <label>Discount Amount</label>
+        <label>$m['discount.amount']</label>
         <input type="text" name="discount.discountAmount"/>
         #err('discount.discountAmount')
 
-        <label>Number of Uses</label>
-        <input type="text" name="discount.numberOfUses"/>
+        <label>$m['discount.number']</label>
+        <input type="text" name="discount.numberOfUses" id="discount.numberOfUses"/>
         #err('discount.numberOfUses')
 
-        <input type="submit" value="Add Discount"/>
+        <input type="checkbox" name="discount.unlimited"
+               onchange="document.getElementById('discount.numberOfUses').disabled = this.checked" value="Unlimited">
+            $m['discount.number.unlimited']</input>
+
+        <input type="submit" value="$m['discount.add']"/>
     </form>
 #end
