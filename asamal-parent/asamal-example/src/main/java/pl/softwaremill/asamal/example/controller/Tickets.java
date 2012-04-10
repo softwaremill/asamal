@@ -10,6 +10,9 @@ import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
+import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotal;
+import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotals;
+import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotalsCounter;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Discount;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
@@ -25,7 +28,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -59,7 +61,10 @@ public class Tickets extends ControllerBean implements Serializable {
 
     @Inject
     private LoginBean loginBean;
-    
+
+    @Inject
+    private InvoiceTotalsCounter invoiceTotalsCounter;
+
     @Get
     public void buy() {
         putInContext("toBePaid", 0);
@@ -205,32 +210,17 @@ public class Tickets extends ControllerBean implements Serializable {
     }
 
     public String paypalButton() {
-        PaypalButtonGenerator pbg = new PaypalButtonGenerator("sell_1332792798_per@softwaremill.pl", true,
-                configurationBean.getProperty(Conf.INVOICE_CURRENCY));
+        PaypalButtonGenerator pbg = new PaypalButtonGenerator(configurationBean.getProperty(Conf.PAYPAL_EMAIL),
+                configurationBean.getBooleanProperty(Conf.PAYPAL_SANDBOX),
+                configurationBean.getProperty(Conf.INVOICE_CURRENCY)).withInvoiceNumber(String.valueOf(invoice.getId()));
 
-        for (Map.Entry<TicketCategory, Collection<Ticket>> invoiceEntry :
-                invoice.getTicketsByCategory().asMap().entrySet()) {
-            TicketCategory category = invoiceEntry.getKey();
+        InvoiceTotals invoiceTotals = invoiceTotalsCounter.countInvoice(invoice);
 
-            Discount discount = invoice.getDiscount();
-
-            int numberOfTickets = invoiceEntry.getValue().size();
-
-            BigDecimal price = new BigDecimal(category.getPrice()).
-                    multiply(new BigDecimal(numberOfTickets));
-
-            if (discount != null) {
-                price = price.multiply(new BigDecimal(1).subtract(
-                        new BigDecimal(discount.getDiscountAmount()).divide(new BigDecimal(100))));
-            }
-
-            BigDecimal vatAmount = price.multiply(new BigDecimal(configurationBean.getProperty(Conf.INVOICE_VAT_RATE))
-                    .divide(new BigDecimal(100)));
-
-            pbg.addItem(numberOfTickets + " x " + category.getName(),
-                    price.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString(),
+        for (InvoiceTotal invoiceTotal : invoiceTotals.getAllTotals()) {
+            pbg.addItem(invoiceTotal.getNumberOfTickets() + " x " + invoiceTotal.getCategory().getName(),
+                    invoiceTotal.getAmount().setScale(2, BigDecimal.ROUND_HALF_DOWN).toString(),
                     "0",
-                    vatAmount.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString());
+                    invoiceTotal.getVatAmount().setScale(2, BigDecimal.ROUND_HALF_DOWN).toString());
         }
 
         return pbg.build();

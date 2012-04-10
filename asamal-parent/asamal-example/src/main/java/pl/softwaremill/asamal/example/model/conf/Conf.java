@@ -15,12 +15,26 @@ public enum Conf {
     INVOICE_BANK_NAME("Bank Of The Foo"),
     INVOICE_BANK_CODE("BXFOO"),
 
-    TICKETS_MAX("200")
+    TICKETS_MAX("200"),
+
+    PAYPAL_SANDBOX("true", true),
+    PAYPAL_EMAIL("email_paypal@test.com")
     ;
 
     final public String defaultValue;
+    final boolean bool;
 
     private Conf(String defaultValue) {
         this.defaultValue = defaultValue;
+        bool = false;
+    }
+
+    private Conf(String defaultValue, boolean bool) {
+        this.defaultValue = defaultValue;
+        this.bool = bool;
+    }
+
+    public boolean isBool() {
+        return bool;
     }
 }

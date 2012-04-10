@@ -26,6 +26,20 @@ public class ConfigurationService {
 
         entityManager.merge(property);
     }
+
+    @Transactional
+    public void saveProperty(Conf conf, Boolean value) {
+        ConfigurationProperty property = entityManager.find(ConfigurationProperty.class, conf.toString());
+
+        if (property == null) {
+            property = new ConfigurationProperty();
+            property.setKey(conf.toString());
+        }
+
+        property.setValue(value.toString());
+
+        entityManager.merge(property);
+    }
     
     @Transactional
     public ConfigurationProperty getProperty(Conf conf) {

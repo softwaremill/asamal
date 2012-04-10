@@ -3,13 +3,54 @@
 #region('content')
     <h1>$m['pay.welcome']</h1>
 
+    <h3>$m['pay.invoice']</h3>
+
+    #set($totals = $totalsCounter.countInvoice($invoice))
+
+    <table class="table table-striped">
+        <tr>
+            <th>Name</th>
+            <th>Amount</th>
+            <th>VAT</th>
+        </tr>
+        #foreach($total in $totals.allTotals)
+            <tr>
+                <td>$total.numberOfTickets x $total.category.name</td>
+                <td>$total.amount</td>
+                <td>$total.vatAmount</td>
+            </tr>
+        #end
+        <tr>
+            <th>SUM</th>
+            <th>$totals.totalAmount</th>
+            <th>$totals.totalVat</th>
+        </tr>
+        #if($totals.discounted)
+        <tr>
+            <th colspan="2">Applied discount:</th>
+            <th>$totals.discount.discountAmount %</th>
+        </tr>
+        #end
+        <tr>
+            <th colspan="2">Total Due:</th>
+            <th>$totals.totalGrossAmount</th>
+        </tr>
+    </table>
+
     <div id="pay" class="well">
 
-        $m["pay.thankyou.$invoice.method"]
+
 
         #if($invoice.method == 'TRANSFER')
-
+            $m.getFromBundle('pay.thankyou.TRANSFER', $conf.getProperty('INVOICE_IBAN'),
+                $conf.getProperty('INVOICE_BANK_NAME'),
+                $conf.getProperty('INVOICE_BANK_CODE'),
+                "$totals.totalGrossAmount $conf.getProperty('INVOICE_CURRENCY')",
+                "$conf.getProperty('INVOICE_ID')/$invoice.id")
         #elseif ($invoice.method == 'PAYPAL')
+            $m["pay.thankyou.PAYPAL"]
+            <br/>
+            <br/>
             $c.paypalButton()
         #end
     </div>

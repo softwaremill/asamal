@@ -42,6 +42,17 @@ public class ConfigurationBean implements Serializable {
     public String getProperty(String conf) {
         return getProperty(Conf.valueOf(conf));
     }
+
+    public Boolean getBooleanProperty(Conf conf) {
+        if (!conf.isBool()) {
+            throw new RuntimeException("Trying to access non-bool property as Boolean");
+        }
+        return Boolean.parseBoolean(getProperties().get(conf));
+    }
+
+    public Boolean getBooleanProperty(String conf) {
+        return getBooleanProperty(Conf.valueOf(conf));
+    }
     
     public Integer getAsInt(String conf) {
         return Integer.parseInt(getProperty(conf));

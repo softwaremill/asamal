@@ -38,36 +38,10 @@
         </table>
     #end
 
-##    <table class="table table-striped">
-##        <tr>
-##            <th>$m['home.ticket.category']</th>
-##            <th>$m['home.ticket.name']</th>
-##            <th>$m['home.ticket.lastname']</th>
-##            <th>$m['home.ticket.status']</th>
-##            <th>$m['home.ticket.invoice']</th>
-##        </tr>
-##        #foreach($invoice in $invoices)
-##            <tr>
-##                <td>$ticket.ticketCategory.name</td>
-##                <td>$ticket.firstName</td>
-##                <td>$ticket.lastName</td>
-##                <td>
-##                    $m["home.ticket.status.$ticket.invoice.status"] $m["home.ticket.method.$ticket.invoice.method"]
-##                    #if($ticket.invoice.status == 'UNPAID')
-##                        <a href="$tag.link('tickets', 'pay')/$ticket.invoice.id">$m['home.ticket.pay']</a>
-##                    #end
-##                </td>
-##                <td>
-##                    <a href="$tag.pdf('invoice', 'pdf')/$ticket.invoice.id/${c.getInvoiceId($ticket.invoice)}.pdf">
-##                        $m['home.ticket.invoice']
-##                    </a>
-##                </td>
-##            </tr>
-##        #end
-##        #if($tickets.isEmpty())
-##            <tr>
-##                <td colspan="3"><i>$m['home.tickets.notickets']</i></td>
-##            </tr>
-##        #end
-##    </table>
+    #if($invoices.isEmpty())
+        <i>$m['home.tickets.notickets']</i>
+        <a href="$tag.link('tickets', 'buy')">
+            <button class="btn btn-warning">Buy Now</button>
+        </a>
+    #end
 #end

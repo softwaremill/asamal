@@ -7,7 +7,11 @@ import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
-import pl.softwaremill.asamal.example.model.ticket.*;
+import pl.softwaremill.asamal.example.model.ticket.Discount;
+import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
+import pl.softwaremill.asamal.example.model.ticket.Ticket;
+import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -189,7 +193,17 @@ public class Admin extends ControllerBean{
     @Post
     public void saveConfig() {
         for (Conf conf : Conf.values()) {
-            configurationService.saveProperty(conf, getParameter(conf.toString()));
+            String parameter = getParameter(conf.toString());
+
+            if (conf.isBool()) {
+                if ("on".equals(parameter)) {
+                    parameter = "true";
+                }
+                else {
+                    parameter = "false";
+                }
+            }
+            configurationService.saveProperty(conf, parameter);
         }
 
         addMessageToFlash(getFromMessageBundle("configuration.saved"), AsamalContext.MessageSeverity.SUCCESS);
