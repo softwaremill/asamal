@@ -19,4 +19,11 @@ public class ControllerImpl implements Controller{
     public Class<? extends Annotation> annotationType() {
         return Controller.class;
     }
+
+    @Override
+    public String toString() {
+        return "ControllerImpl{" +
+                "value='" + value + '\'' +
+                '}';
+    }
 }

@@ -147,6 +147,10 @@ public abstract class ControllerBean {
         redirect(getName(), view);
     }
 
+    public void redirect(String view, PageParameters pageParameters) {
+        redirect(getName(), view, pageParameters);
+    }
+
     /**
      * Gets the parameter's single (or first) value
      *

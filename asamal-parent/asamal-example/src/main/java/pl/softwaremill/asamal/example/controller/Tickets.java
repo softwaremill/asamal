@@ -2,18 +2,36 @@ package pl.softwaremill.asamal.example.controller;
 
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
+import pl.softwaremill.asamal.controller.PageParameters;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
-import pl.softwaremill.asamal.example.model.ticket.*;
+import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
+import pl.softwaremill.asamal.example.model.conf.Conf;
+import pl.softwaremill.asamal.example.model.ticket.Discount;
+import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
+import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
+import pl.softwaremill.asamal.example.model.ticket.Ticket;
+import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
+import pl.softwaremill.common.paypal.button.PaypalButtonGenerator;
 
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Tickets controller
@@ -29,6 +47,9 @@ public class Tickets extends ControllerBean implements Serializable {
 
     @Inject
     private TicketService ticketService;
+
+    @Inject
+    private ConfigurationBean configurationBean;
     
     private Invoice invoice = new Invoice();
     
@@ -133,7 +154,7 @@ public class Tickets extends ControllerBean implements Serializable {
             ticketService.addInvoice(invoice);
 
             addMessageToFlash(getFromMessageBundle("tickets.book.ok"), AsamalContext.MessageSeverity.SUCCESS);
-            redirect("home", "index");
+            redirect("pay", new PageParameters(invoice.getId()));
         }
     }
 
@@ -174,6 +195,45 @@ public class Tickets extends ControllerBean implements Serializable {
         }
 
         putInContext("toBePaid", toBePaid);
+    }
+
+    @Get
+    public void pay() {
+        invoice = ticketService.loadInvoice(Long.parseLong(getExtraPath()[0]));
+
+        putInContext("invoice", invoice);
+    }
+
+    public String paypalButton() {
+        PaypalButtonGenerator pbg = new PaypalButtonGenerator("sell_1332792798_per@softwaremill.pl", true,
+                configurationBean.getProperty(Conf.INVOICE_CURRENCY));
+
+        for (Map.Entry<TicketCategory, Collection<Ticket>> invoiceEntry :
+                invoice.getTicketsByCategory().asMap().entrySet()) {
+            TicketCategory category = invoiceEntry.getKey();
+
+            Discount discount = invoice.getDiscount();
+
+            int numberOfTickets = invoiceEntry.getValue().size();
+
+            BigDecimal price = new BigDecimal(category.getPrice()).
+                    multiply(new BigDecimal(numberOfTickets));
+
+            if (discount != null) {
+                price = price.multiply(new BigDecimal(1).subtract(
+                        new BigDecimal(discount.getDiscountAmount()).divide(new BigDecimal(100))));
+            }
+
+            BigDecimal vatAmount = price.multiply(new BigDecimal(configurationBean.getProperty(Conf.INVOICE_VAT_RATE))
+                    .divide(new BigDecimal(100)));
+
+            pbg.addItem(numberOfTickets + " x " + category.getName(),
+                    price.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString(),
+                    "0",
+                    vatAmount.setScale(2, BigDecimal.ROUND_HALF_DOWN).toString());
+        }
+
+        return pbg.build();
     }
 
     public List<TicketCategory> getAvailableCategories() {

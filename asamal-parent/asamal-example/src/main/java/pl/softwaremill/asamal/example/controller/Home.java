@@ -34,7 +34,7 @@ public class Home extends ControllerBean implements Serializable {
 
     @Get
     public void index() {
-        putInContext("tickets", ticketService.getTicketsForUser(login.getUser()));
+        putInContext("invoices", ticketService.getInvoicesForUser(login.getUser()));
     }
     
     public String getInvoiceId(Invoice invoice) {

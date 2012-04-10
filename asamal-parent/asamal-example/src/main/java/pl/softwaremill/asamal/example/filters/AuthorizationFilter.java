@@ -28,7 +28,7 @@ public class AuthorizationFilter implements AsamalFilter {
     public void doFilter() {
         if (!loginBean.isLoggedIn()) {
             context.addObjectToFlash(PREVIOUS_URI, context.getCurrentLink());
-            context.redirect("login", "login");
+            context.redirect("login", "login", null);
         }
     }
 }

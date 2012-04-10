@@ -82,6 +82,14 @@
             <artifactId>icu4j</artifactId>
             <version>4.8.1.1</version>
         </dependency>
+
+        <!-- paypal -->
+        <dependency>
+            <groupId>pl.softwaremill.common</groupId>
+            <artifactId>softwaremill-paypal</artifactId>
+            <version>65-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <profiles>
