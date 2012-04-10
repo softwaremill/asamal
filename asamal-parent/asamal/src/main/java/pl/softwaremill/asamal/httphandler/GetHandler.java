@@ -83,7 +83,7 @@ public class GetHandler extends AbstractHttpHandler {
     public String handleRootGet(@Context HttpServletRequest req, @Context HttpServletResponse resp) {
         setHttpObjects(req, resp);
 
-        new AsamalContext(req, resp, null).redirect("home", "index");
+        new AsamalContext(req, resp, null).redirect("home", "index", null);
 
         return null;
     }

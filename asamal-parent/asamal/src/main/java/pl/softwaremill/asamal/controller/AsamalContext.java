@@ -45,7 +45,7 @@ public class AsamalContext {
      * @param view Name of the view
      * @throws IllegalStateException If includeView was already scheduled
      */
-    public void redirect(String controller, String view) {
+    public void redirect(String controller, String view, PageParameters pageParameters) {
         if (willInclude || willRedirect) {
             throw new IllegalStateException("Include or redirect was already scheduled");
         }
@@ -54,7 +54,8 @@ public class AsamalContext {
         try {
             willRedirect = true;
 
-            response.sendRedirect(request.getContextPath() + "/" + controller + "/" + view);
+            response.sendRedirect(request.getContextPath() + "/" + controller + "/" + view +
+                    (pageParameters != null ? pageParameters.serialize() : ""));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

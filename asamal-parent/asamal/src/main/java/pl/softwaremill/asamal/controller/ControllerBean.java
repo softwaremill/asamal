@@ -130,7 +130,11 @@ public abstract class ControllerBean {
      * @throws IllegalStateException If includeView was already scheduled
      */
     public void redirect(String controller, String view) {
-        context.redirect(controller, view);
+        context.redirect(controller, view, null);
+    }
+
+    public void redirect(String controller, String view, PageParameters pageParameters) {
+        context.redirect(controller, view, pageParameters);
     }
 
     /**
