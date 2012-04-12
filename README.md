@@ -362,6 +362,27 @@ that is global (used by other controllers) you have to provide the full path.
 
 ###### TagHelper
 
+TagHelper is an utility class to generate action links in the application.
+
+It is accessible via the `$tag` variable from all you vm files.
+
+<table>
+	<tr>
+		<th>Method</th>
+		<th>Description</th>
+		<th>Sample Usage</th>
+	</tr>
+	<tr>
+		<td>link(controller, view)</td>
+		<td>The method will generate a GET link to given controller/action</td>
+		<td>
+			```html
+			<a href="$tag.link('home','index')">Home</a>
+			```
+		</td>
+	</tr>
+</table>
+
 ##### Ajax
 
 ### Flash Scope
