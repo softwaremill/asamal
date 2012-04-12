@@ -60,6 +60,8 @@ Once you have that done, you can start writing actions!
 
 The simplest action is the HTTP GET method action. This means nothing else, that your action will be accessible via simple GET requests.
 
+To do that, create a void method that will match the name of your action and annotate it with `pl.softwaremill.asamal.controller.annotation.Get` annotation.
+
 ```java
 @Controller("admin")
 public class AdminController extends ControllerBean {
@@ -71,11 +73,11 @@ public class AdminController extends ControllerBean {
 }
 ```
 
-Now if you try to point your browser to *APP_URL/admin/index* Asamal will: 
+Now if you try to point your browser to `APP_URL/admin/index` Asamal will: 
 
-* resolve the AdminController (look at the first *admin* element in the url)
-* call the *index* method on it
-* resolve *index.vm* located in /view/admin in your application WAR and render it to the user
+* resolve the AdminController (look at the first **admin** element in the url)
+* call the **index** method on it
+* resolve **index.vm** located in `/view/admin` in your application WAR and render it to the user
 
 Wait, what **index.vm** are you talking about ? you might think...
 
@@ -94,13 +96,131 @@ Asamal uses (Apache Velocity)[http://velocity.apache.org/] to render the web pag
 
 Notice the *$var* element - this is the variable that we have passed into context in our action.
 
+##### POST
+
+Writing POST actions is equally easy. Just annotate it with `pl.softwaremill.asamal.controller.annotation.Post`
+
+The difference with POST actions is that by default they don't render any response. You might however choose to either redirect or include a view.
+
+To perform a redirect call the `redirect(controller, view)` or `redirect(view)` on the ControllerBean.
+
+If you choose to make an include call `include(view)`. 
+Bare in mind that you cannot include views from different controllers and that 
+including a view will not execute the action method for this view
+- it will just render the desired velocity template, so if there are any variables
+that are expected by this template, it might be a good idea to externalize setting of
+them using some private method on the controller or such.
 
 ##### JSON
 
-##### POST
+In Asamal it is very easy to produce JSON responses.
+
+Just annotate the action with `pl.softwaremill.asamal.controller.annotation.Json` and make it return any java POJO.
+
+```java
+public class User {
+	String name, lastName;
+	
+	// getters/setters etc. etc.
+}
+
+// And in our controller
+
+@Json
+public User user() {
+	return new User("Tomek", "Szymanski");
+}
+```
+
+browsing to `/{controller}/user` will render (with a proper content-type set to "application/json" of course!)
+```json
+{name: "Tomek", lastName: "Szymanski"}
+```
+
+##### Autobinding & Validation
+
+The ControllerBean has two methods available to perform autobinding
+
+* doAutoBinding(String... parameterNames)
+* doOptionalAutoBiding(String... parameterName)
+
+Both will use parameter names as standard JavaBean paths and will try bind beans on the controller to those parameters.
+The difference between them is that if thet non-optional version cannot find a specified parameter it will throw an exception, and prevent from rendering the page.
+
+```java
+@Controller("users")
+public class UserController extends ControllerBean {
+	
+	@Inject 
+	private EntityManager entityManager;
+
+	User user = new User();
+	
+	@Post
+	public void addNewUser() {
+		doAutoBinding("user.name", "user.lastName");
+		entityManager.persist(user);
+	}
+}
+```
+
+Asamal can also make use of the Java Validation API. You can run validation on any bean and it will automatically send error informations back to the user.
+
+Imagine our User class from the previous example
+
+```java
+public class User {
+
+	@NotNull
+	@Size(min = 3, max = 30)
+	private String name;
+	
+	@NotNull
+	@Size(min = 3, max = 60)
+	private String lastName;
+	
+}
+```
+
+and the action
+
+```java
+@Controller("users")
+public class UserController extends ControllerBean {
+	
+	@Inject 
+	private EntityManager entityManager;
+
+	User user = new User();
+	
+	@Post
+	public void addNewUser() {
+		doAutoBinding("user.name", "user.lastName");
+		
+		if (validateBean("user", user)) {
+			entityManager.persist(user);
+		}
+	}
+}
+```
+
+Look at the `validateBean("user", user)` method - you need to pass the "user" prefix, 
+because it is impossible to check in java the name of passed variable.
 
 #### View
 
 ##### Apache Velocity
 
-##### Custom Templating Language
+###### Templates
+
+###### Partials
+
+###### TagHelper
+
+##### Ajax
+
+### Flash Scope
+
+### i18n and messages
+
+### Developer Mode
