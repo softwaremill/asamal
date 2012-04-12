@@ -366,19 +366,11 @@ TagHelper is an utility class to generate action links in the application.
 
 It is accessible via the `$tag` variable from all you vm files.
 
-<table>
-	<tr>
-		<th>Method</th>
-		<th>Description</th>
-		<th>Sample Usage</th>
-	</tr>
-	<tr>
-		<td>link(controller, view)</td>
-		<td>The method will generate a GET link to given controller/action</td>
-		<td>
-			<pre><a href="$tag.link('home','index')">Home</a></pre>
-		</td>
-	</tr>
+|Method|Desciription|SampleUsage|
+|------|:----------:|----------:|
+|link(controller, view)|The method will generate a GET link to given controller/action|`<a href="$tag.link('home','index')">Home</a>`|
+[TagHelper table]
+
 </table>
 
 ##### Ajax
