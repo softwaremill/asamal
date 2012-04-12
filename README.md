@@ -250,6 +250,7 @@ The master page has to be located in `/layout/` folder of you WEB-APP.
 Simple example will show the idea
 
 master.vm
+
 ```html
 <html>
 	<head><title>$pageTitle</title></head>
