@@ -81,7 +81,7 @@ Now if you try to point your browser to `APP_URL/admin/index` Asamal will:
 
 Wait, what **index.vm** are you talking about ? you might think...
 
-Asamal uses (Apache Velocity)[http://velocity.apache.org/] to render the web pages. Your velocity template might look like this:
+Asamal uses [Apache Velocity](http://velocity.apache.org/) to render the web pages. Your velocity template might look like this:
 
 ```html
 <html>
@@ -133,7 +133,7 @@ public User user() {
 ```
 
 browsing to `/{controller}/user` will render (with a proper content-type set to "application/json" of course!)
-```json
+```
 {name: "Tomek", lastName: "Szymanski"}
 ```
 
@@ -205,13 +205,88 @@ public class UserController extends ControllerBean {
 ```
 
 Look at the `validateBean("user", user)` method - you need to pass the "user" prefix, 
-because it is impossible to check in java the name of passed variable.
+because it is impossible to check in java the name of the passed variable.
 
 #### View
 
 ##### Apache Velocity
 
+As mentioned before Asamal uses velocity to serve the pages.
+
+To learn the syntax it is best to go to the source, and read the [Velocity User Guide](http://velocity.apache.org/engine/releases/velocity-1.7/user-guide.html).
+
+You will have access to all [VelocityTools](http://velocity.apache.org/tools/devel/)
+on the web pages as well as few Asamal specific variables
+
+<table>
+<tr><th>Variable</th><th>Description</th></tr>
+<tr>
+	<td>$c</td>
+	<td>The controller bean</td>
+</tr>
+<tr>
+	<td>$tag</td>
+	<td>TagHelper (see below)</td>
+</tr>
+<tr>
+	<td>$m</td>
+	<td>The i18n messages object (see below)</td>
+</tr>
+<tr>
+	<td>$pageTitle</td>
+	<td>Simple string, easy to set from controller with setPageTitle(...) - might be removed in future</td>
+</tr>
+</table>
+
 ###### Templates
+
+Templating language is very similar to the one you might now from JSF.
+
+There is a master template file that specifies regions, and then you child
+pages define contents of those regions. This of course can be done many many times.
+
+The master page has to be located in `/layout/` folder of you WEB-APP.
+
+Simple example will show the idea
+
+master.vm
+```html
+<html>
+	<head><title>$pageTitle</title></head>
+	<body>
+		#includeRegion('content')
+		
+		<footer>#includeRegion('footer')</footer>
+	</body>
+</html>
+```
+
+And out action page index.vm
+```html
+#layout('master')
+
+#region('content')
+	This is main content
+#end
+
+#region('footer')
+	This is footer
+#end
+```
+
+Which will render
+```html
+<html>
+	<head><title>$pageTitle</title></head>
+	<body>
+		This is main content
+		
+		<footer>This is footer</footer>
+	</body>
+</html>
+```
+
+Now your master.vm might have also specified #layout('something') and so on.
 
 ###### Partials
 
