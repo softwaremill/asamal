@@ -381,10 +381,51 @@ It is accessible via the `$tag` variable from all you vm files.
 
 ##### Ajax
 
+### Interceptors
+
 ### Flash Scope
 
-## Uploading files
+### Uploading files
 
 ### i18n and messages
 
+Asamal has a good support for i18n. The bundle "messages.properties" has to be always available.
+
+Inside your controller you can call a method on the controller called `getFromMessageBundle(String key, Object... params)` 
+which will return formatted message that can optionaly use parameters.
+
+In your velocity templates instance of `pl.softwaremill.asamal.i18n.Messages` is available as **$m**.
+
+You can access it in a longer, or shorter way.
+
+If you need to just show the message without parameters, you can use map-like access
+
+messages.properties
+
+```
+some.message = This is header
+```
+
+```html
+<h2>$m['some.message']</h2>
+```
+
+If you need to pass some parameters you can use longer access
+
+messages.properties
+
+```
+hello.user = My name is {1}, {0} {1}
+```
+
+```html
+<div>$m.getFromMessageBungle('hello.user', $user.name, $user.lastName)</div>
+```
+
 ### Developer Mode
+
+Run your application server with -DASAMAL_DEV_DIR=*PATH_TO_YOUR_WEBAPP_DIR*.
+
+If this is set, the velocity template files will be resolved from the specified directory,
+not from you WEB-APP. This speedifies the developement cycle very much, because
+you do not need to redeploy your app every time you change something in the view.
