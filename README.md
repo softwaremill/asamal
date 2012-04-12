@@ -376,9 +376,7 @@ It is accessible via the `$tag` variable from all you vm files.
 		<td>link(controller, view)</td>
 		<td>The method will generate a GET link to given controller/action</td>
 		<td>
-```html
-<a href="$tag.link('home','index')">Home</a>
-```
+			`<a href="$tag.link('home','index')">Home</a>'
 		</td>
 	</tr>
 </table>
