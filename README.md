@@ -1,12 +1,10 @@
 # Asamal - lightweight JEE6 web framework
 
-[TOC]
-
 ## What is it ?
 
 Asamal is a Proof Of Concept web framework build completely on top of the JEE6 stack.
 
-The aim is to build an (almost)completely functional lightweigth, action-based web framework in a finite time.
+The aim is to build an (almost)completely functional lightweight, action-based web framework in a finite time.
 
 ### Modules
 
@@ -16,7 +14,7 @@ This is the actual framework
 
 #### asamal-example
 
-An example application, written simultaneusly with the framework.
+An example application, written simultaneously with the framework.
 
 This is probably the best thing to look at if you would like to try it out yourself.
 
@@ -26,7 +24,7 @@ Integration tests
 
 #### asamal-quickstart
 
-Maven 3+ archetype, to kickstart your own project using asamal.
+Maven 3+ archetype, to quickstart your own project using asamal.
 
 ## User Guide
 
@@ -42,9 +40,9 @@ and then run mvn install - this will produce a war, which you will be able to de
 
 #### Controllers
 
-To start writing you first acition you will need a controller class that will hold your actions.
+To start writing you first action you will need a controller class that will hold your actions.
 
-The class, except from beeing a public class, has to have two things
+The class, except from being a public class, has to have two things
 
 * has to be annotated with `@Controller` annotation that will specify the controller mapping
 * has to extend the `pl.softwaremill.asamal.controller.ControllerBean`
@@ -358,7 +356,7 @@ secondUserView.vm
 #end
 ```
 
-The partial is used in two places now - if it is situated in teh same directory
+The partial is used in two places now - if it is situated in the same directory
 as the page, it will resolve just fine without any paths. If you are reusing path
 that is global (used by other controllers) you have to provide the full path.
 
@@ -375,9 +373,9 @@ It is accessible via the `$tag` variable from all you vm files.
 |**formActionFormData(controller,view)**|Similar to formAction, but generates a link that will accept multipart forms - you have to use it when you are uploading a file|POST|&lt;form method="post" action="$tag.formActionFormData('users','addUser')"&gt;|
 |**jsonLink(controller,view)**|Generates a link to JSON-producing action. The action has to be annotated with @Json|GET|&lt;a href="$tag.jsonLink('users', 'usersInJson')"&gt;Download in JSON&lt;/a&gt;|
 |**reRender(controller, view, elementList, reRenderList)**|Generates re-rendering link. See below for more information on re-rendering with ajax.|POST|&lt;a href="#" onclick="$tag.reRender('users', 'reloadUsers', '"userId"', '"userDiv"')"&gt;Reload Users&lt;/a&gt;|
-|**jsLink(jsName)**|Generates a link to javascript file, which shoul be locate under /static/js in your WEB-APP|GET|&lt;script src="$tag.jsLink("jquery-min-1.7.1.js")"></script&gt;
-|**cssLink(cssName)**|Generates a link to CSS file, which shoul be locate under /static/css in your WEB-APP|GET|&lt;link href="$tag.cssLink("bootstrap.css")" rel="stylesheet"&gt;|
-|**imgLink(imgName)**|Generates a link to image, which shoul be locate under /static/img in your WEB-APP|GET|&lt;img src="$tag.imgLink("logo.png")"/&gt;|
+|**jsLink(jsName)**|Generates a link to javascript file, which should be locate under /static/js in your WEB-APP|GET|&lt;script src="$tag.jsLink("jquery-min-1.7.1.js")"></script&gt;
+|**cssLink(cssName)**|Generates a link to CSS file, which should be locate under /static/css in your WEB-APP|GET|&lt;link href="$tag.cssLink("bootstrap.css")" rel="stylesheet"&gt;|
+|**imgLink(imgName)**|Generates a link to image, which should be locate under /static/img in your WEB-APP|GET|&lt;img src="$tag.imgLink("logo.png")"/&gt;|
 |**pdf(controller,view)|Generates a link to PDF version of the action|GET|See below|
 </table>
 
@@ -417,7 +415,7 @@ searchUsers.vm
 
 Note the way elementId and the div id is passed - it will be reused in the javascript call, 
 since we can pass arrays here, we need to surround it with quotations, so javascript will
-now that we are refering to the string, and not to the variable.
+now that we are referring to the string, and not to the variable.
 
 The controller
 
@@ -473,7 +471,7 @@ Example:
 Asamal has a good support for i18n. The bundle "messages.properties" has to be always available.
 
 Inside your controller you can call a method on the controller called `getFromMessageBundle(String key, Object... params)` 
-which will return formatted message that can optionaly use parameters.
+which will return formatted message that can optionally use parameters.
 
 In your velocity templates instance of `pl.softwaremill.asamal.i18n.Messages` is available as **$m**.
 
@@ -508,5 +506,5 @@ hello.user = My name is {1}, {0} {1}
 Run your application server with -DASAMAL_DEV_DIR=*PATH_TO_YOUR_WEBAPP_DIR*.
 
 If this is set, the velocity template files will be resolved from the specified directory,
-not from you WEB-APP. This speedifies the developement cycle very much, because
+not from you WEB-APP. This speeds up the development cycle very much, because
 you do not need to redeploy your app every time you change something in the view.
