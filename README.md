@@ -383,7 +383,66 @@ It is accessible via the `$tag` variable from all you vm files.
 
 ##### Ajax
 
+Asamal lets you rerender some elements on your page using their IDs.
 
+Basically how it works is that using the TagHelper, you create a link that
+sends a set of form fields (or a whole form, or nothing) to a POST action, which 
+then performs some logic, rerenders the page and returns using JSON parts of it
+that you want to re-render. The DOM then gets updated on the client side.
+
+Imagine you have a list of Users and you would like to update the list with ajax,
+using some search criteria a user can provide.
+
+searchUsers.vm
+
+```html
+<form>
+	<label>Search Name:</label>
+	<input type="text" name="searchName" id="searchName"/>
+</form>
+
+<a href="#" 
+	onclick="$tag.reRender('users, 'doSearch', '"searchName"', '"userList"')">
+	Search
+	</a>
+
+<div id="userList">
+	<ul>
+		#foreach($user in $users)
+			<li>$user</li> 
+		#end
+	</ul>
+</div>
+```
+
+Note the way elementId and the div id is passed - it will be reused in the javascript call, 
+since we can pass arrays here, we need to surround it with quotations, so javascript will
+now that we are refering to the string, and not to the variable.
+
+The controller
+
+```java
+@Controller("users")
+public class UserController {
+	
+	@Inject
+	UserService userService;
+
+	@Post
+	public void doSearch() {
+		String searchName = getParameter("searchName");
+		List<User> users = userService.searchByName(searchName);
+		
+		putInContext("users", users);
+	}
+}
+```
+
+Asamal will know what was the originating view and will render it, and return in
+JSON only the contents of `<div id="userList"> ... </div>` which then will be 
+updated on the client side.
+
+Et voila!
 
 ### Interceptors
 
