@@ -77,7 +77,7 @@ Now if you try to point your browser to `APP_URL/admin/index` Asamal will:
 
 * resolve the AdminController (look at the first **admin** element in the url)
 * call the **index** method on it
-* resolve **index.vm** located in `/view/admin` in your application WAR and render it to the user
+* resolve **index.vm** located in `/view/admin` in your application WEB-APP and render it to the user
 
 Wait, what **index.vm** are you talking about ? you might think...
 
@@ -215,7 +215,7 @@ As mentioned before Asamal uses velocity to serve the pages.
 
 To learn the syntax it is best to go to the source, and read the [Velocity User Guide](http://velocity.apache.org/engine/releases/velocity-1.7/user-guide.html).
 
-You will have access to all [VelocityTools](http://velocity.apache.org/tools/devel/)
+You will have access to all [VelocityTools](http://velocity.apache.org/tools/devel/summary.html)
 on the web pages as well as few Asamal specific variables
 
 <table>
@@ -242,8 +242,11 @@ on the web pages as well as few Asamal specific variables
 
 Templating language is very similar to the one you might now from JSF.
 
-There is a master template file that specifies regions, and then you child
-pages define contents of those regions. This of course can be done many many times.
+There is a master template file that specifies regions with the 
+**\#includeRegion** directive, and then your child
+pages define which template to use with the **\#layout** 
+directive and contents of those regions with the **\#region** directive. 
+This of course can be done many many times.
 
 The master page has to be located in `/layout/` folder of you WEB-APP.
 
@@ -292,6 +295,70 @@ Which will render
 Now your master.vm might have also specified \#layout('something') and so on.
 
 ###### Partials
+
+Partials is an idea taken from the RoR framework.
+
+Basically you might want to externalize some code snippet to be reused across different pages.
+
+Partial file name always starts with an underscore (_) and has to be 
+located in the `/view` folder in your WEB-APP
+and is included with the **\#includePartal** directive.
+
+Imagine this example
+
+Out WEB-APP structure is as follows:
+
+my-application.war
+	/layout
+		/master.vm
+	/view
+		/users
+			/firstUserView.vm
+			/_user_add.vm
+		/home
+			/secondUserView.vm
+
+
+_user_add.vm
+
+```html
+<form method="post" action="$action">
+	<label>User Name</label>
+	<input type="text" name="user.name" value="$!user.name" />
+	
+	
+	<label>User Last Name</label>
+	<input type="text" name="user.lastName" value="$!user.lastName" />
+	
+	<input type="submit"/>
+</form>
+```
+
+Now inside our pages
+
+firstUserView.vm
+
+```html
+#layout('master')
+
+#region('content')
+	#includePartial('user_add.vm')
+#end
+```
+
+secondUserView.vm
+
+```html
+#layout('master')
+
+#region('content')
+	#includePartial('/users/user_add.vm')
+#end
+```
+
+The partial is used in two places now - if it is situated in teh same directory
+as the page, it will resolve just fine without any paths. If you are reusing path
+that is global (used by other controllers) you have to provide the full path.
 
 ###### TagHelper
 
