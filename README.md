@@ -1,34 +1,34 @@
-= Asamal - lightweight JEE6 web framework ==
+# Asamal - lightweight JEE6 web framework
 
-== What is it ? ==
+## What is it ?
 
 Asamal is a Proof Of Concept web framework build completely on top of the JEE6 stack.
 
 The aim is to build an (almost)completely functional web framework in a finite time.
 
-== Modules ==
+### Modules
 
-=== [[asamal]] ===
+#### asamal
 
 This is the actual framework
 
-=== [[asamal-example]] ===
+#### asamal-example
 
 An example application, written simultaneusly with the framework.
 
 This is probably the best thing to look at if you would like to try it out yourself.
 
-=== [[asamal-integration-tests]] ===
+#### asamal-integration-tests
 
 Integration tests
 
-=== [[asamal-quickstart]] ===
+#### asamal-quickstart
 
 Maven 3+ archetype, to kickstart your own project using asamal.
 
-== User Guide ==
+## User Guide
 
-=== Quick Start ===
+### Quick Start
 
 The easiest to start right away is to use the provided maven archetype plugin.
 
@@ -38,16 +38,24 @@ Just run (you will need maven 3+)
 
 and then run mvn install - this will produce a war, which you will be able to deploy on JBoss 7.x (just copy to ${JBOSS_HOME}/standalone/deployments )
 
-=== Controllers ===
+#### Controllers
 
-==== GET ====
+```java
+@Controller("admin")
+public class AdminController extends ControllerBean {
+	
+	// actions
+}
+```
 
-==== JSON ====
+##### GET
 
-==== POST ====
+##### JSON
 
-=== View ===
+##### POST
 
-==== Apache Velocity ====
+#### View
 
-==== Custom Templating Language ====
+##### Apache Velocity
+
+##### Custom Templating Language
