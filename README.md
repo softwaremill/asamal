@@ -444,9 +444,15 @@ Et voila!
 
 ### Interceptors
 
+TBD
+
 ### Flash Scope
 
+TBD
+
 ### Uploading files
+
+TBD
 
 ### PDFs
 
@@ -498,7 +504,7 @@ hello.user = My name is {1}, {0} {1}
 ```
 
 ```html
-<div>$m.getFromMessageBungle('hello.user', $user.name, $user.lastName)</div>
+<div>$m.getFromMessageBundle('hello.user', $user.name, $user.lastName)</div>
 ```
 
 ### Developer Mode
