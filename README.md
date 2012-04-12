@@ -4,7 +4,7 @@
 
 Asamal is a Proof Of Concept web framework build completely on top of the JEE6 stack.
 
-The aim is to build an (almost)completely functional web framework in a finite time.
+The aim is to build an (almost)completely functional lightweigth, action-based web framework in a finite time.
 
 ### Modules
 
@@ -40,13 +40,21 @@ and then run mvn install - this will produce a war, which you will be able to de
 
 #### Controllers
 
+To start writing you first acition you will need a controller class that will hold your actions.
+
+The class, except from beeing a public class, has to have two things
+
+* has to be annotated with `@Controller` annotation that will specify the controller mapping
+* has to extend the `pl.softwaremill.asamal.controller.ControllerBean`
+
 ```java
 @Controller("admin")
 public class AdminController extends ControllerBean {
-	
 	// actions
 }
 ```
+
+Once you have that done, you can start writing actions!
 
 ##### GET
 
