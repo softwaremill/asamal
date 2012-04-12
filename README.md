@@ -368,14 +368,14 @@ It is accessible via the `$tag` variable from all you vm files.
 
 |Method|Desciription|Method|Sample Usage|
 |------|:----------:|:----:|----------:|
-|**link(controller, view)**|The method will generate a GET link to given controller/action|GET|<a href="$tag.link('home','index')">Home</a>|
-|**formAction(controller,view)**|Generates form action link|POST|<form method="post" action="$tag.formAction('users','addUser')">|
-|**formActionFormData(controller,view)**|Similar to formAction, but generates a link that will accept multipart forms - you have to use it when you are uploading a file|POST|<form method="post" action="$tag.formActionFormData('users','addUser')">|
-|**jsonLink(controller,view)**|Generates a link to JSON-producing action. The action has to be annotated with @Json|GET|<a href="$tag.jsonLink('users', 'usersInJson')">Download in JSON</a>|
+|**link(controller, view)**|The method will generate a GET link to given controller/action|GET|&lt;a href="$tag.link('home','index')">Home</a&gt|
+|**formAction(controller,view)**|Generates form action link|POST|&lt;form method="post" action="$tag.formAction('users','addUser')"&gt|
+|**formActionFormData(controller,view)**|Similar to formAction, but generates a link that will accept multipart forms - you have to use it when you are uploading a file|POST|&lt;form method="post" action="$tag.formActionFormData('users','addUser')"&gt|
+|**jsonLink(controller,view)**|Generates a link to JSON-producing action. The action has to be annotated with @Json|GET|&lt;a href="$tag.jsonLink('users', 'usersInJson')"&gtDownload in JSON&lt;/a&gt|
 |**reRender(controller, view, elementList, reRenderList)**|Generates re-rendering link. See below for more information on re-rendering with ajax.|POST|&lt;a href="#" onclick="$tag.reRender('users', 'reloadUsers', '"userId"', '"userDiv"')"&gt;Reload Users&lt;/a&gt;|
-|**jsLink(jsName)**|Generates a link to javascript file, which shoul be locate under /static/js in your WEB-APP|GET|<script src="$tag.jsLink("jquery-min-1.7.1.js")"></script>|
-|**cssLink(cssName)**|Generates a link to CSS file, which shoul be locate under /static/css in your WEB-APP|GET|<link href="$tag.cssLink("bootstrap.css")" rel="stylesheet">|
-|**imgLink(imgName)**|Generates a link to image, which shoul be locate under /static/img in your WEB-APP|GET|<img src="$tag.imgLink("logo.png")"/>|
+|**jsLink(jsName)**|Generates a link to javascript file, which shoul be locate under /static/js in your WEB-APP|GET|&lt;script src="$tag.jsLink("jquery-min-1.7.1.js")"></script&gt|
+|**cssLink(cssName)**|Generates a link to CSS file, which shoul be locate under /static/css in your WEB-APP|GET|&lt;link href="$tag.cssLink("bootstrap.css")" rel="stylesheet"&gt|
+|**imgLink(imgName)**|Generates a link to image, which shoul be locate under /static/img in your WEB-APP|GET|&lt;img src="$tag.imgLink("logo.png")"/&gt|
 
 </table>
 
