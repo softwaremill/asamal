@@ -254,24 +254,25 @@ master.vm
 <html>
 	<head><title>$pageTitle</title></head>
 	<body>
-		#includeRegion('content')
+		\#includeRegion('content')
 		
-		<footer>#includeRegion('footer')</footer>
+		<footer>\#includeRegion('footer')</footer>
 	</body>
 </html>
 ```
 
 And out action page index.vm
+
 ```html
-#layout('master')
+\#layout('master')
 
-#region('content')
+\#region('content')
 	This is main content
-#end
+\#end
 
-#region('footer')
+\#region('footer')
 	This is footer
-#end
+\#end
 ```
 
 Which will render
