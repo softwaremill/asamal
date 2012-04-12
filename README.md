@@ -268,7 +268,7 @@ And out action page index.vm
 #layout('master')
 
 #region('content')
-	This is main content
+	<div>This is main content</div>
 #end
 
 #region('footer')
@@ -282,7 +282,7 @@ Which will render
 <html>
 	<head><title>$pageTitle</title></head>
 	<body>
-		This is main content
+		<div>This is main content</div>
 		
 		<footer>This is footer</footer>
 	</body>
