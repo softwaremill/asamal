@@ -58,6 +58,43 @@ Once you have that done, you can start writing actions!
 
 ##### GET
 
+The simplest action is the HTTP GET method action. This means nothing else, that your action will be accessible via simple GET requests.
+
+```java
+@Controller("admin")
+public class AdminController extends ControllerBean {
+	
+	@Get
+	public void index() {
+		putInContext("var", "Hello Admin!");
+	}
+}
+```
+
+Now if you try to point your browser to *APP_URL/admin/index* Asamal will: 
+
+* resolve the AdminController (look at the first *admin* element in the url)
+* call the *index* method on it
+* resolve *index.vm* located in /view/admin in your application WAR and render it to the user
+
+Wait, what **index.vm** are you talking about ? you might think...
+
+Asamal uses (Apache Velocity)[http://velocity.apache.org/] to render the web pages. Your velocity template might look like this:
+
+```html
+<html>
+	<head><title>Admin</title></head>
+	<body>
+		<h2>Welcome on the Admin page</h2>
+		
+		$var
+	</body>
+</html>
+```
+
+Notice the *$var* element - this is the variable that we have passed into context in our action.
+
+
 ##### JSON
 
 ##### POST
