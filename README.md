@@ -366,10 +366,16 @@ TagHelper is an utility class to generate action links in the application.
 
 It is accessible via the `$tag` variable from all you vm files.
 
-|Method|Desciription|SampleUsage|
-|------|:----------:|----------:|
-|link(controller, view)|The method will generate a GET link to given controller/action|`<a href="$tag.link('home','index')">Home</a>`|
-[TagHelper table]
+|Method|Desciription|Method|SampleUsage|
+|------|:----------:|:----:|----------:|
+|`link(controller, view)`|The method will generate a GET link to given controller/action|GET|`<a href="$tag.link('home','index')">Home</a>`|
+|`formAction(controller,view)`|Generates form action link|POST|`<form method="post" action="$tag.formAction('users','addUser')">`|
+|`formActionFormData(controller,view)`|Similar to formAction, but generates a link that will accept multipart forms - you have to use it when you are uploading a file|POST|`<form method="post" action="$tag.formActionFormData('users','addUser')">`|
+|`jsonLink(controller,view)`|Generates a link to JSON-producing action. The action has to be annotated with @Json|GET|`<a href="$tag.jsonLink('users', 'usersInJson')">Download in JSON</a>`|
+|`reRender(controller, view, elementList, reRenderList)`|Generates re-rendering link. See below for more information on re-rendering with ajax.|POST|`<a href="#" onclick="$tag.reRender('users', 'reloadUsers', '"userId"', '"userDiv"')">Reload Users</a>`|
+|`jsLink(jsName)`|Generates a link to javascript file, which shoul be locate under /static/js in your WEB-APP|GET|`<script src="$tag.jsLink("jquery-min-1.7.1.js")"></script>`|
+|`cssLink(cssName)`|Generates a link to CSS file, which shoul be locate under /static/css in your WEB-APP|GET|`<link href="$tag.cssLink("bootstrap.css")" rel="stylesheet">`|
+|`imgLink(imgName)`|Generates a link to image, which shoul be locate under /static/img in your WEB-APP|GET|`<img src="$tag.imgLink("logo.png")"/>`|
 
 </table>
 
