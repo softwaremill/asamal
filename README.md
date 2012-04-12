@@ -1,5 +1,7 @@
 # Asamal - lightweight JEE6 web framework
 
+[TOC]
+
 ## What is it ?
 
 Asamal is a Proof Of Concept web framework build completely on top of the JEE6 stack.
@@ -376,16 +378,36 @@ It is accessible via the `$tag` variable from all you vm files.
 |**jsLink(jsName)**|Generates a link to javascript file, which shoul be locate under /static/js in your WEB-APP|GET|&lt;script src="$tag.jsLink("jquery-min-1.7.1.js")"></script&gt;
 |**cssLink(cssName)**|Generates a link to CSS file, which shoul be locate under /static/css in your WEB-APP|GET|&lt;link href="$tag.cssLink("bootstrap.css")" rel="stylesheet"&gt;|
 |**imgLink(imgName)**|Generates a link to image, which shoul be locate under /static/img in your WEB-APP|GET|&lt;img src="$tag.imgLink("logo.png")"/&gt;|
-
+|**pdf(controller,view)|Generates a link to PDF version of the action|GET|See below|
 </table>
 
 ##### Ajax
+
+
 
 ### Interceptors
 
 ### Flash Scope
 
 ### Uploading files
+
+### PDFs
+
+Creating PDFs is very easy with Asamal. Just create any @Get action, with a corresponding
+velocity template and access it adding to the url `/pdf` before the controller name,
+or use the TagHelper to generate pdf link.
+
+Asamal will use Flying Saucer and convert the html into pdf. To make the browser download
+a desired file name, just follow the link by it.
+
+**Attention** - this functionality is very POC-like. Even more then the rest ;-)
+
+Example:
+
+```html
+<a href="$tag.pdf('invoice','view')/10/invoice-10.pdf">Download Invoice</a>
+```
+
 
 ### i18n and messages
 
