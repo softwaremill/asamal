@@ -1,6 +1,53 @@
 #set( $symbol_pound = '#' )
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
+${symbol_pound}macro(success ${symbol_dollar}key)
+    ${symbol_pound}if(${symbol_dollar}success[${symbol_dollar}key])
+    <div class="alert alert-success">
+        <ul>
+            ${symbol_pound}foreach(${symbol_dollar}m in ${symbol_dollar}success[${symbol_dollar}key])
+                <li>${symbol_dollar}m</li>
+            ${symbol_pound}end
+        </ul>
+    </div>
+    ${symbol_pound}end
+${symbol_pound}end
+
+${symbol_pound}macro(info ${symbol_dollar}key)
+    ${symbol_pound}if(${symbol_dollar}info[${symbol_dollar}key])
+    <div class="alert alert-info">
+        <ul>
+            ${symbol_pound}foreach(${symbol_dollar}m in ${symbol_dollar}info[${symbol_dollar}key])
+                <li>${symbol_dollar}m</li>
+            ${symbol_pound}end
+        </ul>
+    </div>
+    ${symbol_pound}end
+${symbol_pound}end
+
+${symbol_pound}macro(err ${symbol_dollar}key)
+    ${symbol_pound}if(${symbol_dollar}err[${symbol_dollar}key])
+    <div class="alert alert-error">
+        <ul>
+            ${symbol_pound}foreach(${symbol_dollar}m in ${symbol_dollar}err[${symbol_dollar}key])
+                <li>${symbol_dollar}m</li>
+            ${symbol_pound}end
+        </ul>
+    </div>
+    ${symbol_pound}end
+${symbol_pound}end
+
+${symbol_pound}macro(warn ${symbol_dollar}key)
+    ${symbol_pound}if(${symbol_dollar}warn[${symbol_dollar}key])
+    <div class="alert alert-block">
+        <ul>
+            ${symbol_pound}foreach(${symbol_dollar}m in ${symbol_dollar}warn[${symbol_dollar}key])
+                <li>${symbol_dollar}m</li>
+            ${symbol_pound}end
+        </ul>
+    </div>
+    ${symbol_pound}end
+${symbol_pound}end
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +69,8 @@
         }
     </style>
     <link href="${symbol_dollar}tag.cssLink("bootstrap-responsive.css")" rel="stylesheet">
+
+    <script src="${symbol_dollar}tag.jsLink("jquery-min-1.7.1.js")"></script>
 </head>
 
 <body>
@@ -49,44 +98,12 @@
 
 <div class="container">
 
-    <div id="messages">
-        ${symbol_pound}if(${symbol_dollar}success)
-            <div class="alert alert-success">
-                <ul>
-                    ${symbol_pound}foreach(${symbol_dollar}m in ${symbol_dollar}success)
-                        <li>${symbol_dollar}m</li>
-                    ${symbol_pound}end
-                </ul>
-            </div>
-        ${symbol_pound}end
-        ${symbol_pound}if(${symbol_dollar}warn)
-            <div class="alert alert-block">
-                <ul>
-                    ${symbol_pound}foreach(${symbol_dollar}m in ${symbol_dollar}warn)
-                        <li>${symbol_dollar}m</li>
-                    ${symbol_pound}end
-                </ul>
-            </div>
-        ${symbol_pound}end
-        ${symbol_pound}if(${symbol_dollar}err)
-            <div class="alert alert-error">
-                <ul>
-                    ${symbol_pound}foreach(${symbol_dollar}m in ${symbol_dollar}err)
-                        <li>${symbol_dollar}m</li>
-                    ${symbol_pound}end
-                </ul>
-            </div>
-        ${symbol_pound}end
-        ${symbol_pound}if(${symbol_dollar}info)
-            <div class="alert alert-info">
-                <ul>
-                    ${symbol_pound}foreach(${symbol_dollar}m in ${symbol_dollar}info)
-                        <li>${symbol_dollar}m</li>
-                    ${symbol_pound}end
-                </ul>
-            </div>
-        ${symbol_pound}end
-    </div>
+        <div id="messages">
+            ${symbol_pound}success('*')
+            ${symbol_pound}warn('*')
+            ${symbol_pound}err('*')
+            ${symbol_pound}info('*')
+        </div>
 
     ${symbol_pound}includeRegion('content')
 
@@ -100,7 +117,6 @@
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="${symbol_dollar}tag.jsLink("jquery-min-1.7.1.js")"></script>
 <script src="${symbol_dollar}tag.jsLink("bootstrap.min.js")"></script>
 
 </body>
