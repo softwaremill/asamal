@@ -90,6 +90,45 @@
             <version>65-SNAPSHOT</version>
         </dependency>
 
+        <!-- email -->
+        <dependency>
+            <groupId>pl.softwaremill.common</groupId>
+            <artifactId>softwaremill-sqs</artifactId>
+            <version>65-SNAPSHOT</version>
+        </dependency>
+
+        <!-- elasticmq -->
+        <dependency>
+            <groupId>org.elasticmq</groupId>
+            <artifactId>core_2.9.1</artifactId>
+            <version>0.5-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticmq</groupId>
+            <artifactId>rest-sqs_2.9.1</artifactId>
+            <version>0.5-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
     </dependencies>
 
     <profiles>
