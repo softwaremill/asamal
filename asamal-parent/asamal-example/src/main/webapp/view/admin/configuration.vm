@@ -9,8 +9,13 @@
 
             #if($c.key.bool)
                 <input type="checkbox" name="$c.key" #if($c.value == 'true')checked="true"#end/>
-            #else
+            #elseif ($c.key.string)
                 <input type="text" name="$c.key" value="$c.value"/>
+            #elseif ($c.key.textArea)
+                <textarea rows="10" cols="30" name="$c.key">
+                    $c.value
+                </textarea>
+                $c.value
             #end
         #end
         <input type="Submit" value="$m['configuration.save']">

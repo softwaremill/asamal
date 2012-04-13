@@ -1,6 +1,7 @@
 package pl.softwaremill.asamal.example.model.conf;
 
 public enum Conf {
+
     INVOICE_NAME(""),
     INVOICE_COMPANY("Foo (Pty) Ltd."),
     INVOICE_VAT("FB 123-456-789"),
@@ -17,24 +18,39 @@ public enum Conf {
 
     TICKETS_MAX("200"),
 
-    PAYPAL_SANDBOX("true", true),
-    PAYPAL_EMAIL("email_paypal@test.com")
+    PAYPAL_SANDBOX("true", TYPE.BOOLEAN),
+    PAYPAL_EMAIL("email_paypal@test.com"),
+
+    TICKETS_THANKYOU_MSG("Thank you for buying our tickets", TYPE.TEXT_AREA)
     ;
 
-    final public String defaultValue;
-    final boolean bool;
-
-    private Conf(String defaultValue) {
-        this.defaultValue = defaultValue;
-        bool = false;
+    enum TYPE {
+        STRING,
+        BOOLEAN,
+        TEXT_AREA
     }
 
-    private Conf(String defaultValue, boolean bool) {
+    final public String defaultValue;
+    final TYPE type;
+
+    private Conf(String defaultValue) {
+        this(defaultValue, TYPE.STRING);
+    }
+
+    private Conf(String defaultValue, TYPE type) {
         this.defaultValue = defaultValue;
-        this.bool = bool;
+        this.type = type;
+    }
+
+    public boolean isString() {
+        return type == TYPE.STRING;
     }
 
     public boolean isBool() {
-        return bool;
+        return type == TYPE.BOOLEAN;
+    }
+
+    public boolean isTextArea() {
+        return type == TYPE.TEXT_AREA;
     }
 }

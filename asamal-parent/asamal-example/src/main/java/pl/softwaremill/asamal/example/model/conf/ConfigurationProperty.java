@@ -14,7 +14,7 @@ public class ConfigurationProperty implements Serializable {
     @Column(name = "name", length = 40)
     private String key;
 
-    @Column(name = "value", length = 255)
+    @Column(name = "value", length = 5000)
     private String value;
 
     public String getKey() {

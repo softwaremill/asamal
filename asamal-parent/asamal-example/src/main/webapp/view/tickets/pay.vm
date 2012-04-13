@@ -39,7 +39,9 @@
 
     <div id="pay" class="well">
 
-
+        <div>
+            $conf.getProperty('TICKETS_THANKYOU_MSG')
+        </div>
 
         #if($invoice.method == 'TRANSFER')
             $m.getFromBundle('pay.thankyou.TRANSFER', $conf.getProperty('INVOICE_IBAN'),
