@@ -66,7 +66,8 @@ public class Login extends ControllerBean implements Serializable {
 
     @Post(skipViewHash = true)
     public void doRegister() {
-        user.setUsername(getParameter("user.username"));
+        String login = getParameter("user.username");
+        user.setUsername(login);
 
         String password = getParameter("password");
         if (password.equals(getParameter("password2"))) {
@@ -77,9 +78,11 @@ public class Login extends ControllerBean implements Serializable {
                 user.setPassword(stringHasher.encode(password));
                 userService.createNewUser(user);
 
-                addMessageToFlash("User created. Please login now.", SUCCESS);
+                addMessageToFlash(getFromMessageBundle("register.created"), SUCCESS);
 
-                redirect("login");
+                // login the user
+                loginBean.doLogin(login, password);
+                redirect("home", "index");
             } else {
                 addMessageToFlash("Validation errors ", ERR);
 

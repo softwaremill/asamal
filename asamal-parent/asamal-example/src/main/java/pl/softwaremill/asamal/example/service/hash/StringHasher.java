@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal.example.service.hash;
 
+import org.bouncycastle.util.encoders.Hex;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -12,7 +14,7 @@ public class StringHasher {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             
-            return new String(md.digest(toHash.getBytes()));
+            return new String(Hex.encode(md.digest(toHash.getBytes())));
         } catch (NoSuchAlgorithmException e) {
             // should not happen
             throw new RuntimeException(e);
