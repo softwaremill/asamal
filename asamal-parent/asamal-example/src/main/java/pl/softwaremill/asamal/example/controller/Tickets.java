@@ -20,6 +20,7 @@ import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.paypal.button.PaypalButtonGenerator;
 
@@ -52,6 +53,9 @@ public class Tickets extends ControllerBean implements Serializable {
 
     @Inject
     private ConfigurationBean configurationBean;
+
+    @Inject
+    private EmailService emailService;
     
     private Invoice invoice = new Invoice();
     
@@ -160,6 +164,9 @@ public class Tickets extends ControllerBean implements Serializable {
 
             addMessageToFlash(getFromMessageBundle("tickets.book.ok"), AsamalContext.MessageSeverity.SUCCESS);
             redirect("pay", new PageParameters(invoice.getId()));
+
+            // schedule thank you email
+            emailService.sendThankYouEmail(invoice);
         }
     }
 

@@ -21,7 +21,21 @@ public enum Conf {
     PAYPAL_SANDBOX("true", TYPE.BOOLEAN),
     PAYPAL_EMAIL("email_paypal@test.com"),
 
-    TICKETS_THANKYOU_MSG("Thank you for buying our tickets", TYPE.TEXT_AREA)
+    TICKETS_THANKYOU_MSG("Thank you for buying our tickets", TYPE.TEXT_AREA),
+
+    TICKETS_THANKYOU_EMAIL_SUBJECT("Thank you for buying tickets!"),
+
+    TICKETS_THANKYOU_EMAIL("Dear $name,\n" +
+                                   "\n" +
+                                   "Thank you for purchasing the tickets for Conference !\n" +
+                                   "\n" +
+                                   "Below is a list of your tickets:\n" +
+                                   "#foreach($ticket in $tickets)\n" +
+                                   "$ticket.firstName $ticket.lastName\n" +
+                                   "#end\n" +
+                                   "\n" +
+                                   "--\n" +
+                                   "The Conference Team", TYPE.TEXT_AREA)
     ;
 
     enum TYPE {

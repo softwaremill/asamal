@@ -9,8 +9,6 @@ import org.elasticmq.storage.inmemory.InMemoryStorage;
 import org.jboss.netty.logging.InternalLoggerFactory;
 import org.jboss.netty.logging.Slf4JLoggerFactory;
 import pl.softwaremill.asamal.example.service.email.EmailSendingBean;
-import pl.softwaremill.common.sqs.email.SendEmailTask;
-import pl.softwaremill.common.sqs.util.EmailDescription;
 
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
@@ -38,9 +36,6 @@ public class ElasticMQStarter implements ServletContextListener{
 
         // start email sending
         emailSendingBean.startTimer(10000);
-
-        emailSendingBean.scheduleTask(new SendEmailTask(
-                new EmailDescription("szimano@szimano.org", "This is message", "Subject")));
     }
 
     @Override
