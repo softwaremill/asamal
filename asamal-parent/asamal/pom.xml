@@ -77,8 +77,8 @@
         <dependency>
             <!-- jsoup HTML parser library @ http://jsoup.org/ -->
             <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.6.2-ASAMAL</version>
+            <artifactId>jsoup-ASAMAL</artifactId>
+            <version>1.6.2</version>
         </dependency>
 
         <dependency>
