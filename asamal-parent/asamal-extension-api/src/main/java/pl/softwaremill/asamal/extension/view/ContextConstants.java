@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.controller;
+package pl.softwaremill.asamal.extension.view;
 
 /**
  * Keys for properties set in velocity contexts for views
@@ -8,6 +8,8 @@ package pl.softwaremill.asamal.controller;
 public class ContextConstants {
     
     public static final String CONTROLLER = "c";
+
+    public static final String CONTROLLER_NAME = "controllerName";
 
     public static final String VIEW = "view";
 

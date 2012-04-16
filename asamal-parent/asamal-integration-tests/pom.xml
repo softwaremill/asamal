@@ -14,11 +14,13 @@
     <name>asamal-integration-tests</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- 1.6.1 doesn't work with embedded weld -->
+        <slf4j.version>1.5.10</slf4j.version>
     </properties>
     <dependencies>
         <dependency>
-            <artifactId>asamal</artifactId>
-            <groupId>pl.softwaremill</groupId>
+            <artifactId>asamal-all</artifactId>
+            <groupId>pl.softwaremill.asamal</groupId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -36,6 +38,7 @@
             <version>1.0.0.CR3</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
 </project>

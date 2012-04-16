@@ -1,7 +1,6 @@
 package pl.softwaremill.asamal.servlet;
 
-import org.apache.velocity.app.Velocity;
-import pl.softwaremill.asamal.resource.ResourceResolver;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.common.util.dependency.BeanManagerDependencyProvider;
 import pl.softwaremill.common.util.dependency.D;
 import pl.softwaremill.common.util.dependency.DependencyProvider;
@@ -12,7 +11,6 @@ import javax.naming.NamingException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.util.Properties;
 
 /**
  * Listener that sets the correct D providers
@@ -38,15 +36,6 @@ public class AsamalListener implements ServletContextListener {
         D.register(registeredDependencyProvider);
 
         sce.getServletContext().setAttribute(BEAN_MANAGER, bm);
-
-        // init velocity
-        Properties velocityProps = new Properties();
-        velocityProps.setProperty("userdirective",
-                        "pl.softwaremill.asamal.velocity.RegionDirective," +
-                        "pl.softwaremill.asamal.velocity.LayoutDirective," +
-                        "pl.softwaremill.asamal.velocity.IncludeRegionDirective,"+
-                        "pl.softwaremill.asamal.velocity.RenderPartialDirective");
-        Velocity.init(velocityProps);
 
         // warn about dev mode
         if (System.getProperty(ResourceResolver.ASAMAL_DEV_DIR) != null) {

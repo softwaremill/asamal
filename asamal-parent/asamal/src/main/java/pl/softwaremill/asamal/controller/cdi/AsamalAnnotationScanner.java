@@ -2,6 +2,8 @@ package pl.softwaremill.asamal.controller.cdi;
 
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
+import pl.softwaremill.asamal.extension.AsamalExtension;
+import pl.softwaremill.asamal.extension.view.PresentationExtension;
 
 import javax.enterprise.context.NormalScope;
 import javax.enterprise.event.Observes;
@@ -18,9 +20,12 @@ import java.util.Set;
  *
  * User: szimano
  */
-public class BootstrapCheckerExtension implements Extension, Serializable {
+public class AsamalAnnotationScanner implements Extension, Serializable {
 
     private Set<Class> namedBeans = new HashSet<Class>();
+
+    private Set<Class<? extends PresentationExtension>> presentationExtensions =
+            new HashSet<Class<? extends PresentationExtension>>();
 
     public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> event) {
         for (Annotation annotation : event.getAnnotatedType().getAnnotations()) {
@@ -42,6 +47,12 @@ public class BootstrapCheckerExtension implements Extension, Serializable {
             if (Named.class.isAssignableFrom(annotation.annotationType())) {
                 namedBeans.add(event.getAnnotatedType().getJavaClass());
             }
+
+            // remember PresentationExtensions
+            if (AsamalExtension.class.isAssignableFrom(annotation.annotationType())) {
+                presentationExtensions.add(
+                        (Class<? extends PresentationExtension>) event.getAnnotatedType().getJavaClass());
+            }
         }
     }
 
@@ -57,5 +68,9 @@ public class BootstrapCheckerExtension implements Extension, Serializable {
 
     public Set<Class> getNamedBeans() {
         return namedBeans;
+    }
+
+    public Set<Class<? extends PresentationExtension>> getPresentationExtensions() {
+        return presentationExtensions;
     }
 }

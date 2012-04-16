@@ -11,11 +11,14 @@ import pl.softwaremill.asamal.MockAsamalParameters;
 import pl.softwaremill.asamal.MockAsamalProducers;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
+import pl.softwaremill.asamal.controller.cdi.AsamalAnnotationScanner;
 import pl.softwaremill.asamal.exception.HttpErrorException;
+import pl.softwaremill.asamal.extension.view.PresentationExtensionResolver;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.asamal.httphandler.AsamalViewHandler;
 import pl.softwaremill.asamal.httphandler.GetHandler;
 import pl.softwaremill.asamal.i18n.Messages;
-import pl.softwaremill.asamal.resource.ResourceResolver;
+import pl.softwaremill.asamal.plugin.velocity.AsamalVelocityExtension;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import pl.softwaremill.common.util.dependency.D;
 
@@ -43,7 +46,10 @@ public class GetControllerTest extends ControllerTest {
                 .addClass(MockAsamalProducers.class)
                 .addClass(ViewHashGenerator.class)
                 .addClass(AsamalViewHandler.class)
-                .addPackage(TestResourceResolver.class.getPackage());
+                .addClass(PresentationExtensionResolver.class)
+                .addClass(AsamalVelocityExtension.class)
+                .addPackage(TestResourceResolver.class.getPackage())
+                .addAsServiceProviderAndClasses(AsamalAnnotationScanner.class);
     }
 
     @Test

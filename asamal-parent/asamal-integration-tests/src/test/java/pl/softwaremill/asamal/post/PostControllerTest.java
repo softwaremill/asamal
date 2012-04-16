@@ -14,11 +14,14 @@ import pl.softwaremill.asamal.ControllerTest;
 import pl.softwaremill.asamal.MockAsamalProducers;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
+import pl.softwaremill.asamal.controller.cdi.AsamalAnnotationScanner;
 import pl.softwaremill.asamal.exception.HttpErrorException;
+import pl.softwaremill.asamal.extension.view.PresentationExtensionResolver;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.asamal.httphandler.AsamalViewHandler;
 import pl.softwaremill.asamal.httphandler.PostHandler;
 import pl.softwaremill.asamal.i18n.Messages;
-import pl.softwaremill.asamal.resource.ResourceResolver;
+import pl.softwaremill.asamal.plugin.velocity.AsamalVelocityExtension;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import pl.softwaremill.common.util.dependency.D;
 
@@ -26,7 +29,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -48,7 +55,10 @@ public class PostControllerTest extends ControllerTest {
                 .addClass(MockAsamalProducers.class)
                 .addClass(ViewHashGenerator.class)
                 .addClass(AsamalViewHandler.class)
-                .addPackage(TestResourceResolver.class.getPackage());
+                .addClass(PresentationExtensionResolver.class)
+                .addClass(AsamalVelocityExtension.class)
+                .addPackage(TestResourceResolver.class.getPackage())
+                .addAsServiceProviderAndClasses(AsamalAnnotationScanner.class);
     }
 
     @Test

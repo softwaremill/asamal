@@ -1,24 +1,24 @@
-package pl.softwaremill.asamal.velocity;
+package pl.softwaremill.asamal.helper;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.velocity.context.Context;
+import pl.softwaremill.asamal.extension.view.PresentationContext;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 
 import java.io.StringWriter;
 
 /**
- * Tag Helper to use within velocity
+ * Tag Helper to use within presentation layer
  *
  * User: szimano
  */
 public class AsamalHelper {
 
     private final String contextPath;
-    private final Context velocityContext;
+    private final PresentationContext presentationContext;
 
-    public AsamalHelper(String contextPath, Context velocityContext) {
+    public AsamalHelper(String contextPath, PresentationContext presentationContext) {
         this.contextPath = contextPath;
-        this.velocityContext = velocityContext;
+        this.presentationContext = presentationContext;
     }
     
     public String formAction(String controller, String view) {
@@ -60,7 +60,7 @@ public class AsamalHelper {
                 // rerendering list
                 .append(reRenderList).append(", '")
                 // viewHash
-                .append((String)velocityContext.get(ViewHashGenerator.VIEWHASH)).append("')")
+                .append((String) presentationContext.get(ViewHashGenerator.VIEWHASH)).append("')")
                 .toString();
     }
     

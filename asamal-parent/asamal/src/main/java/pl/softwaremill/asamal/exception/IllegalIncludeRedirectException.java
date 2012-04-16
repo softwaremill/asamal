@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal.exception;
 
+import pl.softwaremill.asamal.extension.exception.AsamalException;
+
 /**
  * User: szimano
  */

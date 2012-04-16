@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal.resource;
 
+import pl.softwaremill.asamal.extension.exception.ResourceNotFoundException;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.common.cdi.autofactory.CreatedWith;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,13 +31,13 @@ public class ResourceResolverImpl implements ResourceResolver {
         this.req = req;
     }
 
-    public String resolveTemplate(String controller, String view) throws IOException {
-        InputStream is = resolveFile("/view/" + controller + "/" + view + ".vm");
+    public String resolveTemplate(String controller, String view, String extension) throws ResourceNotFoundException {
+        InputStream is = resolveFile("/view/" + controller + "/" + view + "." + extension);
 
         return readInputStream(is);
     }
     
-    public String resolvePartial(String controller, String partial) throws IOException {
+    public String resolvePartial(String controller, String partial, String extension) throws ResourceNotFoundException {
         StringBuffer sb = new StringBuffer();
 
         sb.append("/view");
@@ -54,16 +56,16 @@ public class ResourceResolverImpl implements ResourceResolver {
                 sb.append(segments[i]);
             }
 
-            sb.append(".vm");
+            sb.append(".").append(extension);
         }
         else {
-            sb.append("/").append(controller).append("/_").append(partial).append(".vm");
+            sb.append("/").append(controller).append("/_").append(partial).append(".").append(extension);
         }
 
         return readInputStream(resolveFile(sb.toString()));
     }
 
-    public InputStream resolveFile(String path) {
+    public InputStream resolveFile(String path) throws ResourceNotFoundException {
         InputStream is;
 
         if (System.getProperty(ASAMAL_DEV_DIR) != null) {
@@ -74,22 +76,30 @@ public class ResourceResolverImpl implements ResourceResolver {
             try {
                 is = new FileInputStream(dir + path);
             } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new ResourceNotFoundException(e);
             }
         } else {
             is = req.getServletContext().getResourceAsStream(path);
         }
 
+        if (is == null) {
+            throw new ResourceNotFoundException("Could not find resource "+path);
+        }
+
         return is;
     }
     
-    private String readInputStream(InputStream inputStream) throws IOException {
+    private String readInputStream(InputStream inputStream) throws ResourceNotFoundException {
         StringWriter templateSW = new StringWriter();
-        Reader r = new InputStreamReader(inputStream, "UTF-8");
-        
-        int c;
-        while ((c = r.read()) > 0) {
-            templateSW.append((char) c);
+        try {
+            Reader r = new InputStreamReader(inputStream, "UTF-8");
+
+            int c;
+            while ((c = r.read()) > 0) {
+                templateSW.append((char) c);
+            }
+        } catch (IOException e) {
+            throw new ResourceNotFoundException(e);
         }
 
         return templateSW.toString();

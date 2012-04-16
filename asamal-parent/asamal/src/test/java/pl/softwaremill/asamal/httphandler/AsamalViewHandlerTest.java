@@ -6,8 +6,10 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import pl.softwaremill.asamal.controller.ControllerBean;
-import pl.softwaremill.asamal.controller.cdi.BootstrapCheckerExtension;
-import pl.softwaremill.asamal.resource.ResourceResolver;
+import pl.softwaremill.asamal.controller.cdi.AsamalAnnotationScanner;
+import pl.softwaremill.asamal.extension.view.PresentationExtensionResolver;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
+import pl.softwaremill.asamal.plugin.velocity.AsamalVelocityExtension;
 import pl.softwaremill.asamal.resource.ResourceResolverImpl;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 
@@ -16,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 
 import static org.fest.assertions.Assertions.assertThat;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -79,7 +82,7 @@ public class AsamalViewHandlerTest {
     }
 
     private void setupMocks(Class<? extends ControllerBean> controllerBeanClass) throws Exception {
-        BootstrapCheckerExtension checkerExtension = mock(BootstrapCheckerExtension.class);
+        AsamalAnnotationScanner checkerExtension = mock(AsamalAnnotationScanner.class);
 
         ViewHashGenerator viewHashGenerator = mock(ViewHashGenerator.class);
         when(viewHashGenerator.createNewViewHash(anyString(), anyString())).thenReturn("viewhash");
@@ -91,8 +94,12 @@ public class AsamalViewHandlerTest {
             }
         };
 
+        PresentationExtensionResolver presentationExtensionResolver = mock(PresentationExtensionResolver.class);
+        when(presentationExtensionResolver.resolvePresentationExtension((ResourceResolver) anyObject(),
+                anyString(), anyString())).thenReturn(new AsamalVelocityExtension());
+
         viewHandler = new AsamalViewHandler(checkerExtension, viewHashGenerator,
-                resourceResolverFactory);
+                resourceResolverFactory, presentationExtensionResolver);
         controller = controllerBeanClass.newInstance();
         request = mock(HttpServletRequest.class);
         ServletContext context = mock(ServletContext.class);

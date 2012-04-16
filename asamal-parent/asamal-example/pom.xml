@@ -22,8 +22,8 @@
     <dependencies>
 
         <dependency>
-            <artifactId>asamal</artifactId>
-            <groupId>pl.softwaremill</groupId>
+            <artifactId>asamal-all</artifactId>
+            <groupId>pl.softwaremill.asamal</groupId>
             <version>${project.version}</version>
         </dependency>
 
@@ -52,14 +52,14 @@
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-persistence-api</artifactId>
-            <version>1.0.0.Alpha3</version>
+            <version>1.0.0.Alpha4</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-persistence-impl</artifactId>
-            <version>1.0.0.Alpha3</version>
+            <version>1.0.0.Alpha4</version>
             <scope>test</scope>
         </dependency>
 

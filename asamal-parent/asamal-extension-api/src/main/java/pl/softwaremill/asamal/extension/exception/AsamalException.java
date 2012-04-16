@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.exception;
+package pl.softwaremill.asamal.extension.exception;
 
 /**
  * User: szimano

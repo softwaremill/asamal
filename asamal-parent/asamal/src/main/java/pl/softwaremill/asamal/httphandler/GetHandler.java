@@ -8,8 +8,9 @@ import pl.softwaremill.asamal.controller.FilterStopException;
 import pl.softwaremill.asamal.controller.cdi.ControllerResolver;
 import pl.softwaremill.asamal.controller.cdi.RequestType;
 import pl.softwaremill.asamal.exception.HttpErrorException;
+import pl.softwaremill.asamal.extension.exception.ResourceNotFoundException;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.asamal.producers.AsamalProducers;
-import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.common.cdi.security.SecurityConditionException;
 
 import javax.inject.Inject;
@@ -91,10 +92,14 @@ public class GetHandler extends AbstractHttpHandler {
     @GET
     @Path("/static/{path:.*}")
     public Object handleStaticGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
-                                  @PathParam("path") String path) {
+                                  @PathParam("path") String path) throws HttpErrorException {
         setHttpObjects(req, resp);
 
-        return resourceResolverFactory.create(req).resolveFile("/static/" + path);
+        try {
+            return resourceResolverFactory.create(req).resolveFile("/static/" + path);
+        } catch (ResourceNotFoundException e) {
+            throw new HttpErrorException(Response.Status.NOT_FOUND, e);
+        }
     }
 
     @GET

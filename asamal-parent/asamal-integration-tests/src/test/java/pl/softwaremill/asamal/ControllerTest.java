@@ -1,16 +1,16 @@
 package pl.softwaremill.asamal;
 
-import org.apache.struts.mock.MockHttpSession;
+import org.jboss.arquillian.container.weld.ee.embedded_1_1.mock.MockHttpSession;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.common.TestResourceResolver;
-import pl.softwaremill.asamal.controller.cdi.BootstrapCheckerExtension;
+import pl.softwaremill.asamal.controller.cdi.AsamalAnnotationScanner;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.asamal.httphandler.AsamalViewHandler;
 import pl.softwaremill.asamal.httphandler.GetHandler;
 import pl.softwaremill.asamal.httphandler.PostHandler;
-import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.asamal.servlet.AsamalListener;
 import pl.softwaremill.asamal.viewhash.ViewDescriptor;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
@@ -45,7 +45,7 @@ public class ControllerTest {
     protected TestRecorder testRecorder;
 
     @Inject
-    protected BootstrapCheckerExtension bootstrapCheckerExtension;
+    protected AsamalAnnotationScanner asamalAnnotationScanner;
 
     @Inject
     protected ViewHashGenerator viewHashGenerator;
@@ -86,6 +86,7 @@ public class ControllerTest {
 
     @After
     public void clear() {
+        TestResourceResolver.returnHtml = null;
         testRecorder.clear();
         producers.clear();
     }

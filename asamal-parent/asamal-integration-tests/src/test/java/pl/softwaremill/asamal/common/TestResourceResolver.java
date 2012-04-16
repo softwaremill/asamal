@@ -1,12 +1,12 @@
 package pl.softwaremill.asamal.common;
 
 import org.junit.Ignore;
-import pl.softwaremill.asamal.resource.ResourceResolver;
+import pl.softwaremill.asamal.extension.exception.ResourceNotFoundException;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.common.cdi.autofactory.CreatedWith;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -23,17 +23,16 @@ public class TestResourceResolver implements ResourceResolver {
     public TestResourceResolver(HttpServletRequest request) {
     }
 
-    public String resolveTemplate(String controller, String view) throws IOException {
+    public String resolveTemplate(String controller, String view, String extension)
+            throws ResourceNotFoundException {
         if (returnHtml != null) {
-            String toRet = returnHtml;
-            returnHtml = null;
-            
-            return toRet;
+            return returnHtml;
         }
         return controller + "/" + view;
     }
 
-    public String resolvePartial(String controller, String partial) throws IOException {
+    public String resolvePartial(String controller, String partial, String extension)
+            throws ResourceNotFoundException {
         return controller + "/" + partial;
     }
 

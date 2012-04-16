@@ -1,1 +1,1 @@
-pl.softwaremill.asamal.controller.cdi.BootstrapCheckerExtension
+pl.softwaremill.asamal.controller.cdi.AsamalAnnotationScanner

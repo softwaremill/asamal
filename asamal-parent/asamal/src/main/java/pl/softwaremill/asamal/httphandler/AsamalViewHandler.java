@@ -1,22 +1,21 @@
 package pl.softwaremill.asamal.httphandler;
 
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.tools.ToolContext;
-import org.apache.velocity.tools.ToolManager;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import pl.softwaremill.asamal.controller.AsamalContext;
-import pl.softwaremill.asamal.controller.ContextConstants;
 import pl.softwaremill.asamal.controller.ControllerBean;
-import pl.softwaremill.asamal.controller.cdi.BootstrapCheckerExtension;
+import pl.softwaremill.asamal.controller.cdi.AsamalAnnotationScanner;
 import pl.softwaremill.asamal.exception.HttpErrorException;
+import pl.softwaremill.asamal.extension.view.ContextConstants;
+import pl.softwaremill.asamal.extension.view.PresentationContext;
+import pl.softwaremill.asamal.extension.view.PresentationExtension;
+import pl.softwaremill.asamal.extension.view.PresentationExtensionResolver;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
+import pl.softwaremill.asamal.helper.AsamalHelper;
 import pl.softwaremill.asamal.i18n.Messages;
-import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.asamal.servlet.AsamalListener;
-import pl.softwaremill.asamal.velocity.AsamalHelper;
-import pl.softwaremill.asamal.velocity.LayoutDirective;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import pl.softwaremill.common.util.dependency.D;
 
@@ -35,16 +34,19 @@ import java.util.Map;
  */
 public class AsamalViewHandler {
 
-    private BootstrapCheckerExtension bootstrapCheckerExtension;
+    private AsamalAnnotationScanner asamalAnnotationScanner;
     private ViewHashGenerator viewHashGenerator;
     private ResourceResolver.Factory resourceResolverFactory;
+    private PresentationExtensionResolver presentationExtensionResolver;
 
     @Inject
-    public AsamalViewHandler(BootstrapCheckerExtension bootstrapCheckerExtension, ViewHashGenerator viewHashGenerator,
-                             ResourceResolver.Factory resourceResolverFactory) {
-        this.bootstrapCheckerExtension = bootstrapCheckerExtension;
+    public AsamalViewHandler(AsamalAnnotationScanner asamalAnnotationScanner, ViewHashGenerator viewHashGenerator,
+                             ResourceResolver.Factory resourceResolverFactory,
+                             PresentationExtensionResolver presentationExtensionResolver) {
+        this.asamalAnnotationScanner = asamalAnnotationScanner;
         this.viewHashGenerator = viewHashGenerator;
         this.resourceResolverFactory = resourceResolverFactory;
+        this.presentationExtensionResolver = presentationExtensionResolver;
     }
 
     public AsamalViewHandler() {
@@ -59,8 +61,10 @@ public class AsamalViewHandler {
 
             ResourceResolver resourceResolver = resourceResolverFactory.create(req);
 
-            ToolManager toolManager = new ToolManager(true, true);
-            ToolContext context = toolManager.createContext();
+            PresentationExtension presentationExtension = presentationExtensionResolver.
+                    resolvePresentationExtension(resourceResolver, controller, view);
+
+            PresentationContext context = presentationExtension.createNewPresentationContext();
 
             // set the viewHash
             context.put(ViewHashGenerator.VIEWHASH, viewHash);
@@ -72,7 +76,7 @@ public class AsamalViewHandler {
             context.put(ContextConstants.MESSAGES, new Messages());
 
 
-            for (Class clazz : bootstrapCheckerExtension.getNamedBeans()) {
+            for (Class clazz : asamalAnnotationScanner.getNamedBeans()) {
                 String name = ((Named) clazz.getAnnotation(Named.class)).value();
 
                 // get the qualifiers from that bean, so it gets injected no matter what
@@ -100,6 +104,7 @@ public class AsamalViewHandler {
             context.put(ContextConstants.ASAMAL_HELPER_OLD, asamalHelper);
             context.put(ContextConstants.PAGE_TITLE, controllerBean.getPageTitle());
             context.put(ContextConstants.CONTROLLER, controllerBean);
+            context.put(ContextConstants.CONTROLLER_NAME, controllerBean.getName());
             context.put(ContextConstants.VIEW, view);
 
             for (AsamalContext.MessageSeverity severity : AsamalContext.MessageSeverity.values()) {
@@ -112,21 +117,9 @@ public class AsamalViewHandler {
 
             StringWriter w = new StringWriter();
 
-            String template = resourceResolver.resolveTemplate(controller, view);
+            String template = resourceResolver.resolveTemplate(controller, view, presentationExtension.getExtension());
 
-            Velocity.evaluate(context, w, controller + "/" + view, template);
-
-            String layout;
-            while ((layout = (String) context.get(LayoutDirective.LAYOUT)) != null) {
-                // clear the layout
-                context.put(LayoutDirective.LAYOUT, null);
-
-                w = new StringWriter();
-                template = resourceResolver.resolveTemplate("layout", layout);
-                Velocity.evaluate(context, w, controller + "/" + view, template);
-            }
-
-            String outputHtml = w.toString();
+            String outputHtml = presentationExtension.evaluateTemplate(context, resourceResolver, template);
 
             //finally enhance the html by adding some asamal magic
             return enhanceOutputHtml(req, outputHtml, viewHash);

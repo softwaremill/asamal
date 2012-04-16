@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.velocity;
+package pl.softwaremill.asamal.plugin.velocity.extensions;
 
 import org.apache.velocity.context.EvaluateContext;
 import org.apache.velocity.context.InternalContextAdapter;
