@@ -15,8 +15,8 @@ import pl.softwaremill.asamal.exception.HttpErrorException;
 import pl.softwaremill.asamal.i18n.Messages;
 import pl.softwaremill.asamal.resource.ResourceResolver;
 import pl.softwaremill.asamal.servlet.AsamalListener;
+import pl.softwaremill.asamal.velocity.AsamalHelper;
 import pl.softwaremill.asamal.velocity.LayoutDirective;
-import pl.softwaremill.asamal.velocity.TagHelper;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import pl.softwaremill.common.util.dependency.D;
 
@@ -94,7 +94,10 @@ public class AsamalViewHandler {
             }
 
             // put some context
-            context.put(ContextConstants.TAG, new TagHelper(req.getContextPath(), context));
+            AsamalHelper asamalHelper = new AsamalHelper(req.getContextPath(), context);
+
+            context.put(ContextConstants.ASAMAL_HELPER, asamalHelper);
+            context.put(ContextConstants.ASAMAL_HELPER_OLD, asamalHelper);
             context.put(ContextConstants.PAGE_TITLE, controllerBean.getPageTitle());
             context.put(ContextConstants.CONTROLLER, controllerBean);
             context.put(ContextConstants.VIEW, view);

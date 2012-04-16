@@ -25,13 +25,13 @@
                     <td>$!ticketCategory.invoiceDescription</td>
                     <td>$!ticketCategory.price PLN</td>
                     <td>
-                        <a href="$tag.link("admin", "editTicketCat")/$ticketCategory.id">Edit</a>
+                        <a href="$a.link("admin", "editTicketCat")/$ticketCategory.id">Edit</a>
                         #if($ticketCategory.totalCategory == false)
                             <form id="deleteCategory$ticketCategory.id" accept-charset="UTF-8">
                                 <input type="hidden" value="$ticketCategory.id" name="id">
                             </form>
                             <a href="#"
-                               onclick="if (confirm('Are you sure to delete $ticketCategory.name ?')) {$tag.reRender("admin", "deleteTicketCategory", "'deleteCategory$ticketCategory.id'", "'tickets'")}">
+                               onclick="if (confirm('Are you sure to delete $ticketCategory.name ?')) {$a.reRender("admin", "deleteTicketCategory", "'deleteCategory$ticketCategory.id'", "'tickets'")}">
                                 Delete
                             </a>
                         #end
@@ -44,7 +44,7 @@
             #renderPartial('ticket_cat_edit')
 
             <input type="submit"
-                   onclick="return $tag.reRender("admin", "addTicketCategory", "'ticketForm'", "['tickets', 'messages']")"
+                   onclick="return $a.reRender("admin", "addTicketCategory", "'ticketForm'", "['tickets', 'messages']")"
                    value="Add Ticket Category"/>
         </form>
     </div>

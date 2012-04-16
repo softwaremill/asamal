@@ -3,9 +3,9 @@
 #region('content')
     <h1>$m['login.pleaselogin']</h1>
 
-    <p>No account yet ? <a href="$tag.link('login', 'register')">Register now</a>.</p>
+    <p>No account yet ? <a href="$a.link('login', 'register')">Register now</a>.</p>
 
-    <form accept-charset="UTF-8" action="$tag.formAction('login', 'doLogin')" method="POST"
+    <form accept-charset="UTF-8" action="$a.formAction('login', 'doLogin')" method="POST"
           class="form-horizontal">
         <label>$m['login.login']</label>
         <input type="text" name="login" value=""/>

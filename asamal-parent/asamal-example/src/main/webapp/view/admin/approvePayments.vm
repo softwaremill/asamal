@@ -6,7 +6,7 @@
 
         <input type="text" name="paymentId" id="paymentId"/>
 
-        <a href="" onclick="return $tag.reRender('admin', 'searchPayment', "'paymentId'", "'payments'")">Search</a>
+        <a href="" onclick="return $a.reRender('admin', 'searchPayment', "'paymentId'", "'payments'")">Search</a>
 
         <div id="payments">
             #if($invoice)
@@ -45,9 +45,9 @@
                         <td>
                             #if($invoice.status == 'UNPAID')
                                 <input class="btn btn-success" type="button" value="$m['admin.approve.approve']"
-                                       onclick="return $tag.reRender('admin', 'approve', "['invoiceId$invoice.id', 'paymentDate$invoice.id']", "'payments'")"/>
+                                       onclick="return $a.reRender('admin', 'approve', "['invoiceId$invoice.id', 'paymentDate$invoice.id']", "'payments'")"/>
                                 <input class="btn btn-danger" type="button" value="$m['admin.approve.cancel']"
-                                       onclick="return $tag.reRender('admin', 'cancel', "'invoiceId$invoice.id'", "'payments'")"/>
+                                       onclick="return $a.reRender('admin', 'cancel', "'invoiceId$invoice.id'", "'payments'")"/>
                             #end
                         </td>
                     </tr>

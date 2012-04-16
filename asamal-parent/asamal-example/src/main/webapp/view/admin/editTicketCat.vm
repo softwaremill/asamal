@@ -5,7 +5,7 @@
 
     <div id="tickets">
         <form class="form-horizontal" id="ticketForm" method="post" accept-charset="UTF-8"
-              action="$tag.formAction("admin", "editTicketCategory")">
+              action="$a.formAction("admin", "editTicketCategory")">
 
             #renderPartial('ticket_cat_edit')
 

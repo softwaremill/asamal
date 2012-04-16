@@ -11,7 +11,10 @@ public class ContextConstants {
 
     public static final String VIEW = "view";
 
-    public static final String TAG = "tag";
+    public static final String ASAMAL_HELPER = "a";
+
+    // left for compatibility
+    public static final String ASAMAL_HELPER_OLD = "tag";
 
     public static final String PAGE_TITLE = "pageTitle";
     

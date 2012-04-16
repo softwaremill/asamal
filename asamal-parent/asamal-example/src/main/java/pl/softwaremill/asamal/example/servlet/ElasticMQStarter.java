@@ -1,8 +1,8 @@
 package pl.softwaremill.asamal.example.servlet;
 
+import org.elasticmq.Node;
 import org.elasticmq.NodeAddress;
 import org.elasticmq.NodeBuilder;
-import org.elasticmq.impl.NodeImpl;
 import org.elasticmq.rest.RestServer;
 import org.elasticmq.rest.sqs.SQSRestServerFactory;
 import org.elasticmq.storage.inmemory.InMemoryStorage;
@@ -18,7 +18,7 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class ElasticMQStarter implements ServletContextListener{
 
-    private NodeImpl node;
+    private Node node;
     private RestServer server;
 
     @Inject

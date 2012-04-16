@@ -60,17 +60,17 @@
     <![endif]-->
 
     <!-- Le styles -->
-    <link href="$tag.cssLink("bootstrap.css")" rel="stylesheet">
+    <link href="$a.cssLink("bootstrap.css")" rel="stylesheet">
     <style>
         body {
             padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
         }
     </style>
-    <link href="$tag.cssLink("bootstrap-responsive.css")" rel="stylesheet">
-    <link href="$tag.cssLink("jquery-ui-1.8.18.custom.css")" rel="stylesheet">
+    <link href="$a.cssLink("bootstrap-responsive.css")" rel="stylesheet">
+    <link href="$a.cssLink("jquery-ui-1.8.18.custom.css")" rel="stylesheet">
 
-    <script src="$tag.jsLink("jquery-min-1.7.1.js")"></script>
-    <script src="$tag.jsLink("jquery-ui-1.8.18.custom.min.js")"></script>
+    <script src="$a.jsLink("jquery-min-1.7.1.js")"></script>
+    <script src="$a.jsLink("jquery-ui-1.8.18.custom.min.js")"></script>
 </head>
 
 <body>
@@ -88,12 +88,12 @@
             <div class="nav-collapse">
                 <ul class="nav">
                     <li #if($c.name == 'home' && $view == 'index')class="active"#end>
-                        <a href="$tag.link('home', 'index')">Home</a></li>
+                        <a href="$a.link('home', 'index')">Home</a></li>
                     <li #if($c.name == 'tickets' && $view == 'buy')class="active"#end>
-                        <a href="$tag.link('tickets', 'buy')">Buy Tickets</a></li>
+                        <a href="$a.link('tickets', 'buy')">Buy Tickets</a></li>
                     #if($login.loggedIn == false)
                         <li #if($c.name == 'login' && $view == 'register')class="active"#end>
-                            <a href="$tag.link('login', 'register')">Register</a></li>
+                            <a href="$a.link('login', 'register')">Register</a></li>
                     #end
 
                 </ul>
@@ -108,13 +108,13 @@
                             <ul class="dropdown-menu">
 
                                 <li #if($c.name == 'admin' && $view == 'tickets')class="active"#end>
-                                    <a href="$tag.link('admin', 'tickets')">Tickets</a></li>
+                                    <a href="$a.link('admin', 'tickets')">Tickets</a></li>
                                 <li #if($c.name == 'admin' && $view == 'approvePayments')class="active"#end>
-                                    <a href="$tag.link('admin', 'approvePayments')">Payments</a></li>
+                                    <a href="$a.link('admin', 'approvePayments')">Payments</a></li>
                                 <li #if($c.name == 'admin' && $view == 'configuration')class="active"#end>
-                                    <a href="$tag.link('admin', 'configuration')">Configuration</a></li>
+                                    <a href="$a.link('admin', 'configuration')">Configuration</a></li>
                                 <li #if($c.name == 'admin' && $view == 'discounts')class="active"#end>
-                                    <a href="$tag.link('admin', 'discounts')">Discounts</a></li>
+                                    <a href="$a.link('admin', 'discounts')">Discounts</a></li>
                             </ul>
                         </li>
                     #end
@@ -123,9 +123,9 @@
                 <p class="navbar-text pull-right">
                     #if($login.loggedIn)
                         Logged in as $login.user.username
-                        <a href="$tag.link('login', 'logout')">Logout</a>
+                        <a href="$a.link('login', 'logout')">Logout</a>
                     #else
-                        <a href="$tag.link('login', 'login')">Log in</a>
+                        <a href="$a.link('login', 'login')">Log in</a>
                     #end
                 </p>
             </div>
@@ -155,8 +155,8 @@
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="$tag.jsLink("bootstrap.min.js")"></script>
-<script src="$tag.jsLink("bootstrap-dropdown.js")"></script>
+<script src="$a.jsLink("bootstrap.min.js")"></script>
+<script src="$a.jsLink("bootstrap-dropdown.js")"></script>
 
 <script type="text/javascript">
     $('.dropdown-toggle').dropdown()

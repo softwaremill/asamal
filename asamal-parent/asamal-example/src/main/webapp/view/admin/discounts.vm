@@ -23,7 +23,7 @@
         #end
     </table>
 
-    <form action="$tag.formAction('admin', 'addDiscount')" method="post"
+    <form action="$a.formAction('admin', 'addDiscount')" method="post"
           class="form-horizontal">
 
         <label>$m['discount.code']</label>

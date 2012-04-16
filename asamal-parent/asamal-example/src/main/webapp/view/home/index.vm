@@ -14,11 +14,11 @@
                 </th>
                 <th>
                     #if($invoice.status == 'UNPAID')
-                        <a href="$tag.link('tickets', 'pay')/$invoice.id">
+                        <a href="$a.link('tickets', 'pay')/$invoice.id">
                             <button class="btn">$m['home.ticket.pay']</button>
                         </a>
                     #end
-                    <a href="$tag.pdf('invoice', 'pdf')/$invoice.id/${c.getInvoiceId($invoice)}.pdf">
+                    <a href="$a.pdf('invoice', 'pdf')/$invoice.id/${c.getInvoiceId($invoice)}.pdf">
                         <button class="btn">$m['home.ticket.invoice']</button>
                     </a>
                 </th>
@@ -40,7 +40,7 @@
 
     #if($invoices.isEmpty())
         <i>$m['home.tickets.notickets']</i>
-        <a href="$tag.link('tickets', 'buy')">
+        <a href="$a.link('tickets', 'buy')">
             <button class="btn btn-warning">Buy Now</button>
         </a>
     #end

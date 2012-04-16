@@ -1,5 +1,6 @@
 package pl.softwaremill.asamal.velocity;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.context.Context;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 
@@ -10,12 +11,12 @@ import java.io.StringWriter;
  *
  * User: szimano
  */
-public class TagHelper {
+public class AsamalHelper {
 
     private final String contextPath;
     private final Context velocityContext;
 
-    public TagHelper(String contextPath, Context velocityContext) {
+    public AsamalHelper(String contextPath, Context velocityContext) {
         this.contextPath = contextPath;
         this.velocityContext = velocityContext;
     }
@@ -80,6 +81,13 @@ public class TagHelper {
 
     public String imgLink(String imgName) {
         return staticLink("img", imgName);
+    }
+
+    /**
+     * Escapes given html
+     */
+    public String e(String html) {
+        return StringEscapeUtils.escapeHtml(html);
     }
     
     private String staticLink(String type, String name) {
