@@ -147,15 +147,15 @@
 
     <repositories>
         <repository>
-            <id>softwaremill-snapshots</id>
-            <name>SoftwareMill Snapshots</name>
+            <id>asamal-repos</id>
+            <name>asamal-repos</name>
             <releases>
                 <enabled>true</enabled>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-            <url>http://tools.softwaremill.pl/nexus/content/groups/smlcommon-repos</url>
+            <url>http://tools.softwaremill.pl/nexus/content/groups/asamal-repos/</url>
         </repository>
     </repositories>
 
