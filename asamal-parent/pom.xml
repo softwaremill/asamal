@@ -155,7 +155,7 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-            <url>http://tools.softwaremill.pl/nexus/content/groups/asamal-repos/</url>
+            <url>http://tools.softwaremill.pl/nexus/content/groups/smlcommon-repos/</url>
         </repository>
     </repositories>
 
