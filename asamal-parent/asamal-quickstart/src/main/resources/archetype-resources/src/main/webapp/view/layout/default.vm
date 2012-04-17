@@ -62,15 +62,15 @@ ${symbol_pound}end
     <![endif]-->
 
     <!-- Le styles -->
-    <link href="${symbol_dollar}tag.cssLink("bootstrap.css")" rel="stylesheet">
+    <link href="${symbol_dollar}a.cssLink("bootstrap.css")" rel="stylesheet">
     <style>
         body {
             padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
         }
     </style>
-    <link href="${symbol_dollar}tag.cssLink("bootstrap-responsive.css")" rel="stylesheet">
+    <link href="${symbol_dollar}a.cssLink("bootstrap-responsive.css")" rel="stylesheet">
 
-    <script src="${symbol_dollar}tag.jsLink("jquery-min-1.7.1.js")"></script>
+    <script src="${symbol_dollar}a.jsLink("jquery-min-1.7.1.js")"></script>
 </head>
 
 <body>
@@ -88,7 +88,7 @@ ${symbol_pound}end
             <div class="nav-collapse">
                 <ul class="nav">
                     <li ${symbol_pound}if(${symbol_dollar}controller.name == 'home' && ${symbol_dollar}view == 'index')class="active"${symbol_pound}end>
-                        <a href="${symbol_dollar}tag.link('home', 'index')">Home</a></li>
+                        <a href="${symbol_dollar}a.link('home', 'index')">Home</a></li>
                 </ul>
             </div>
             <!--/.nav-collapse -->
@@ -117,7 +117,7 @@ ${symbol_pound}end
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="${symbol_dollar}tag.jsLink("bootstrap.min.js")"></script>
+<script src="${symbol_dollar}a.jsLink("bootstrap.min.js")"></script>
 
 </body>
 </html>
