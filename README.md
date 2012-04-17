@@ -225,8 +225,8 @@ on the web pages as well as few Asamal specific variables
 	<td>The controller bean</td>
 </tr>
 <tr>
-	<td>$tag</td>
-	<td>TagHelper (see below)</td>
+	<td>$a</td>
+	<td>AsamalHelper (see below)</td>
 </tr>
 <tr>
 	<td>$m</td>
@@ -360,22 +360,22 @@ The partial is used in two places now - if it is situated in the same directory
 as the page, it will resolve just fine without any paths. If you are reusing path
 that is global (used by other controllers) you have to provide the full path.
 
-###### TagHelper
+###### AsamalHelper
 
-TagHelper is an utility class to generate action links in the application.
+AsamalHelper is an utility class to generate action links in the application.
 
-It is accessible via the `$tag` variable from all you vm files.
+It is accessible via the `$a` variable from all you vm files.
 
 |Method|Desciription|Method|Sample Usage|
 |------|:----------:|:----:|----------:|
-|**link(controller, view)**|The method will generate a GET link to given controller/action|GET|&lt;a href="$tag.link('home','index')">Home</a&gt;|
-|**formAction(controller,view)**|Generates form action link|POST|&lt;form method="post" action="$tag.formAction('users','addUser')"&gt;|
-|**formActionFormData(controller,view)**|Similar to formAction, but generates a link that will accept multipart forms - you have to use it when you are uploading a file|POST|&lt;form method="post" action="$tag.formActionFormData('users','addUser')"&gt;|
-|**jsonLink(controller,view)**|Generates a link to JSON-producing action. The action has to be annotated with @Json|GET|&lt;a href="$tag.jsonLink('users', 'usersInJson')"&gt;Download in JSON&lt;/a&gt;|
-|**reRender(controller, view, elementList, reRenderList)**|Generates re-rendering link. See below for more information on re-rendering with ajax.|POST|&lt;a href="#" onclick="$tag.reRender('users', 'reloadUsers', '"userId"', '"userDiv"')"&gt;Reload Users&lt;/a&gt;|
-|**jsLink(jsName)**|Generates a link to javascript file, which should be locate under /static/js in your WEB-APP|GET|&lt;script src="$tag.jsLink("jquery-min-1.7.1.js")"></script&gt;
-|**cssLink(cssName)**|Generates a link to CSS file, which should be locate under /static/css in your WEB-APP|GET|&lt;link href="$tag.cssLink("bootstrap.css")" rel="stylesheet"&gt;|
-|**imgLink(imgName)**|Generates a link to image, which should be locate under /static/img in your WEB-APP|GET|&lt;img src="$tag.imgLink("logo.png")"/&gt;|
+|**link(controller, view)**|The method will generate a GET link to given controller/action|GET|&lt;a href="$a.link('home','index')">Home</a&gt;|
+|**formAction(controller,view)**|Generates form action link|POST|&lt;form method="post" action="$a.formAction('users','addUser')"&gt;|
+|**formActionFormData(controller,view)**|Similar to formAction, but generates a link that will accept multipart forms - you have to use it when you are uploading a file|POST|&lt;form method="post" action="$a.formActionFormData('users','addUser')"&gt;|
+|**jsonLink(controller,view)**|Generates a link to JSON-producing action. The action has to be annotated with @Json|GET|&lt;a href="$a.jsonLink('users', 'usersInJson')"&gt;Download in JSON&lt;/a&gt;|
+|**reRender(controller, view, elementList, reRenderList)**|Generates re-rendering link. See below for more information on re-rendering with ajax.|POST|&lt;a href="#" onclick="$a.reRender('users', 'reloadUsers', '"userId"', '"userDiv"')"&gt;Reload Users&lt;/a&gt;|
+|**jsLink(jsName)**|Generates a link to javascript file, which should be locate under /static/js in your WEB-APP|GET|&lt;script src="$a.jsLink("jquery-min-1.7.1.js")"></script&gt;
+|**cssLink(cssName)**|Generates a link to CSS file, which should be locate under /static/css in your WEB-APP|GET|&lt;link href="$a.cssLink("bootstrap.css")" rel="stylesheet"&gt;|
+|**imgLink(imgName)**|Generates a link to image, which should be locate under /static/img in your WEB-APP|GET|&lt;img src="$a.imgLink("logo.png")"/&gt;|
 |**pdf(controller,view)|Generates a link to PDF version of the action|GET|See below|
 </table>
 
@@ -400,7 +400,7 @@ searchUsers.vm
 </form>
 
 <a href="#" 
-	onclick="$tag.reRender('users, 'doSearch', '"searchName"', '"userList"')">
+	onclick="$a.reRender('users, 'doSearch', '"searchName"', '"userList"')">
 	Search
 	</a>
 
@@ -468,7 +468,7 @@ a desired file name, just follow the link by it.
 Example:
 
 ```html
-<a href="$tag.pdf('invoice','view')/10/invoice-10.pdf">Download Invoice</a>
+<a href="$a.pdf('invoice','view')/10/invoice-10.pdf">Download Invoice</a>
 ```
 
 
