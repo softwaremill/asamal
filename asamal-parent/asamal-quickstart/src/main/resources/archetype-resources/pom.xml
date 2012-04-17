@@ -16,8 +16,8 @@
     <dependencies>
 
         <dependency>
-            <artifactId>asamal</artifactId>
-            <groupId>pl.softwaremill</groupId>
+            <artifactId>asamal-all</artifactId>
+            <groupId>pl.softwaremill.asamal</groupId>
             <version>1-SNAPSHOT</version>
         </dependency>
 
