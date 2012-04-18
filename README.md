@@ -372,7 +372,6 @@ It is accessible via the `$a` variable from all you vm files.
 |**formAction(controller,view)**|Generates form action link|POST|&lt;form method="post" action="$a.formAction('users','addUser')"&gt;|
 |**formActionFormData(controller,view)**|Similar to formAction, but generates a link that will accept multipart forms - you have to use it when you are uploading a file|POST|&lt;form method="post" action="$a.formActionFormData('users','addUser')"&gt;|
 |**jsonLink(controller,view)**|Generates a link to JSON-producing action. The action has to be annotated with @Json|GET|&lt;a href="$a.jsonLink('users', 'usersInJson')"&gt;Download in JSON&lt;/a&gt;|
-|**reRender(controller, view, elementList, reRenderList)**|Generates re-rendering link. See below for more information on re-rendering with ajax.|POST|&lt;a href="#" onclick="$a.reRender('users', 'reloadUsers', '"userId"', '"userDiv"')"&gt;Reload Users&lt;/a&gt;|
 |**jsLink(jsName)**|Generates a link to javascript file, which should be locate under /static/js in your WEB-APP|GET|&lt;script src="$a.jsLink("jquery-min-1.7.1.js")"></script&gt;
 |**cssLink(cssName)**|Generates a link to CSS file, which should be locate under /static/css in your WEB-APP|GET|&lt;link href="$a.cssLink("bootstrap.css")" rel="stylesheet"&gt;|
 |**imgLink(imgName)**|Generates a link to image, which should be locate under /static/img in your WEB-APP|GET|&lt;img src="$a.imgLink("logo.png")"/&gt;|
@@ -383,7 +382,8 @@ It is accessible via the `$a` variable from all you vm files.
 
 Asamal lets you rerender some elements on your page using their IDs.
 
-Basically how it works is that using the TagHelper, you create a link that
+Basically how it works is that using a javascript function that sits in the
+autoincluded asamal.js, you create a link that
 sends a set of form fields (or a whole form, or nothing) to a POST action, which 
 then performs some logic, rerenders the page and returns using JSON parts of it
 that you want to re-render. The DOM then gets updated on the client side.
@@ -400,7 +400,7 @@ searchUsers.vm
 </form>
 
 <a href="#" 
-	onclick="$a.reRender('users, 'doSearch', '"searchName"', '"userList"')">
+	onclick="ajaxPost('users, 'doSearch', 'searchName', 'userList')">
 	Search
 	</a>
 
@@ -458,7 +458,7 @@ TBD
 
 Creating PDFs is very easy with Asamal. Just create any @Get action, with a corresponding
 velocity template and access it adding to the url `/pdf` before the controller name,
-or use the TagHelper to generate pdf link.
+or use the AsamalHelper to generate pdf link.
 
 Asamal will use Flying Saucer and convert the html into pdf. To make the browser download
 a desired file name, just follow the link by it.
