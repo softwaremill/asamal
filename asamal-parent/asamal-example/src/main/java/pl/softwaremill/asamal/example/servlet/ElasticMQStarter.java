@@ -29,13 +29,13 @@ public class ElasticMQStarter implements ServletContextListener{
         InternalLoggerFactory.setDefaultFactory(new Slf4JLoggerFactory());
 
         // First we need to create a Node
-//        node = NodeBuilder.withStorage(new InMemoryStorage());
+        node = NodeBuilder.withStorage(new InMemoryStorage());
 
         // Then we can expose the native client using the SQS REST interface
-//        server = SQSRestServerFactory.start(node.nativeClient(), 8855, new NodeAddress("http://localhost:8855"));
+        server = SQSRestServerFactory.start(node.nativeClient(), 8855, new NodeAddress("http://localhost:8855"));
 
         // start email sending
-//        emailSendingBean.startTimer(10000);
+        emailSendingBean.startTimer(10000);
     }
 
     @Override

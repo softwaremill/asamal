@@ -40,7 +40,8 @@ public class AsamalViewHandlerTest {
         // then
         assertThat(view).isEqualTo("<html>\n" +
                 " <head>\n" +
-                "  <script type=\"text/javascript\" src=\"null/asamal/asamal.js\"></script>\n" +
+                "  <script type=\"text/javascript\" src=\"//asamal/asamal.js\"></script>\n" +
+                "  <script type=\"text/javascript\">var asamalController = 'textarea'; var asamalView = 'whitespace'; var asamalViewHash = 'viewhash'; var asamalContextPath = '/'; </script>\n" +
                 " </head>\n" +
                 " <body>\n" +
                 "  <textarea>\n" +
@@ -64,7 +65,8 @@ public class AsamalViewHandlerTest {
         // then
         assertThat(view).isEqualTo("<html>\n" +
                 " <head>\n" +
-                "  <script type=\"text/javascript\" src=\"null/asamal/asamal.js\"></script>\n" +
+                "  <script type=\"text/javascript\" src=\"//asamal/asamal.js\"></script>\n" +
+                "  <script type=\"text/javascript\">var asamalController = 'textarea'; var asamalView = 'html'; var asamalViewHash = 'viewhash'; var asamalContextPath = '/'; </script>\n" +
                 " </head>\n" +
                 " <body>\n" +
                 "  <textarea>\n" +
@@ -104,6 +106,7 @@ public class AsamalViewHandlerTest {
         request = mock(HttpServletRequest.class);
         ServletContext context = mock(ServletContext.class);
         when(request.getServletContext()).thenReturn(context);
+        when(request.getContextPath()).thenReturn("/");
         when(context.getResourceAsStream(anyString())).then(new Answer<InputStream>() {
             @Override
             public InputStream answer(InvocationOnMock invocation) throws Throwable {
