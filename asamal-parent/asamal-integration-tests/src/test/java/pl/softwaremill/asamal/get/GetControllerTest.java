@@ -66,8 +66,8 @@ public class GetControllerTest extends ControllerTest {
         assertThat(output.getEntity()).isEqualTo("<html>\n" +
                 " <head>\n" +
                 "  <script type=\"text/javascript\" src=\"//asamal/asamal.js\"></script>\n" +
-                "  <script type=\"text/javascript\">asamalController = 'get'; asamalView = 'testMethod'; asamalViewHash = '" +
-                viewHashGenerator.getViewHashMap().keySet().iterator().next() + "'; asamalContextPath = '/'; </script>\n" +
+                "  <script type=\"text/javascript\">var asamalController = 'get'; var asamalView = 'testMethod'; var asamalViewHash = '" +
+                viewHashGenerator.getViewHashMap().keySet().iterator().next() + "'; var asamalContextPath = '/'; </script>\n" +
                 " </head>\n" +
                 " <body>\n" +
                 "  get/testMethod\n" +
@@ -100,8 +100,8 @@ public class GetControllerTest extends ControllerTest {
         assertThat(output.getEntity()).isEqualTo("<html>\n" +
                 " <head>\n" +
                 "  <script type=\"text/javascript\" src=\"//asamal/asamal.js\"></script>\n" +
-                "  <script type=\"text/javascript\">asamalController = 'get'; asamalView = 'testMethod'; asamalViewHash = '" +
-                viewHashGenerator.getViewHashMap().keySet().iterator().next() + "'; asamalContextPath = '/'; </script>\n" +
+                "  <script type=\"text/javascript\">var asamalController = 'get'; var asamalView = 'testMethod'; var asamalViewHash = '" +
+                viewHashGenerator.getViewHashMap().keySet().iterator().next() + "'; var asamalContextPath = '/'; </script>\n" +
                 " </head>\n" +
                 " <body>\n" +
                 "  <form method=\"POST\" action=\"action\" accept-charset=\"UTF-8\">\n" +
