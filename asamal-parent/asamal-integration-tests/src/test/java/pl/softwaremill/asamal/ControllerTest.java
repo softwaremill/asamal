@@ -74,6 +74,7 @@ public class ControllerTest {
 
         when(req.getSession()).thenReturn(session);
         when(req.getServletContext()).thenReturn(servletContext);
+        when(req.getContextPath()).thenReturn("/");
 
         // this is used to resolve BM by the PostHandler
         when(servletContext.getAttribute(AsamalListener.BEAN_MANAGER)).thenReturn(bm);

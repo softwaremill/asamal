@@ -1,3 +1,8 @@
+function ajaxPost(controller, view, elementIds, reRenderList) {
+    return doAjaxPost(asamalContextPath+"/rerender/"+controller+"/"+view,
+                elementIds, reRenderList, asamalViewHash);
+}
+
 function doAjaxPost(url, elementIds, reRenderList, viewHash) {
 
     input = "";

@@ -31,7 +31,7 @@
                                 <input type="hidden" value="$ticketCategory.id" name="id">
                             </form>
                             <a href="#"
-                               onclick="if (confirm('Are you sure to delete $ticketCategory.name ?')) {$a.reRender("admin", "deleteTicketCategory", "'deleteCategory$ticketCategory.id'", "'tickets'")}">
+                               onclick="if (confirm('Are you sure to delete $ticketCategory.name ?')) {ajaxPost('admin', 'deleteTicketCategory', 'deleteCategory$ticketCategory.id', 'tickets')}">
                                 Delete
                             </a>
                         #end
@@ -44,7 +44,7 @@
             #renderPartial('ticket_cat_edit')
 
             <input type="submit"
-                   onclick="return $a.reRender("admin", "addTicketCategory", "'ticketForm'", "['tickets', 'messages']")"
+                   onclick="return ajaxPost('admin', 'addTicketCategory', 'ticketForm', ['tickets', 'messages'])"
                    value="Add Ticket Category"/>
         </form>
     </div>

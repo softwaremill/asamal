@@ -68,7 +68,7 @@
                             #foreach($ticketCat in $c.availableCategories)
                                 $ticketCat.name
                                 <select id="numberOfTickets-$ticketCat.idName"
-                                        onchange="$a.reRender("tickets", "changeNumber", "'ticketForm'", "'tickets-form'")"
+                                        onchange="ajaxPost('tickets', 'changeNumber', 'ticketForm', 'tickets-form')"
                                         name="numberOfTickets-$ticketCat.idName">
                                     <option label="-" value="0"/>
                                     #foreach( $i in [1..$c.getMaxTickets($ticketCat)] )

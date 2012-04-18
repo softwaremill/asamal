@@ -65,7 +65,9 @@ public class GetControllerTest extends ControllerTest {
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("testMethod");
         assertThat(output.getEntity()).isEqualTo("<html>\n" +
                 " <head>\n" +
-                "  <script type=\"text/javascript\" src=\"null/asamal/asamal.js\"></script>\n" +
+                "  <script type=\"text/javascript\" src=\"//asamal/asamal.js\"></script>\n" +
+                "  <script type=\"text/javascript\">asamalController = 'get'; asamalView = 'testMethod'; asamalViewHash = '" +
+                viewHashGenerator.getViewHashMap().keySet().iterator().next() + "'; asamalContextPath = '/'; </script>\n" +
                 " </head>\n" +
                 " <body>\n" +
                 "  get/testMethod\n" +
@@ -97,13 +99,15 @@ public class GetControllerTest extends ControllerTest {
 
         assertThat(output.getEntity()).isEqualTo("<html>\n" +
                 " <head>\n" +
-                "  <script type=\"text/javascript\" src=\"null/asamal/asamal.js\"></script>\n" +
+                "  <script type=\"text/javascript\" src=\"//asamal/asamal.js\"></script>\n" +
+                "  <script type=\"text/javascript\">asamalController = 'get'; asamalView = 'testMethod'; asamalViewHash = '" +
+                viewHashGenerator.getViewHashMap().keySet().iterator().next() + "'; asamalContextPath = '/'; </script>\n" +
                 " </head>\n" +
                 " <body>\n" +
                 "  <form method=\"POST\" action=\"action\" accept-charset=\"UTF-8\">\n" +
                 "   <input type=\"text\" />\n" +
-                "   <input type=\"hidden\" name=\"asamalViewHash\" value=\""+
-                    viewHashMap.keySet().iterator().next() +"\" />\n" +
+                "   <input type=\"hidden\" name=\"asamalViewHash\" value=\"" +
+                viewHashMap.keySet().iterator().next() + "\" />\n" +
                 "  </form>\n" +
                 " </body>\n" +
                 "</html>");
@@ -163,7 +167,7 @@ public class GetControllerTest extends ControllerTest {
     public void shouldPassAnnotatedParams() throws HttpErrorException {
         // given
         GetHandler getHandler = getGetHandler();
-        producers.setMockAsamalParameters(new MockAsamalParameters(new HashMap<String, Object>(){{
+        producers.setMockAsamalParameters(new MockAsamalParameters(new HashMap<String, Object>() {{
             put("param", "testParamContent");
         }}));
 
@@ -178,7 +182,7 @@ public class GetControllerTest extends ControllerTest {
     public void shouldPassAnnotatedObjectParams() throws HttpErrorException {
         // given
         GetHandler getHandler = getGetHandler();
-        producers.setMockAsamalParameters(new MockAsamalParameters(new HashMap<String, Object>(){{
+        producers.setMockAsamalParameters(new MockAsamalParameters(new HashMap<String, Object>() {{
             put("param", new Object[]{"This", "is", "it"});
         }}));
 

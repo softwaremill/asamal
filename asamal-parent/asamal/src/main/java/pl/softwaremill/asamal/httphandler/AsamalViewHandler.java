@@ -122,7 +122,7 @@ public class AsamalViewHandler {
             String outputHtml = presentationExtension.evaluateTemplate(context, resourceResolver, template);
 
             //finally enhance the html by adding some asamal magic
-            return enhanceOutputHtml(req, outputHtml, viewHash);
+            return enhanceOutputHtml(req, outputHtml, controller, view, viewHash);
         } catch (Exception e) {
             e.printStackTrace();
 
@@ -130,7 +130,8 @@ public class AsamalViewHandler {
         }
     }
 
-    private String enhanceOutputHtml(HttpServletRequest request, String html, String viewHash) {
+    private String enhanceOutputHtml(HttpServletRequest request, String html, String controller, String view,
+                                     String viewHash) {
         Document document = Jsoup.parse(html);
 
         // for every POST form, add viewHash in hidden element
@@ -157,7 +158,15 @@ public class AsamalViewHandler {
         asamalJS.attr("type", "text/javascript");
         asamalJS.attr("src", request.getContextPath() + "/asamal/asamal.js");
 
+        Element viewJSVariables = document.createElement("script");
+        viewJSVariables.attr("type", "text/javascript");
+        viewJSVariables.append("var asamalController = '").append(controller).append("';\n");
+        viewJSVariables.append("var asamalView = '").append(view).append("';\n");
+        viewJSVariables.append("var asamalViewHash = '").append(viewHash).append("';\n");
+        viewJSVariables.append("var asamalContextPath = '").append(request.getContextPath()).append("';\n");
+
         head.appendChild(asamalJS);
+        head.appendChild(viewJSVariables);
 
         return document.html();
     }
