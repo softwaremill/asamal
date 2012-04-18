@@ -38,13 +38,13 @@ import java.util.Set;
 
 /**
  * Tickets controller
- *
+ * <p/>
  * User: szimano
  */
 @Controller("tickets")
 @Filters(AuthorizationFilter.class)
 public class Tickets extends ControllerBean implements Serializable {
-    
+
     private final static Integer maxTickets = 5;
     private static final String NUMBER_OF_TICKETS_PREFIX = "numberOfTickets-";
 
@@ -56,9 +56,9 @@ public class Tickets extends ControllerBean implements Serializable {
 
     @Inject
     private EmailService emailService;
-    
+
     private Invoice invoice = new Invoice();
-    
+
     private List<TicketCategory> availableCategories;
 
     private Ticket[][] ticketsByCategory;
@@ -104,8 +104,7 @@ public class Tickets extends ControllerBean implements Serializable {
             if (discount == null) {
                 allGood = false;
                 addMessageToFlash(getFromMessageBundle("discount.code.wrong"), AsamalContext.MessageSeverity.ERR);
-            }
-            else {
+            } else {
                 if (discount.getNumberOfUses() > 0 && discount.getNumberOfUses() <= discount.getNumberOfTickets()) {
                     allGood = false;
                     addMessageToFlash(getFromMessageBundle("discount.code.expired"), AsamalContext.MessageSeverity.ERR);
@@ -121,8 +120,7 @@ public class Tickets extends ControllerBean implements Serializable {
         if (paymentMethod != null) {
             invoice.setStatus(InvoiceStatus.UNPAID);
             invoice.setMethod(PaymentMethod.valueOf(paymentMethod.toUpperCase()));
-        }
-        else {
+        } else {
             allGood = false;
             addMessageToFlash(getFromMessageBundle("tickets.choose.payment"), AsamalContext.MessageSeverity.ERR);
         }
@@ -134,7 +132,7 @@ public class Tickets extends ControllerBean implements Serializable {
 
         for (int i = 0; i < ticketsByCategory.length; i++) {
             for (int j = 0; j < ticketsByCategory[i].length; j++) {
-                if (!validateBean("ticketsByCategory["+i+"]["+j+"]", ticketsByCategory[i][j])) {
+                if (!validateBean("ticketsByCategory[" + i + "][" + j + "]", ticketsByCategory[i][j])) {
                     allGood = false;
                 }
             }
@@ -158,8 +156,7 @@ public class Tickets extends ControllerBean implements Serializable {
             addMessageToFlash(getFromMessageBundle("tickets.validation.errors"), AsamalContext.MessageSeverity.ERR);
 
             includeView("buy");
-        }
-        else {
+        } else {
             ticketService.addInvoice(invoice);
 
             addMessageToFlash(getFromMessageBundle("tickets.book.ok"), AsamalContext.MessageSeverity.SUCCESS);
@@ -180,15 +177,20 @@ public class Tickets extends ControllerBean implements Serializable {
             int numberOfAttendees = Integer.parseInt(
                     getParameter(NUMBER_OF_TICKETS_PREFIX + getAvailableCategories().get(i).getIdName())
             );
-            ticketsByCategory[i] = new Ticket[numberOfAttendees];
-            for (int j = 0; j < numberOfAttendees; j++) {
-                ticketsByCategory[i][j] = new Ticket();
-                ticketsByCategory[i][j].setTicketCategory(getAvailableCategories().get(i));
-                ticketsByCategory[i][j].setInvoice(invoice);
 
-                String attendeePrefix = "ticketsByCategory["+i+"]["+j+"]";
-                paramNames.add(attendeePrefix+".firstName");
-                paramNames.add(attendeePrefix+".lastName");
+            if (numberOfAttendees > 0) {
+                ticketsByCategory[i] = new Ticket[numberOfAttendees];
+                for (int j = 0; j < numberOfAttendees; j++) {
+                    ticketsByCategory[i][j] = new Ticket();
+                    ticketsByCategory[i][j].setTicketCategory(getAvailableCategories().get(i));
+                    ticketsByCategory[i][j].setInvoice(invoice);
+
+                    String attendeePrefix = "ticketsByCategory[" + i + "][" + j + "]";
+                    paramNames.add(attendeePrefix + ".firstName");
+                    paramNames.add(attendeePrefix + ".lastName");
+                }
+            } else {
+                ticketsByCategory[i] = null;
             }
         }
 
@@ -203,7 +205,8 @@ public class Tickets extends ControllerBean implements Serializable {
         Integer toBePaid = 0;
 
         for (int i = 0; i < getAvailableCategories().size(); i++) {
-            toBePaid += getAvailableCategories().get(i).getPrice() * ticketsByCategory[i].length;
+            toBePaid += getAvailableCategories().get(i).getPrice() * (ticketsByCategory[i] == null ? 0 :
+                    ticketsByCategory[i].length);
         }
 
         putInContext("toBePaid", toBePaid);
@@ -240,7 +243,7 @@ public class Tickets extends ControllerBean implements Serializable {
 
         return availableCategories;
     }
-    
+
     public Integer getMaxTickets(TicketCategory category) {
         Integer soldTickets = ticketService.getSoldTicketsInCategory(category);
         Integer ticketsLeft = category.getNumberOfTickets() - soldTickets;

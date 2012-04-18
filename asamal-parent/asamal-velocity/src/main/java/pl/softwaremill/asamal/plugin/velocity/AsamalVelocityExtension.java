@@ -20,6 +20,8 @@ public class AsamalVelocityExtension implements PresentationExtension {
 
     private static final String LOG_TAG = "velocity";
 
+    public final static String VELOCITY_EXTENSION = "vm";
+
     public AsamalVelocityExtension() {
         // init velocity - this bean is a singleton actually, so it's fine to do it here
         Properties velocityProps = new Properties();
@@ -33,7 +35,7 @@ public class AsamalVelocityExtension implements PresentationExtension {
 
     @Override
     public String getExtension() {
-        return "vm";
+        return VELOCITY_EXTENSION;
     }
 
     @Override

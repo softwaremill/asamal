@@ -7,6 +7,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.parser.node.Node;
 import pl.softwaremill.asamal.extension.view.ContextConstants;
 import pl.softwaremill.asamal.extension.view.ResourceResolver;
+import pl.softwaremill.asamal.plugin.velocity.AsamalVelocityExtension;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -46,7 +47,8 @@ public class RenderPartialDirective extends AbstractVelocityEvaluator {
 
         try {
             return ((ResourceResolver) context.get("resourceResolver")).resolvePartial(
-                    context.get(ContextConstants.CONTROLLER_NAME).toString(), partialName, ".vm");
+                    context.get(ContextConstants.CONTROLLER_NAME).toString(), partialName,
+                    AsamalVelocityExtension.VELOCITY_EXTENSION);
         } catch (pl.softwaremill.asamal.extension.exception.ResourceNotFoundException e) {
             throw new RuntimeException("Cannot find partial " + partialName, e);
         }

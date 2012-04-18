@@ -78,10 +78,12 @@
 
                                 <br/>
 
-                                #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])
-                                    <h4>Attendee $i</h4>
+                                #if($ticketsToBuy[$ticketCat.idName] > 0)
+                                    #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])
+                                        <h4>Attendee $i</h4>
 
-                                    #renderPartial('attendee')
+                                        #renderPartial('attendee')
+                                    #end
                                 #end
 
                                 #set($catNo = $catNo + 1)

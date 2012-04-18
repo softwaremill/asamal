@@ -1,3 +1,4 @@
+
 function ajaxPost(controller, view, elementIds, reRenderList) {
     return doAjaxPost(asamalContextPath+"/rerender/"+controller+"/"+view,
                 elementIds, reRenderList, asamalViewHash);
