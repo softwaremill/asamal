@@ -4,6 +4,7 @@ import com.ibm.icu.text.RuleBasedNumberFormat;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Get;
+import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -18,14 +19,8 @@ public class InvoiceController extends ControllerBean {
     @Inject
     private TicketService ticketService;
 
-    @Get
-    public void pdf() {
-        if (getExtraPath().length == 0) {
-            throw new RuntimeException("No invoice id available");
-        }
-
-        Long invoiceId = Long.parseLong(getExtraPath()[0]);
-
+    @Get(params = "/id")
+    public void pdf(@PathParameter("id") Long invoiceId) {
         Invoice invoice = ticketService.loadInvoice(invoiceId);
 
         if (invoice == null) {

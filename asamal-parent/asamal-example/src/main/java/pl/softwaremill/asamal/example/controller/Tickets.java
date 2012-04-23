@@ -6,6 +6,7 @@ import pl.softwaremill.asamal.controller.PageParameters;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
+import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
@@ -167,6 +168,46 @@ public class Tickets extends ControllerBean implements Serializable {
         }
     }
 
+    @Get(params = "/id")
+    public void edit(@PathParameter("id") Long invoiceId) {
+        invoice = ticketService.loadInvoice(invoiceId);
+
+        if (!invoice.getEditable()) {
+            addMessageToFlash(getFromMessageBundle("invoice.already.accounted",
+                    configurationBean.getProperty(Conf.INVOICE_ID) + invoiceId),
+                    AsamalContext.MessageSeverity.WARN);
+
+            redirect("home", "index");
+        }
+
+        putInContext("invoice", invoice);
+    }
+
+    @Post(params = "/id")
+    public void doUpdate(@PathParameter("id") Long invoiceId) {
+        invoice = ticketService.loadInvoice(invoiceId);
+
+        bindInvoiceDetails();
+
+        if (validateBean("invoice", invoice)) {
+            ticketService.updateInvoice(invoice);
+
+            addMessageToFlash(getFromMessageBundle("invoice.updated"), AsamalContext.MessageSeverity.SUCCESS);
+
+            redirect("home", "index");
+        } else {
+            addMessageToFlash(getFromMessageBundle("tickets.validation.errors"), AsamalContext.MessageSeverity.ERR);
+
+            includeView("edit");
+        }
+    }
+
+    private void bindInvoiceDetails() {
+        // bind invoice
+        doOptionalAutoBinding("invoice.name", "invoice.companyName", "invoice.vat",
+                "invoice.address", "invoice.postalCode", "invoice.city", "invoice.country");
+    }
+
     private void bindTickets() {
         // initiate first
 
@@ -197,9 +238,7 @@ public class Tickets extends ControllerBean implements Serializable {
         // bind attendees
         doOptionalAutoBinding(paramNames.toArray(new String[paramNames.size()]));
 
-        // bind invoice
-        doOptionalAutoBinding("invoice.name", "invoice.companyName", "invoice.vat",
-                "invoice.address", "invoice.postalCode", "invoice.city", "invoice.country");
+        bindInvoiceDetails();
 
         // count toBePaid
         Integer toBePaid = 0;
@@ -212,9 +251,9 @@ public class Tickets extends ControllerBean implements Serializable {
         putInContext("toBePaid", toBePaid);
     }
 
-    @Get
-    public void pay() {
-        invoice = ticketService.loadInvoice(Long.parseLong(getExtraPath()[0]));
+    @Get(params = "/id")
+    public void pay(@PathParameter("id") Long invoiceId) {
+        invoice = ticketService.loadInvoice(invoiceId);
 
         putInContext("invoice", invoice);
     }

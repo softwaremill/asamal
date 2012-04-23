@@ -13,6 +13,12 @@
                     $m["home.ticket.status.$invoice.status"] $m["home.ticket.method.$invoice.method"]
                 </th>
                 <th>
+                    #if($invoice.editable)
+                        <a href="$a.link('tickets', 'edit')/$invoice.id">
+                            <button class="btn">$m['home.ticket.edit']</button>
+                        </a>
+                    #end
+
                     #if($invoice.status == 'UNPAID')
                         <a href="$a.link('tickets', 'pay')/$invoice.id">
                             <button class="btn">$m['home.ticket.pay']</button>

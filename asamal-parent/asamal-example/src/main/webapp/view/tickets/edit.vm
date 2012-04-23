@@ -1,0 +1,24 @@
+#layout('default')
+
+#region('content')
+<h1>$m['invoice.updated']</h1>
+
+<div id="tickets" class="well">
+    <h2>$m['tickets.details.invoice']</h2>
+
+    <form class="form-horizontal" action="$a.formAction('tickets', 'doUpdate')/$c.invoice.id" method="post"
+          accept-charset="UTF-8" id="ticketForm">
+
+        <div class="row">
+            <div class="span12">
+                #renderPartial('invoice_form')
+
+                <hr/>
+
+                <input type="submit" value="$m['tickets.edit.submit']"/>
+
+            </div>
+        </div>
+    </form>
+</div>
+#end

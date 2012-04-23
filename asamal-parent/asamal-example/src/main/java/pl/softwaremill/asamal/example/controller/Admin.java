@@ -4,6 +4,7 @@ import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Get;
+import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
@@ -55,9 +56,9 @@ public class Admin extends ControllerBean{
         putInContext("ticketCat", ticketCat);
     }
 
-    @Get
-    public void editTicketCat() {
-        ticketCat = ticketService.loadCategory(Long.valueOf(getExtraPath()[0]));
+    @Get(params = "/id")
+    public void editTicketCat(@PathParameter("id") Long categoryId) {
+        ticketCat = ticketService.loadCategory(categoryId);
 
         putInContext("ticketCat", ticketCat);
 

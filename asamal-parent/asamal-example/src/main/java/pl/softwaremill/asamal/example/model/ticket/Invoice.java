@@ -5,8 +5,20 @@ import com.google.common.collect.Multimap;
 import pl.softwaremill.asamal.example.model.BaseEntity;
 import pl.softwaremill.asamal.example.model.security.User;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Set;
 
@@ -21,6 +33,7 @@ public class Invoice extends BaseEntity{
 
     @Column(name = "name", nullable = false)
     @NotNull
+    @Size(min = 3)
     private String name;
 
     @Column(name = "company_name")
@@ -31,18 +44,22 @@ public class Invoice extends BaseEntity{
 
     @Column(name = "address", nullable = false)
     @NotNull
+    @Size(min = 3)
     private String address;
 
     @Column(name = "postal_code", nullable = false)
     @NotNull
+    @Size(min = 3)
     private String postalCode;
 
     @Column(name = "city", nullable = false)
     @NotNull
+    @Size(min = 3)
     private String city;
 
     @Column(name = "country", nullable = false)
     @NotNull
+    @Size(min = 3)
     private String country;
 
     @Enumerated(EnumType.STRING)
@@ -71,13 +88,16 @@ public class Invoice extends BaseEntity{
 
     @ManyToOne
     private Discount discount;
+
+    @Column(name = "editable", nullable = false)
+    private Boolean editable;
     
     public Invoice() {
     }
 
     public Invoice(Set<Ticket> tickets, String name, String companyName, String vat, String address,
                    String postalCode, String city, String country, InvoiceStatus status, PaymentMethod method, User user, Date dateCreated,
-                   Date datePaid, Discount discount) {
+                   Date datePaid, Discount discount, Boolean editable) {
         this.tickets = tickets;
         this.name = name;
         this.companyName = companyName;
@@ -92,6 +112,7 @@ public class Invoice extends BaseEntity{
         this.dateCreated = dateCreated;
         this.datePaid = datePaid;
         this.discount = discount;
+        this.editable = editable;
         this.dueDate = new Date(dateCreated.getTime() + SEVEN_DAYS);
     }
 
@@ -225,6 +246,14 @@ public class Invoice extends BaseEntity{
         this.discount = discount;
     }
 
+    public Boolean getEditable() {
+        return editable;
+    }
+
+    public void setEditable(Boolean editable) {
+        this.editable = editable;
+    }
+
     @Override
     public String toString() {
         return "Invoice{" +
@@ -243,6 +272,7 @@ public class Invoice extends BaseEntity{
                 ", datePaid=" + datePaid +
                 ", dueDate=" + dueDate +
                 ", discount=" + discount +
+                ", editable=" + editable +
                 '}';
     }
 }
