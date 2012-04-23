@@ -20,6 +20,7 @@ import pl.softwaremill.common.util.dependency.D;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -99,13 +100,21 @@ public class ControllerResolver {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
 
         String pathParamDefinition = getPathParamDefinition(method, requestType);
+
+        if (pathParamDefinition.startsWith("/")) {
+            pathParamDefinition = pathParamDefinition.substring(1);
+        }
+
         String[] pathParamKeys = pathParamDefinition.split("/");
 
         HashMap<String, String> pathParameters = new HashMap<String, String>();
 
         if (!pathParamDefinition.equals("")) {
             if (pathParamKeys.length > controller.getExtraPath().length) {
-                throw new RequiredParameterNotFoundException("Path param definition is longer then the actuall keys received");
+                throw new RequiredParameterNotFoundException(
+                        "Path param definition is longer then the actual keys received. Expecting " +
+                                Arrays.toString(pathParamKeys) + " but got " +
+                                Arrays.toString(controller.getExtraPath()));
             }
 
             for (int i = 0; i < pathParamKeys.length; i++) {
