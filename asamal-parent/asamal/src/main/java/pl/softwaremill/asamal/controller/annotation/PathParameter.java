@@ -12,9 +12,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
-public @interface RequestParameter {
-
-    boolean required() default false;
-
+public @interface PathParameter {
     String value();
 }

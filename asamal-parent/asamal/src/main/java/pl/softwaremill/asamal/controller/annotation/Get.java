@@ -15,4 +15,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Qualifier
 public @interface Get {
+
+    String params() default "";
 }

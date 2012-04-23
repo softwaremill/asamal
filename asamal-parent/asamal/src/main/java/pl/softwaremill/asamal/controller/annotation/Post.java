@@ -22,4 +22,6 @@ public @interface Post {
      * This will be ignored for reRender posts.
      */
     boolean skipViewHash() default false;
+
+    String params() default "";
 }

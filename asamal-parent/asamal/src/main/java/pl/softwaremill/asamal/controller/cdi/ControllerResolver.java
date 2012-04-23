@@ -1,5 +1,6 @@
 package pl.softwaremill.asamal.controller.cdi;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.controller.AsamalFilter;
@@ -9,6 +10,7 @@ import pl.softwaremill.asamal.controller.annotation.ControllerImpl;
 import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.Json;
+import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.controller.annotation.RequestParameter;
 import pl.softwaremill.asamal.controller.exception.AmbiguousViewMethodsException;
@@ -18,6 +20,7 @@ import pl.softwaremill.common.util.dependency.D;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -83,17 +86,32 @@ public class ControllerResolver {
 
         // invoke it
         if (possiblyProxiedMethod.getParameterTypes().length > 0) {
-            return possiblyProxiedMethod.invoke(controller, prepareMethodParameters(possiblyProxiedMethod));
-        }
-        else {
+            return possiblyProxiedMethod.invoke(controller, prepareMethodParameters(possiblyProxiedMethod, requestType));
+        } else {
             return possiblyProxiedMethod.invoke(controller);
         }
     }
 
-    private Object[] prepareMethodParameters(Method method) throws RequiredParameterNotFoundException {
+    private Object[] prepareMethodParameters(Method method, RequestType requestType)
+            throws RequiredParameterNotFoundException {
         Class<?>[] parameterTypes = method.getParameterTypes();
         Object[] params = new Object[parameterTypes.length];
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+
+        String pathParamDefinition = getPathParamDefinition(method, requestType);
+        String[] pathParamKeys = pathParamDefinition.split("/");
+
+        HashMap<String, String> pathParameters = new HashMap<String, String>();
+
+        if (!pathParamDefinition.equals("")) {
+            if (pathParamKeys.length > controller.getExtraPath().length) {
+                throw new RequiredParameterNotFoundException("Path param definition is longer then the actuall keys received");
+            }
+
+            for (int i = 0; i < pathParamKeys.length; i++) {
+                pathParameters.put(pathParamKeys[i], controller.getExtraPath()[i]);
+            }
+        }
 
         for (int i = 0; i < parameterAnnotations.length; i++) {
             Annotation[] anns = parameterAnnotations[i];
@@ -102,18 +120,34 @@ public class ControllerResolver {
                 if (annotation.annotationType() == RequestParameter.class) {
                     // we should set this param
 
-                    String key = ((RequestParameter) annotation).name();
+                    String key = ((RequestParameter) annotation).value();
 
                     if (String.class.isAssignableFrom(parameterTypes[i])) {
                         params[i] = controller.getParameter(key);
-                    }
-                    else {
+                    } else {
                         params[i] = controller.getObjectParameterValues(key);
                     }
 
                     // check if parameter wasn't required but is null
                     if (((RequestParameter) annotation).required() && params[i] == null) {
-                        throw new RequiredParameterNotFoundException("Parameter "+key+" is required, but was not set");
+                        throw new RequiredParameterNotFoundException("Parameter " + key + " is required, but was not set");
+                    }
+
+                    continue;
+                } else if (annotation.annotationType() == PathParameter.class) {
+                    // this is param from extra path
+
+                    String key = ((PathParameter) annotation).value();
+
+                    if (!pathParameters.containsKey(key)) {
+                        throw new RequiredParameterNotFoundException("Path parameter with name '" + key + "' was not " +
+                                "defined in the Request Type annotation (" + requestType.getRequestAnnotation() + ").");
+                    }
+
+                    if (String.class.isAssignableFrom(parameterTypes[i])) {
+                        params[i] = pathParameters.get(key);
+                    } else {
+                        params[i] = ConvertUtils.convert(pathParameters.get(key), parameterTypes[i]);
                     }
 
                     continue;
@@ -122,6 +156,17 @@ public class ControllerResolver {
         }
 
         return params;
+    }
+
+    private String getPathParamDefinition(Method method, RequestType requestType) {
+        try {
+            Annotation requestAnnotation = method.getAnnotation(requestType.getRequestAnnotation());
+            Method paramsMethod = requestType.getRequestAnnotation().getDeclaredMethod("params");
+
+            return paramsMethod.invoke(requestAnnotation).toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Method findViewMethod(String view, Class<? extends ControllerBean> beanClass)

@@ -224,4 +224,48 @@ public class GetControllerTest extends ControllerTest {
         Response output = getHandler.handleGet(req, resp, "get", "testWithObjectParamsRequired", null);
     }
 
+    @Test
+    public void shouldPassOnProperPathParams() throws HttpErrorException {
+        // given
+        GetHandler getHandler = getGetHandler();
+
+        // when
+        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParams", "/23/Tomek");
+
+        // then
+        assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly(
+                "testWithPathParams id = 23 and name = Tomek");
+    }
+
+    @Test(expected = HttpErrorException.class)
+    public void shouldFailWhenNotEnoughParams() throws HttpErrorException {
+        // given
+        GetHandler getHandler = getGetHandler();
+
+        // when
+        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParams", "/23");
+    }
+
+    @Test
+    public void shouldPassWhenMoreParams() throws HttpErrorException {
+        // given
+        GetHandler getHandler = getGetHandler();
+
+        // when
+        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParams", "/10/Domek/23/45/667/ee");
+
+        // then
+        assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly(
+                "testWithPathParams id = 10 and name = Domek");
+    }
+
+    @Test(expected = HttpErrorException.class)
+    public void shouldFailWhenParamNotDefined() throws HttpErrorException {
+        // given
+        GetHandler getHandler = getGetHandler();
+
+        // when
+        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParamsWrong", "/123");
+    }
+
 }
