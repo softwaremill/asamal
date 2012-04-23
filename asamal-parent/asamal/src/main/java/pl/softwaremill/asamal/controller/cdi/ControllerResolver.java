@@ -220,6 +220,10 @@ public class ControllerResolver {
     }
 
     public boolean skipViewHash(String view) throws NoSuchMethodException {
-        return controller.getRealClass().getDeclaredMethod(view).getAnnotation(Post.class).skipViewHash();
+        try {
+            return findViewMethod(view, controller.getRealClass()).getAnnotation(Post.class).skipViewHash();
+        } catch (AmbiguousViewMethodsException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
