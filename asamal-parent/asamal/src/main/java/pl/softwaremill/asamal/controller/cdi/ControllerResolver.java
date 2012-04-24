@@ -217,4 +217,14 @@ public class ControllerResolver {
             throw new RuntimeException(e);
         }
     }
+
+    public String contentType(String view) {
+        try {
+            return findViewMethod(view, controller.getRealClass()).getAnnotation(Download.class).contentType();
+        } catch (AmbiguousViewMethodsException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
