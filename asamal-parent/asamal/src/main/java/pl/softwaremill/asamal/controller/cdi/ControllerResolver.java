@@ -150,7 +150,8 @@ public class ControllerResolver {
 
                     if (!pathParameters.containsKey(key)) {
                         throw new RequiredParameterNotFoundException("Path parameter with name '" + key + "' was not " +
-                                "defined in the Request Type annotation (" + requestType.getRequestAnnotation() + ").");
+                                "defined in the Request Type annotation (" + requestType.getRequestAnnotation() + ")." +
+                                " The param definition was: " + pathParamDefinition);
                     }
 
                     if (String.class.isAssignableFrom(parameterTypes[i])) {

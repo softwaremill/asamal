@@ -50,4 +50,9 @@ public class GetTestController extends ControllerBean {
         recorder.getMethodsCalled().add("testWithPathParamsWrong id = " + id);
     }
 
+    @Get(params = "/id")
+    public void testWithPathParamsMixed(@PathParameter("id") Long id, @RequestParameter("param") String param) {
+        recorder.getMethodsCalled().add("testWithPathParamsMixed id = " + id + " param = " + param);
+    }
+
 }

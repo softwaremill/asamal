@@ -230,7 +230,7 @@ public class GetControllerTest extends ControllerTest {
         GetHandler getHandler = getGetHandler();
 
         // when
-        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParams", "/23/Tomek");
+        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParams", "23/Tomek");
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly(
@@ -243,7 +243,7 @@ public class GetControllerTest extends ControllerTest {
         GetHandler getHandler = getGetHandler();
 
         // when
-        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParams", "/23");
+        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParams", "23");
     }
 
     @Test
@@ -252,7 +252,7 @@ public class GetControllerTest extends ControllerTest {
         GetHandler getHandler = getGetHandler();
 
         // when
-        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParams", "/10/Domek/23/45/667/ee");
+        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParams", "10/Domek/23/45/667/ee");
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly(
@@ -265,7 +265,23 @@ public class GetControllerTest extends ControllerTest {
         GetHandler getHandler = getGetHandler();
 
         // when
-        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParamsWrong", "/123");
+        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParamsWrong", "123");
+    }
+
+    @Test
+    public void shouldPassMixedAnnotatedParams() throws HttpErrorException {
+        // given
+        GetHandler getHandler = getGetHandler();
+        producers.setMockAsamalParameters(new MockAsamalParameters(new HashMap<String, Object>() {{
+            put("param", "testParamContent");
+        }}));
+
+        // when
+        Response output = getHandler.handleGet(req, resp, "get", "testWithPathParamsMixed", "17");
+
+        // then
+        assertThat(D.inject(TestRecorder.class).getMethodsCalled()).
+                containsOnly("testWithPathParamsMixed id = 17 param = testParamContent");
     }
 
 }

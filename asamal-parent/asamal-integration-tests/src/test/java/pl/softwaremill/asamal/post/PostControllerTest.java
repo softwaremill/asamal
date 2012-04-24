@@ -140,6 +140,25 @@ public class PostControllerTest extends ControllerTest {
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("doPostWithoutViewHashCheck");
     }
 
+    @Test
+    public void shouldPassWithAnnotatedParams() throws HttpErrorException {
+        // given
+        PostHandler postHandler = getPostHandler();
+        addViewHash("view-hash", "post", "postWithParams");
+
+        // when
+        MultivaluedMapImpl<String, String> formValues = new MultivaluedMapImpl<String, String>();
+        formValues.putSingle("name", "postParam");
+        formValues.putSingle(ViewHashGenerator.VIEWHASH, "view-hash");
+
+        String output = postHandler.handlePost(req, resp, "post", "postWithParams", "10",
+                formValues);
+
+        // then
+        assertThat(D.inject(TestRecorder.class).getMethodsCalled()).
+                containsOnly("postWithParams id = 10 name = postParam");
+    }
+
     public List<InputPart> input(InputPart... part) {
         return Arrays.asList(part);
     }

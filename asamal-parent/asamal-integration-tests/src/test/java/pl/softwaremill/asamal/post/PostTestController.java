@@ -3,7 +3,9 @@ package pl.softwaremill.asamal.post;
 import pl.softwaremill.asamal.common.TestRecorder;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
+import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
+import pl.softwaremill.asamal.controller.annotation.RequestParameter;
 
 import javax.inject.Inject;
 
@@ -34,5 +36,10 @@ public class PostTestController extends ControllerBean {
     @Post(skipViewHash = true)
     public void doPostWithoutViewHashCheck() {
         recorder.getMethodsCalled().add("doPostWithoutViewHashCheck");
+    }
+
+    @Post(params = "/id")
+    public void postWithParams(@PathParameter("id") Long id, @RequestParameter("name") String name) {
+        recorder.getMethodsCalled().add("postWithParams id = " + id + " name = " + name);
     }
 }
