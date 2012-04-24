@@ -163,7 +163,6 @@ public class ControllerResolver {
             Annotation requestAnnotation = method.getAnnotation(requestType.getRequestAnnotation());
             Method paramsMethod = requestType.getRequestAnnotation().getDeclaredMethod("params");
 
-            System.out.println("METHOD: " + method +" PARAMS METHOD: "+paramsMethod+" ANNOTATION: "+requestAnnotation);
             return (String)paramsMethod.invoke(requestAnnotation);
         } catch (Exception e) {
             throw new RuntimeException(e);
