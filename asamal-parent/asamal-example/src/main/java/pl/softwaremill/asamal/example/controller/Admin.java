@@ -12,6 +12,7 @@ import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.cdi.security.Secure;
 
 import javax.inject.Inject;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -150,6 +151,19 @@ public class Admin extends ControllerBean {
             addMessageToFlash(getFromMessageBundle("accounting.closed", month), AsamalContext.MessageSeverity.SUCCESS);
 
             redirect("accounting");
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Download
+    public InputStream download(@RequestParameter("accountingMonth") String month) {
+        try {
+            Calendar accMonth = Calendar.getInstance();
+
+            accMonth.setTime(monthDateFormat.parse(month));
+
+            return ticketService.generatePDFInvoicesForMonth(accMonth);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

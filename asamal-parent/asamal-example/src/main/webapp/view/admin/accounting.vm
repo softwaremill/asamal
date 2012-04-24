@@ -24,8 +24,21 @@
 
     <h1>$m['welcome.accounting']</h1>
 
+    <h2>Close Accounting Month</h2>
     <div id="accounting">
         <form action="$a.formAction('admin','closeMonth')" class="form-horizontal"
+              id="accountingForm" method="post">
+            <label for="accountingMonth">$m['accounting.toClose']</label>
+            <input name="accountingMonth" id="accountingMonth" class="date-picker" />
+
+            <input type="submit"
+                   value="Close Accounting Month"/>
+        </form>
+    </div>
+
+    <h2>Download Invoiced Per Month</h2>
+    <div id="accounting">
+        <form action="$a.downloadAction('admin','downloadInvoices')" class="form-horizontal"
               id="accountingForm" method="post">
             <label for="accountingMonth">$m['accounting.toClose']</label>
             <input name="accountingMonth" id="accountingMonth" class="date-picker" />
