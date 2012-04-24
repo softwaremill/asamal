@@ -35,8 +35,18 @@ public enum Conf {
                                    "#end\n" +
                                    "\n" +
                                    "--\n" +
-                                   "The Conference Team", TYPE.TEXT_AREA)
-    ;
+                                   "The Conference Team", TYPE.TEXT_AREA),
+
+    INVOICE_EMAIL_SUBJECT("Invoice for Conference"),
+
+    INVOICE_EMAIL("Dear $name,\n" +
+            "\n" +
+            "Your final invoice for the Conference is ready! Please follow the link below to download it:\n" +
+            "\n" +
+            "$invoice_link\n" +
+            "\n" +
+            "--\n" +
+            "The Conference Team", TYPE.TEXT_AREA);
 
     enum TYPE {
         STRING,

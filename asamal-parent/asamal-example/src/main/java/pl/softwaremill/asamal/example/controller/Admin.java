@@ -2,17 +2,10 @@ package pl.softwaremill.asamal.example.controller;
 
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
-import pl.softwaremill.asamal.controller.annotation.Controller;
-import pl.softwaremill.asamal.controller.annotation.Get;
-import pl.softwaremill.asamal.controller.annotation.PathParameter;
-import pl.softwaremill.asamal.controller.annotation.Post;
+import pl.softwaremill.asamal.controller.annotation.*;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
-import pl.softwaremill.asamal.example.model.ticket.Discount;
-import pl.softwaremill.asamal.example.model.ticket.Invoice;
-import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
-import pl.softwaremill.asamal.example.model.ticket.Ticket;
-import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.model.ticket.*;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -22,23 +15,26 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 @Controller("admin")
 @Secure("#{login.admin}")
-public class Admin extends ControllerBean{
+public class Admin extends ControllerBean {
+
+    private final static SimpleDateFormat monthDateFormat = new SimpleDateFormat("MMMM yyyy");
 
     private TicketCategory ticketCat = new TicketCategory();
 
     @Inject
     private TicketService ticketService;
-    
+
     @Inject
     private ConfigurationBean configurationBean;
-    
+
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    
+
     private final static String[] TICKET_CATEGORY_PARAMS = new String[]{"ticketCat.name", "ticketCat.description",
             "ticketCat.fromDate", "ticketCat.toDate", "ticketCat.numberOfTickets", "ticketCat.price",
             "ticketCat.invoiceDescription"};
@@ -113,7 +109,8 @@ public class Admin extends ControllerBean{
     private Discount discount = new Discount();
 
     @Get
-    public void discounts() { }
+    public void discounts() {
+    }
 
     @Post
     public void addDiscount() {
@@ -133,6 +130,28 @@ public class Admin extends ControllerBean{
             redirect("discounts");
         } else {
             includeView("discounts");
+        }
+    }
+
+    @Get
+    public void accounting() {
+
+    }
+
+    @Post
+    public void closeMonth(@RequestParameter("accountingMonth") String month) {
+        try {
+            Calendar accMonth = Calendar.getInstance();
+
+            accMonth.setTime(monthDateFormat.parse(month));
+
+            ticketService.closeAccountingMonth(accMonth);
+
+            addMessageToFlash(getFromMessageBundle("accounting.closed", month), AsamalContext.MessageSeverity.SUCCESS);
+
+            redirect("accounting");
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -174,7 +193,7 @@ public class Admin extends ControllerBean{
 
         redirect("tickets");
     }
-    
+
     @Post
     public void deleteTicketCategory() {
         ticketService.deleteTicketCategory(Long.valueOf(getParameter("id")));
@@ -199,8 +218,7 @@ public class Admin extends ControllerBean{
             if (conf.isBool()) {
                 if ("on".equals(parameter)) {
                     parameter = "true";
-                }
-                else {
+                } else {
                     parameter = "false";
                 }
             }

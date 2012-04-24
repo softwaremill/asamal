@@ -6,6 +6,7 @@ import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Discount;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.i18n.Messages;
 import pl.softwaremill.common.cdi.transaction.Transactional;
@@ -15,6 +16,7 @@ import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +31,9 @@ public class TicketService {
     
     @Inject 
     private ConfigurationBean configurationBean;
+
+    @Inject
+    private EmailService emailService;
 
     @Transactional
     public List<TicketCategory> getTicketCategories() {
@@ -137,6 +142,25 @@ public class TicketService {
                     .setParameter("discountCode", discountCode).getSingleResult();
         } catch (NoResultException e) {
             return null;
+        }
+    }
+
+    @Transactional
+    public void closeAccountingMonth(Calendar monthStart) {
+        Calendar monthEnd = (Calendar) monthStart.clone();
+        monthEnd.add(Calendar.MONTH, 1);
+
+        List<Invoice> invoices = entityManager.createQuery(
+                "select i from Invoice i where i.datePaid >= :dateStart and i.datePaid < :dateEnd and i.editable = true")
+                .setParameter("dateStart", monthStart.getTime())
+                .setParameter("dateEnd", monthEnd.getTime())
+                .getResultList();
+
+        for (Invoice invoice : invoices) {
+            invoice.setEditable(false);
+            entityManager.merge(invoice);
+
+            emailService.sendInvoiceEmail(invoice);
         }
     }
 }

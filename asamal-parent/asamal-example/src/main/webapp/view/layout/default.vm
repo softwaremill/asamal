@@ -115,6 +115,8 @@
                                     <a href="$a.link('admin', 'configuration')">Configuration</a></li>
                                 <li #if($c.name == 'admin' && $view == 'discounts')class="active"#end>
                                     <a href="$a.link('admin', 'discounts')">Discounts</a></li>
+                                <li #if($c.name == 'admin' && $view == 'accounting')class="active"#end>
+                                    <a href="$a.link('admin', 'accounting')">Accounting</a></li>
                             </ul>
                         </li>
                     #end
