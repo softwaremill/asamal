@@ -2,6 +2,7 @@ package pl.softwaremill.asamal.example.controller;
 
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
+import pl.softwaremill.asamal.controller.DownloadDescription;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Download;
 import pl.softwaremill.asamal.controller.annotation.Get;
@@ -22,7 +23,6 @@ import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.cdi.security.Secure;
 
 import javax.inject.Inject;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -170,7 +170,8 @@ public class Admin extends ControllerBean {
     }
 
     @Download(params = "/year/month")
-    public InputStream downloadInvoices(@PathParameter("year") Integer year, @PathParameter("month") Integer month) {
+    public DownloadDescription downloadInvoices(@PathParameter("year") Integer year,
+                                                @PathParameter("month") Integer month) {
         Calendar accMonth = Calendar.getInstance();
         accMonth.set(Calendar.YEAR, year);
         accMonth.set(Calendar.MONTH, month);

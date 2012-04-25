@@ -24,7 +24,7 @@
                     var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                     var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                     $(this).datepicker('setDate', new Date(year, month, 1));
-                    $('#downloadButtonLink').attr('href', downloadLink + "/" + year + "/" + month + "/invoices.zip");
+                    $('#downloadButtonLink').attr('href', downloadLink + "/" + year + "/" + month);
                     $('#downloadButton').attr('disabled', false);
                 }
             });

@@ -1,6 +1,7 @@
 package pl.softwaremill.asamal.example.service.admin;
 
 import org.apache.commons.io.IOUtils;
+import pl.softwaremill.asamal.controller.DownloadDescription;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
@@ -64,7 +65,7 @@ public class AdminService {
         }
     }
 
-    public InputStream generatePDFInvoicesForMonth(Calendar monthStart) {
+    public DownloadDescription generatePDFInvoicesForMonth(Calendar monthStart) {
         try {
             Calendar monthEnd = (Calendar) monthStart.clone();
             monthEnd.add(Calendar.MONTH, 1);
@@ -98,7 +99,8 @@ public class AdminService {
 
             zipOutputStream.close();
 
-            return new BufferedInputStream(new FileInputStream(reports));
+            return new DownloadDescription(new BufferedInputStream(new FileInputStream(reports)),
+                    "invoices-"+monthStart.get(Calendar.MONTH)+"-"+monthStart.get(Calendar.YEAR)+".zip");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
