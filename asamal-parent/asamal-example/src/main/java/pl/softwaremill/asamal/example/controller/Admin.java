@@ -169,17 +169,18 @@ public class Admin extends ControllerBean {
         }
     }
 
-    @Download
-    public InputStream download(@RequestParameter("accountingMonth") String month) {
-        try {
-            Calendar accMonth = Calendar.getInstance();
+    @Download(params = "/year/month")
+    public InputStream downloadInvoices(@PathParameter("year") Integer year, @PathParameter("month") Integer month) {
+        Calendar accMonth = Calendar.getInstance();
+        accMonth.set(Calendar.YEAR, year);
+        accMonth.set(Calendar.MONTH, month);
+        accMonth.set(Calendar.DAY_OF_MONTH, 1);
+        accMonth.set(Calendar.HOUR, 0);
+        accMonth.set(Calendar.MINUTE, 0);
+        accMonth.set(Calendar.SECOND, 0);
+        accMonth.set(Calendar.MILLISECOND, 0);
 
-            accMonth.setTime(monthDateFormat.parse(month));
-
-            return adminService.generatePDFInvoicesForMonth(accMonth);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        return adminService.generatePDFInvoicesForMonth(accMonth);
     }
 
     public BigDecimal countTotalAmount(Invoice invoice) {

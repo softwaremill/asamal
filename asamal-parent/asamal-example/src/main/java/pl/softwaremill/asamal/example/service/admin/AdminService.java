@@ -7,16 +7,19 @@ import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.httphandler.GetHandler;
 import pl.softwaremill.common.cdi.transaction.Transactional;
-import pl.softwaremill.common.util.dependency.D;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -35,6 +38,12 @@ public class AdminService {
 
     @Inject
     private ConfigurationBean configurationBean;
+
+    @Inject
+    private Instance<HttpServletRequest> servletRequestInstance;
+
+    @Inject
+    private Instance<HttpServletResponse> servletResponseInstance;
 
     @Transactional
     public void closeAccountingMonth(Calendar monthStart) {
@@ -66,20 +75,22 @@ public class AdminService {
                     .setParameter("dateEnd", monthEnd.getTime())
                     .getResultList();
 
-            PipedInputStream inputStream = new PipedInputStream();
+            File reports = File.createTempFile("reports", ".pdf");
 
-            ZipOutputStream zipOutputStream = new ZipOutputStream(new PipedOutputStream(inputStream));
+            FileOutputStream fos = new FileOutputStream(reports);
 
-            HttpServletRequest request = D.inject(HttpServletRequest.class);
-            HttpServletResponse response = D.inject(HttpServletResponse.class);
+            ZipOutputStream zipOutputStream = new ZipOutputStream(
+                    new BufferedOutputStream(fos));
 
             // for each invoice generate PDF and put it in the zip file
             for (Long invoiceId : invoices) {
-                InputStream input = (InputStream) asamalGetHandler.handlePDFGet(request, response, "invoice", "pdf",
+                InputStream input = (InputStream) asamalGetHandler.handlePDFGet(servletRequestInstance.get(),
+                        servletResponseInstance.get(), "invoice", "pdf",
                         invoiceId.toString());
 
                 ZipEntry ze = new ZipEntry(
-                        configurationBean.getProperty(Conf.INVOICE_ID).replaceAll("/", "_").toLowerCase() + invoiceId);
+                        configurationBean.getProperty(Conf.INVOICE_ID).replaceAll("/", "_").toLowerCase() + invoiceId +
+                                ".pdf");
                 zipOutputStream.putNextEntry(ze);
 
                 IOUtils.copy(input, zipOutputStream);
@@ -87,7 +98,7 @@ public class AdminService {
 
             zipOutputStream.close();
 
-            return inputStream;
+            return new BufferedInputStream(new FileInputStream(reports));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

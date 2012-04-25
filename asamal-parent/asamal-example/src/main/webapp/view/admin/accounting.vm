@@ -14,7 +14,23 @@
                     $(this).datepicker('setDate', new Date(year, month, 1));
                 }
             });
+
+            $('.date-picker-button').datepicker( {
+                changeMonth: true,
+                changeYear: true,
+                showButtonPanel: true,
+                dateFormat: 'MM yy',
+                onClose: function(dateText, inst) {
+                    var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                    $(this).datepicker('setDate', new Date(year, month, 1));
+                    $('#downloadButtonLink').attr('href', downloadLink + "/" + year + "/" + month + "/invoices.zip");
+                    $('#downloadButton').attr('disabled', false);
+                }
+            });
         });
+
+        var downloadLink = '$a.download('admin', 'downloadInvoices')';
     </script>
     <style>
         .ui-datepicker-calendar {
@@ -36,16 +52,13 @@
         </form>
     </div>
 
-    <h2>Download Invoiced Per Month</h2>
+    <h2>Download Invoices Per Month</h2>
     <div id="accounting">
-        <form action="$a.downloadAction('admin','downloadInvoices')" class="form-horizontal"
-              id="accountingForm" method="post">
-            <label for="accountingMonth">$m['accounting.toClose']</label>
-            <input name="accountingMonth" id="accountingMonth" class="date-picker" />
+        <input id="downloadInvAccMonth" name="accountingMonth" class="date-picker-button" />
 
-            <input type="submit"
-                   value="Close Accounting Month"/>
-        </form>
+        <a href="" id="downloadButtonLink">
+            <button class="btn" disabled="true" id="downloadButton">Download Invoices</button>
+        </a>
     </div>
 
 #end
