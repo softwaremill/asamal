@@ -1,0 +1,11 @@
+smtpHost=
+smtpPort=
+smtpUsername=
+smtpPassword=
+queue=emails
+from=
+AWSAccessKeyId=XX
+SecretAccessKey=XX
+encoding=UTF-8
+sqsServer=localhost:8855
+
