@@ -17,25 +17,21 @@ public class AsamalProducersImpl implements AsamalProducers {
     private HttpServletResponse response;
 
     @Produces
-    @RequestScoped
     public AsamalContext produceAsamalContext() {
         return asamalContext;
     }
 
     @Produces
-    @RequestScoped
     public AsamalParameters produceAsamalParamateres() {
         return asamalParameters;
     }
 
     @Produces
-    @RequestScoped
     public HttpServletRequest produceServletRequest() {
         return request;
     }
 
     @Produces
-    @RequestScoped
     public HttpServletResponse produceServletResponse() {
         return response;
     }
@@ -49,7 +45,10 @@ public class AsamalProducersImpl implements AsamalProducers {
     }
 
     public void setHttpObjects(HttpServletRequest request, HttpServletResponse response) {
-        this.request = request;
-        this.response = response;
+        if (this.request == null)
+            this.request = request;
+
+        if (this.response == null)
+            this.response = response;
     }
 }

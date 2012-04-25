@@ -63,6 +63,13 @@ public class AsamalHelper {
                 .append((String) presentationContext.get(ViewHashGenerator.VIEWHASH)).append("')")
                 .toString();
     }
+
+    public String download(String controller, String view) {
+        StringWriter sw = new StringWriter();
+
+        return sw.append(contextPath).append("/download/").append(controller).
+                append("/").append(view).toString();
+    }
     
     public String pdf(String controller, String view) {
         StringWriter sw = new StringWriter();
