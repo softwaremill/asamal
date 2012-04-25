@@ -1,5 +1,6 @@
 package pl.softwaremill.asamal.httphandler;
 
+import pl.softwaremill.asamal.controller.DownloadDescription;
 import pl.softwaremill.asamal.controller.FilterStopException;
 import pl.softwaremill.asamal.controller.cdi.ControllerResolver;
 import pl.softwaremill.asamal.controller.cdi.RequestType;
@@ -57,11 +58,22 @@ public class DownloadHandler extends AbstractHttpHandler {
             ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
 
             Object output = controllerResolver.executeView(RequestType.DOWNLOAD, view);
+            String fileName = null;
 
-            return Response.status(Response.Status.OK)
+            if (output instanceof DownloadDescription) {
+                fileName = ((DownloadDescription) output).getFileName();
+                output = ((DownloadDescription) output).getInputStream();
+            }
+
+            Response.ResponseBuilder responseBuilder = Response.status(Response.Status.OK)
                     .entity(output)
-                    .header(HttpHeaders.CONTENT_TYPE, controllerResolver.contentType(view))
-                    .build();
+                    .header(HttpHeaders.CONTENT_TYPE, controllerResolver.contentType(view));
+
+            if (fileName != null) {
+                responseBuilder = responseBuilder.header("Content-Disposition", "attachment; filename="+fileName);
+            }
+
+            return responseBuilder.build();
         } catch (FilterStopException e) {
             // stop execution
             return null;
