@@ -2,10 +2,20 @@ package pl.softwaremill.asamal.example.controller;
 
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
-import pl.softwaremill.asamal.controller.annotation.*;
+import pl.softwaremill.asamal.controller.annotation.Controller;
+import pl.softwaremill.asamal.controller.annotation.Download;
+import pl.softwaremill.asamal.controller.annotation.Get;
+import pl.softwaremill.asamal.controller.annotation.PathParameter;
+import pl.softwaremill.asamal.controller.annotation.Post;
+import pl.softwaremill.asamal.controller.annotation.RequestParameter;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
-import pl.softwaremill.asamal.example.model.ticket.*;
+import pl.softwaremill.asamal.example.model.ticket.Discount;
+import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
+import pl.softwaremill.asamal.example.model.ticket.Ticket;
+import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.service.admin.AdminService;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -33,6 +43,9 @@ public class Admin extends ControllerBean {
 
     @Inject
     private ConfigurationBean configurationBean;
+
+    @Inject
+    private AdminService adminService;
 
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -146,7 +159,7 @@ public class Admin extends ControllerBean {
 
             accMonth.setTime(monthDateFormat.parse(month));
 
-            ticketService.closeAccountingMonth(accMonth);
+            adminService.closeAccountingMonth(accMonth);
 
             addMessageToFlash(getFromMessageBundle("accounting.closed", month), AsamalContext.MessageSeverity.SUCCESS);
 
@@ -163,7 +176,7 @@ public class Admin extends ControllerBean {
 
             accMonth.setTime(monthDateFormat.parse(month));
 
-            return ticketService.generatePDFInvoicesForMonth(accMonth);
+            return adminService.generatePDFInvoicesForMonth(accMonth);
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }

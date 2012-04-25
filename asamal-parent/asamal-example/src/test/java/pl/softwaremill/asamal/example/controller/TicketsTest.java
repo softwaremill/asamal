@@ -90,4 +90,5 @@ public class TicketsTest {
         assertThat(ticket.getLastName()).isEqualTo("Szymanski");
         assertThat(ticket.getTicketCategory()).isEqualTo(tc);
     }
+
 }
