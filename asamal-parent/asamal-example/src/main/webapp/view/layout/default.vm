@@ -1,5 +1,5 @@
 #macro(success $key)
-    #if($success[$key])
+    #if($success[$key] && !$success[$key].empty)
     <div class="alert alert-success">
         <ul>
             #foreach($m in $success[$key])
@@ -11,7 +11,7 @@
 #end
 
 #macro(info $key)
-    #if($info[$key])
+    #if($info[$key] && !$info[$key].empty)
     <div class="alert alert-info">
         <ul>
             #foreach($m in $info[$key])
@@ -23,7 +23,7 @@
 #end
 
 #macro(err $key)
-    #if($err[$key])
+    #if($err[$key] && !$err[$key].empty)
     <div class="alert alert-error">
         <ul>
             #foreach($m in $err[$key])
@@ -35,7 +35,7 @@
 #end
 
 #macro(warn $key)
-    #if($warn[$key])
+    #if($warn[$key] && !$warn[$key].empty)
     <div class="alert alert-block">
         <ul>
             #foreach($m in $warn[$key])
@@ -44,10 +44,6 @@
         </ul>
     </div>
     #end
-#end
-
-#macro(selected $condition)
-    #if($condition)selected#end
 #end
 
 <!DOCTYPE html>
