@@ -23,6 +23,7 @@ import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
+import pl.softwaremill.asamal.example.service.ticket.TicketOptionService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.asamal.i18n.Messages;
 
@@ -50,6 +51,7 @@ public class TicketsTest {
                 .addPackage(Invoice.class.getPackage())
                 .addPackage(User.class.getPackage())
                 .addPackage(BaseEntity.class.getPackage())
+                .addPackage(TicketOptionService.class.getPackage())
                 .addClasses(ConfigurationBean.class, ConfigurationService.class, ConfigurationProperty.class, Conf.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(EmptyAsset.INSTANCE, "messages.properties")
