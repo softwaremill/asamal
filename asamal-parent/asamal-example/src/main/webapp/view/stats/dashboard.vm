@@ -1,0 +1,120 @@
+#layout('default')
+
+#region('content')
+
+    <h3>Sold by category</h3>
+
+    #set($totalMoney = 0)
+    #set($totalTickets = 0)
+
+    <table class="table table-striped">
+        <tr>
+            <th>Category Name</th>
+            <th>Total Sold</th>
+            <th>Total Earned</th>
+        </tr>
+        #foreach($category in $tickets.availableCategories)
+            <tr>
+                <td>$category.name</td>
+                #set($soldInCategory = $tickets.getSoldByCategory($category))
+                <td>$soldInCategory</td>
+                <td>$math.mul($soldInCategory, $category.price) $conf.getProperty('INVOICE_CURRENCY')</td>
+                #set($totalMoney = $totalMoney + $math.mul($soldInCategory, $category.price))
+                #set($totalTickets = $totalTickets + $soldInCategory)
+            </tr>
+        #end
+        <tr>
+            <td><strong>TOTAL</strong></td>
+            <td><strong>$totalTickets</strong></td>
+            <td><strong>$totalMoney $conf.getProperty('INVOICE_CURRENCY')</strong></td>
+        </tr>
+    </table>
+
+    <h3>Total money earned: $total $conf.getProperty('INVOICE_CURRENCY')</h3>
+
+    <h3>Attendants</h3>
+
+    <table class='table table-striped' ">
+        <thead>
+        <tr>
+            <th>No</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Ticket Category</th>
+            <!-- ko foreach: ticketOptionLabels -->
+            <th data-bind="text: \$data"></th>
+            <!-- /ko -->
+        </tr>
+        </thead>
+        <tbody data-bind="foreach: users">
+            <tr>
+                <td data-bind="text: index++"/>
+                <td data-bind="text: firstName"></td>
+                <td data-bind="text: lastName"></td>
+                <td data-bind="text: category"></td>
+                <!-- ko foreach: optionValues -->
+                    <td data-bind="text: \$data"></td>
+                <!-- /ko -->
+            </tr>
+        </tbody>
+    </table>
+    <ul class="pager">
+        <li>
+            <a href="#" onclick="return previous();">Previous</a>
+        </li>
+        <li>
+            <a href="#" onclick="return next();">Next</a>
+        </li>
+    </ul>
+
+    <script type="text/javascript">
+
+        var currentPage = 0;
+        var jsonLink = "$a.jsonLink('stats','loadAttendants')";
+        var totalTickets = $tickets.countAllSoldTickets();
+        var viewModel;
+        var index = 0;
+
+        function previous() {
+            if (currentPage > 0) {
+                currentPage--;
+
+                reloadTickets();
+            }
+
+            return false;
+        }
+
+        function next() {
+            if (currentPage < (totalTickets / 10 - 1)) {
+                currentPage++;
+
+                reloadTickets();
+            }
+
+            return false;
+        }
+
+        function reloadTickets() {
+            index = currentPage * 10 + 1;
+
+            $.get(jsonLink+"/"+currentPage, function(data){
+                if (viewModel == null) {
+                    viewModel = ko.mapping.fromJS(data);
+                    console.log(data);
+                    console.log(viewModel);
+
+                    ko.applyBindings(viewModel);
+                }
+                else {
+                    ko.mapping.fromJS(data, viewModel);
+                }
+            });
+        }
+
+        $(function() {
+            reloadTickets();
+        });
+
+    </script>
+#end

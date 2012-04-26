@@ -1,14 +1,12 @@
 <label>$m['tickets.buy.name']</label>
 <input type="text" name="invoice.name" value="$!c.invoice.name"/>
 #err('invoice.name')
-$err['invoice.name'].empty
 <label>$m['tickets.buy.company']</label>
 <input type="text" name="invoice.companyName" value="$!c.invoice.companyName"/>
 #err('invoice.companyName')
 <label>$m['tickets.buy.vat']</label>
 <input type="text" name="invoice.vat" value="$!c.invoice.vat"/>
 #err('invoice.vat')
-$err['invoice.vat'].empty
 <label>$m['tickets.buy.address']</label>
 <input type="text" name="invoice.address" value="$!c.invoice.address"/>
 #err('invoice.address')

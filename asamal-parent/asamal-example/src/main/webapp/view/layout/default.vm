@@ -71,6 +71,10 @@
 
     <script src="$a.jsLink("jquery-min-1.7.1.js")"></script>
     <script src="$a.jsLink("jquery-ui-1.8.18.custom.min.js")"></script>
+
+    <script src="$a.jsLink("knockout-2.0.0.js")"></script>
+    <script src="$a.jsLink("knockout.mapping-latest.js")"></script>
+    <script src="$a.jsLink("knockout.validation.js")"></script>
 </head>
 
 <body>
@@ -119,6 +123,8 @@
                                     <a href="$a.link('admin', 'accounting')">Accounting</a></li>
                                 <li #if($c.name == 'admin' && $view == 'options')class="active"#end>
                                     <a href="$a.link('admin', 'options')">Ticket Options</a></li>
+                                <li #if($c.name == 'stats' && $view == 'dashboard')class="active"#end>
+                                    <a href="$a.link('stats', 'dashboard')">Stats</a></li>
                             </ul>
                         </li>
                     #end
