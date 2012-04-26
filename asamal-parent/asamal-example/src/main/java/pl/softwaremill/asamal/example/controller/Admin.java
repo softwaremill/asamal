@@ -16,9 +16,11 @@ import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.model.ticket.TicketOptionDefinition;
 import pl.softwaremill.asamal.example.service.admin.AdminService;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
+import pl.softwaremill.asamal.example.service.ticket.TicketOptionService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.cdi.security.Secure;
 
@@ -261,6 +263,60 @@ public class Admin extends ControllerBean {
 
         redirect("configuration");
     }
+
+    @Inject
+    private TicketOptionService optionService;
+
+    private TicketOptionDefinition option = new TicketOptionDefinition();
+
+    public TicketOptionDefinition getOption() {
+        return option;
+    }
+
+    public void setOption(TicketOptionDefinition option) {
+        this.option = option;
+    }
+
+    @Get
+    public void options() {
+        putInContext("option", option);
+    }
+
+    @Post
+    public void addOptionDefinition() {
+        doAutoBinding("option.label", "option.type", "option.config");
+
+        optionService.addNewOption(option);
+
+        addMessageToFlash("Ticket option added", AsamalContext.MessageSeverity.SUCCESS);
+    }
+
+    @Get(params = "/id")
+    public void editOption(@PathParameter("id") Long id) {
+        putInContext("option", option = optionService.loadOption(id));
+
+        addObjectToFlash("option", option);
+    }
+
+    @Post
+    public void updateOption() {
+        option = (TicketOptionDefinition) getObjectFromFlash("option");
+
+        doAutoBinding("option.label", "option.type", "option.config");
+
+        optionService.updateOption(option);
+
+        redirect("options");
+        addMessageToFlash("Option Updated", AsamalContext.MessageSeverity.SUCCESS);
+    }
+
+    @Post
+    public void deleteOption(@RequestParameter("id") String id) {
+        optionService.remove(Long.valueOf(id));
+
+        addMessageToFlash("Option Deleted", AsamalContext.MessageSeverity.SUCCESS);
+    }
+
 
     public List<Discount> getDiscounts() {
         return ticketService.getDiscounts();

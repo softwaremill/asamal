@@ -46,6 +46,10 @@
     #end
 #end
 
+#macro(selected $condition)
+    #if($condition)selected#end
+#end
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -117,6 +121,8 @@
                                     <a href="$a.link('admin', 'discounts')">Discounts</a></li>
                                 <li #if($c.name == 'admin' && $view == 'accounting')class="active"#end>
                                     <a href="$a.link('admin', 'accounting')">Accounting</a></li>
+                                <li #if($c.name == 'admin' && $view == 'options')class="active"#end>
+                                    <a href="$a.link('admin', 'options')">Ticket Options</a></li>
                             </ul>
                         </li>
                     #end

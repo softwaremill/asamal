@@ -1,0 +1,41 @@
+#layout('default')
+
+#region('content')
+    <h1>$m['welcome.options']</h1>
+
+    <div id="options">
+        <table class="table table-striped">
+            <tr>
+                <th>Label</th>
+                <th>Type</th>
+                <th>Configuration</th>
+                <th>Actions</th>
+            </tr>
+            #foreach($option in $options.allOptions)
+                <tr>
+                    <td>$!option.label</td>
+                    <td>$!option.type</td>
+                    <td>$!option.config</td>
+                    <td>
+                        <a href="$a.link("admin", "editOption")/$option.id">Edit</a>
+                            <input type="hidden" name="id" id="deleteOption$option.id" value="$option.id"/>
+                            <a href="#"
+                               onclick="if (confirm('Are you sure to delete $option.label ?'))
+                                            {ajaxPost('admin', 'deleteOption', 'deleteOption$option.id', 'options')}">
+                                Delete
+                            </a>
+                    </td>
+                </tr>
+            #end
+        </table>
+
+        <form class="form-horizontal" id="optionForm" accept-charset="UTF-8">
+            #renderPartial('option_edit')
+
+            <input type="submit"
+                   onclick="return ajaxPost('admin', 'addOptionDefinition', 'optionForm', ['options', 'messages'])"
+                   value="Add Option Definiton"/>
+        </form>
+    </div>
+
+#end

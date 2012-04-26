@@ -1,0 +1,16 @@
+#layout('default')
+
+#region('content')
+    <h1>$m['welcome.option']</h1>
+
+    <div id="options">
+        <form class="form-horizontal" id="optionForm" method="post" accept-charset="UTF-8"
+              action="$a.formAction("admin", "updateOption")">
+
+            #renderPartial('option_edit')
+
+            <input type="submit" value="Update Option"/>
+        </form>
+    </div>
+
+#end

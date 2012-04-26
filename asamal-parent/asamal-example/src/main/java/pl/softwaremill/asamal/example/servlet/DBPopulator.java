@@ -3,9 +3,11 @@ package pl.softwaremill.asamal.example.servlet;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.beanutils.converters.DateTimeConverter;
+import pl.softwaremill.asamal.example.converter.EnumConverter;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.model.ticket.TicketOptionType;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.hash.StringHasher;
@@ -58,6 +60,7 @@ public class DBPopulator implements ServletContextListener{
         DateTimeConverter dtConverter = new DateConverter();
         dtConverter.setPattern("yyyy-MM-dd");
         ConvertUtils.register(dtConverter, Date.class);
+        ConvertUtils.register(new EnumConverter(), TicketOptionType.class);
     }
 
     private void updateConfigurations() {

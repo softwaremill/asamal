@@ -2,10 +2,13 @@ package pl.softwaremill.asamal.example.model.ticket;
 
 import pl.softwaremill.asamal.example.model.BaseEntity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Set;
 
 @Entity
 @Table(name = "TICKET")
@@ -22,6 +25,9 @@ public class Ticket extends BaseEntity{
 
     @ManyToOne
     private TicketCategory ticketCategory;
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    private Set<TicketOption> options;
 
     public Ticket() {
     }
@@ -64,4 +70,11 @@ public class Ticket extends BaseEntity{
         this.ticketCategory = ticketCategory;
     }
 
+    public Set<TicketOption> getOptions() {
+        return options;
+    }
+
+    public void setOptions(Set<TicketOption> options) {
+        this.options = options;
+    }
 }

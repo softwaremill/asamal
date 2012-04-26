@@ -1,0 +1,10 @@
+<label>Label</label>
+<input type="textbox" name="option.label" value="$!option.label"/>
+<label>Configuration <i>For dropdowns, comma-separate options</i></label>
+<textarea rows="10" name="option.config">$!option.config</textarea>
+<label>Type</label>
+<select name="option.type">
+    #foreach($type in $options.types)
+        <option value="$type" label="$type" #if($type == $option.type)selected#end/>
+    #end
+</select>
