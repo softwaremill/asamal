@@ -16,7 +16,7 @@ public class TicketOptionService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<TicketOptionDefinition> getAllOptions() {
+    public List<TicketOptionDefinition> getAllOptionDefinitions() {
         return entityManager.createQuery("select d from TicketOptionDefinition d order by d.label").getResultList();
     }
 
@@ -38,5 +38,9 @@ public class TicketOptionService {
 
     public void remove(Long id) {
         entityManager.remove(loadOption(id));
+    }
+
+    public static String[] dropdownValues(String config) {
+        return config.split(",");
     }
 }

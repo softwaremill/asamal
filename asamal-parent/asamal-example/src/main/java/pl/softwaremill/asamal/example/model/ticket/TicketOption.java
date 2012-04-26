@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal.example.model.ticket;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,11 +21,21 @@ public class TicketOption {
     private TicketOptionDefinition optionDefinition;
 
     @Column(length = 1024, name = "value")
+    @NotEmpty
     private String value;
 
     @ManyToOne
     @JoinColumn(name = "ticket")
     private Ticket ticket;
+
+    public TicketOption(TicketOptionDefinition optionDefinition, Ticket ticket) {
+        this.optionDefinition = optionDefinition;
+        this.ticket = ticket;
+    }
+
+    public TicketOption() {
+
+    }
 
     public Long getId() {
         return id;

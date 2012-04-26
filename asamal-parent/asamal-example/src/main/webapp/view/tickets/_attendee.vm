@@ -4,13 +4,33 @@
     <label>Name</label>
     <input type="text" name="ticketsByCategory[$catNo][$ticketNo].firstName"
             value="$!c.ticketsByCategory[$catNo][$ticketNo].firstName"/>
-    #err("attendeesByCategory[$catNo][$ticketNo].lastName")
+    #err("ticketsByCategory[$catNo][$ticketNo].lastName")
     <label>Last Name</label>
     <input type="text" name="ticketsByCategory[$catNo][$ticketNo].lastName"
            value="$!c.ticketsByCategory[$catNo][$ticketNo].lastName"/>
-    #err("attendeesByCategory[$catNo][$ticketNo].lastName")
-##    <label>Occupation</label>
-##    <input type="text"/>
-##    <label>Sex</label>
-##    <input type="text"/>
+    #err("ticketsByCategory[$catNo][$ticketNo].lastName")
+
+    #set($optionNo = 0)
+
+    #foreach($ticketOption in $c.ticketsByCategory[$catNo][$ticketNo].options)
+        <label>$ticketOption.optionDefinition.label</label>
+        #if($ticketOption.optionDefinition.type == 'DROPDOWN')
+            <select name="ticketOption[$catNo][$ticketNo][$optionNo]">
+                <option label="-" />
+                #foreach($optionLabel in $options.dropdownValues($ticketOption.optionDefinition.config))
+                    <option label="$optionLabel" value="$optionLabel"
+                            #if($optionLabel == $c.ticketsByCategory[$catNo][$ticketNo].options.get($optionNo).value)selected#end/>
+                #end
+            </select>
+        #elseif($ticketOption.optionDefinition.type == 'FREETEXT')
+            <input type="text" name="ticketOption[$catNo][$ticketNo][$optionNo]"
+                   value="$!c.ticketsByCategory[$catNo][$ticketNo].options.get($optionNo).value"/>
+        #end
+
+        #err("ticketOption[$catNo][$ticketNo][$optionNo].value")
+
+        #set($optionNo = $optionNo + 1)
+    #end
+
+    <hr/>
 </div>

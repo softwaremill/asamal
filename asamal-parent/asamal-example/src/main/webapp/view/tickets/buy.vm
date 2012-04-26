@@ -34,7 +34,7 @@
                                     #end
                                 </select>
 
-                                <br/>
+                                <hr/>
 
                                 #if($ticketsToBuy[$ticketCat.idName] > 0)
                                     #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])

@@ -1,5 +1,6 @@
 package pl.softwaremill.asamal.example.model.ticket;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import pl.softwaremill.asamal.example.model.BaseEntity;
 
 import javax.persistence.CascadeType;
@@ -8,16 +9,20 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Set;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 @Entity
 @Table(name = "TICKET")
 public class Ticket extends BaseEntity{
 
     @Column(name = "first_name")
+    @NotEmpty
+    @Size(min = 2)
     private String firstName;
 
     @Column(name = "last_name")
+    @NotEmpty
     private String lastName;
 
     @ManyToOne
@@ -27,7 +32,7 @@ public class Ticket extends BaseEntity{
     private TicketCategory ticketCategory;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
-    private Set<TicketOption> options;
+    private List<TicketOption> options;
 
     public Ticket() {
     }
@@ -70,11 +75,11 @@ public class Ticket extends BaseEntity{
         this.ticketCategory = ticketCategory;
     }
 
-    public Set<TicketOption> getOptions() {
+    public List<TicketOption> getOptions() {
         return options;
     }
 
-    public void setOptions(Set<TicketOption> options) {
+    public void setOptions(List<TicketOption> options) {
         this.options = options;
     }
 }

@@ -21,7 +21,10 @@ import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.model.ticket.TicketOption;
+import pl.softwaremill.asamal.example.model.ticket.TicketOptionDefinition;
 import pl.softwaremill.asamal.example.service.email.EmailService;
+import pl.softwaremill.asamal.example.service.ticket.TicketOptionService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.paypal.button.PaypalButtonGenerator;
 
@@ -70,6 +73,9 @@ public class Tickets extends ControllerBean implements Serializable {
     @Inject
     private InvoiceTotalsCounter invoiceTotalsCounter;
 
+    @Inject
+    private TicketOptionService optionService;
+
     @Get
     public void buy() {
         putInContext("toBePaid", 0);
@@ -78,20 +84,11 @@ public class Tickets extends ControllerBean implements Serializable {
     @Post
     public void changeNumber() {
         bindTickets();
-
-        Map<String, Integer> toBuy = new HashMap<String, Integer>();
-
-        for (String paramName : getParameterNames()) {
-            if (paramName.startsWith(NUMBER_OF_TICKETS_PREFIX)) {
-                toBuy.put(paramName.substring(NUMBER_OF_TICKETS_PREFIX.length()),
-                        new Integer(getParameter(paramName)));
-            }
-        }
-        putInContext("ticketsToBuy", toBuy);
     }
 
     @Post
     public void doBuy() {
+        System.out.println("param names = " + getParameterNames());
         bindTickets();
 
         boolean allGood = validateBean("invoice", invoice);
@@ -132,9 +129,17 @@ public class Tickets extends ControllerBean implements Serializable {
         invoice.setDueDate(new Date(dateCreated.getTime() + Invoice.SEVEN_DAYS));
 
         for (int i = 0; i < ticketsByCategory.length; i++) {
-            for (int j = 0; j < ticketsByCategory[i].length; j++) {
-                if (!validateBean("ticketsByCategory[" + i + "][" + j + "]", ticketsByCategory[i][j])) {
-                    allGood = false;
+            if (ticketsByCategory[i] != null) {
+                for (int j = 0; j < ticketsByCategory[i].length; j++) {
+                    if (!validateBean("ticketsByCategory[" + i + "][" + j + "]", ticketsByCategory[i][j])) {
+                        allGood = false;
+                    }
+
+                    for (int k = 0; k < ticketsByCategory[i][j].getOptions().size(); k++) {
+                        if (!validateBean("ticketOption["+i+"]["+j+"]["+k+"]", ticketsByCategory[i][j].getOptions().get(k))) {
+                            allGood = false;
+                        }
+                    }
                 }
             }
         }
@@ -143,7 +148,8 @@ public class Tickets extends ControllerBean implements Serializable {
 
         Set<Ticket> allTickets = new HashSet<Ticket>();
         for (Ticket[] tickets : ticketsByCategory) {
-            allTickets.addAll(Arrays.asList(tickets));
+            if (tickets != null)
+                allTickets.addAll(Arrays.asList(tickets));
         }
         invoice.setTickets(allTickets);
 
@@ -214,6 +220,8 @@ public class Tickets extends ControllerBean implements Serializable {
         ticketsByCategory = new Ticket[getAvailableCategories().size()][];
         ArrayList<String> paramNames = new ArrayList<String>();
 
+        List<TicketOptionDefinition> optionDefinitions = optionService.getAllOptionDefinitions();
+
         for (int i = 0; i < getAvailableCategories().size(); i++) {
             int numberOfAttendees = Integer.parseInt(
                     getParameter(NUMBER_OF_TICKETS_PREFIX + getAvailableCategories().get(i).getIdName())
@@ -229,6 +237,18 @@ public class Tickets extends ControllerBean implements Serializable {
                     String attendeePrefix = "ticketsByCategory[" + i + "][" + j + "]";
                     paramNames.add(attendeePrefix + ".firstName");
                     paramNames.add(attendeePrefix + ".lastName");
+
+                    List<TicketOption> options = new ArrayList<TicketOption>();
+                    for (int k = 0; k < optionDefinitions.size(); k++) {
+                        TicketOptionDefinition optionDefinition = optionDefinitions.get(k);
+
+                        TicketOption ticketOption = new TicketOption(optionDefinition, ticketsByCategory[i][j]);
+                        ticketOption.setValue(getParameter("ticketOption["+i+"]["+j+"]["+k+"]"));
+                        System.out.println("Option ticketOption["+i+"]["+j+"]["+k+"] value: "+getParameter("ticketOption["+i+"]["+j+"]["+k+"]"));
+                        options.add(ticketOption);
+                    }
+
+                    ticketsByCategory[i][j].setOptions(options);
                 }
             } else {
                 ticketsByCategory[i] = null;
@@ -249,6 +269,16 @@ public class Tickets extends ControllerBean implements Serializable {
         }
 
         putInContext("toBePaid", toBePaid);
+
+        Map<String, Integer> toBuy = new HashMap<String, Integer>();
+
+        for (String paramName : getParameterNames()) {
+            if (paramName.startsWith(NUMBER_OF_TICKETS_PREFIX)) {
+                toBuy.put(paramName.substring(NUMBER_OF_TICKETS_PREFIX.length()),
+                        new Integer(getParameter(paramName)));
+            }
+        }
+        putInContext("ticketsToBuy", toBuy);
     }
 
     @Get(params = "/id")

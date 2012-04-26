@@ -11,7 +11,7 @@
                 <th>Configuration</th>
                 <th>Actions</th>
             </tr>
-            #foreach($option in $options.allOptions)
+            #foreach($option in $options.allOptionDefinitions)
                 <tr>
                     <td>$!option.label</td>
                     <td>$!option.type</td>
