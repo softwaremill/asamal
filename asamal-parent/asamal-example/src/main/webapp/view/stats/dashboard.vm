@@ -71,7 +71,7 @@
 
         var currentPage = 0;
         var jsonLink = "$a.jsonLink('stats','loadAttendants')";
-        var totalTickets = $tickets.countAllSoldTickets();
+        var totalTickets = $totalTickets;
         var viewModel;
         var index = 0;
 

@@ -15,6 +15,7 @@ import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.BaseEntity;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.conf.ConfigurationProperty;
+import pl.softwaremill.asamal.example.model.json.ViewUsers;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
@@ -53,6 +54,7 @@ public class TicketsTest {
                 .addPackage(BaseEntity.class.getPackage())
                 .addPackage(TicketOptionService.class.getPackage())
                 .addClasses(ConfigurationBean.class, ConfigurationService.class, ConfigurationProperty.class, Conf.class)
+                .addPackage(ViewUsers.class.getPackage())
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(EmptyAsset.INSTANCE, "messages.properties")
                 .addAsManifestResource("test-persistence.xml", "persistence.xml");
