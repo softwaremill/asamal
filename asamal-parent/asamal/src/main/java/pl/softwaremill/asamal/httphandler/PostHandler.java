@@ -19,8 +19,13 @@ import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -32,11 +37,11 @@ import java.util.Map;
 
 /**
  * POST handlers implemented with JAXRS
- *
+ * <p/>
  * User: szimano
  */
 @Path("/")
-public class PostHandler extends AbstractHttpHandler{
+public class PostHandler extends AbstractHttpHandler {
 
 
     private ViewHashGenerator viewHashGenerator;
@@ -58,7 +63,7 @@ public class PostHandler extends AbstractHttpHandler{
     @POST
     @Path("/post-formdata/{controller}/{view}{sep:/?}{path:.*}")
     @Consumes("multipart/form-data")
-    public String handlePostFormData(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+    public Response handlePostFormData(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                                      @PathParam("controller") String controller, @PathParam("view") String view,
                                      @PathParam("path") String extraPath,
                                      MultipartFormDataInput multiInput) throws HttpErrorException {
@@ -91,7 +96,7 @@ public class PostHandler extends AbstractHttpHandler{
 
     @POST
     @Path("/post/{controller}/{view}{sep:/?}{path:.*}")
-    public String handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+    public Response handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                              @PathParam("controller") String controller, @PathParam("view") String view,
                              @PathParam("path") String extraPath,
                              MultivaluedMap<String, String> formValues) throws HttpErrorException {
@@ -107,7 +112,6 @@ public class PostHandler extends AbstractHttpHandler{
     }
 
 
-
     @POST
     @Path("/rerender/{controller}/{view}{sep:/?}{path:.*}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -121,8 +125,8 @@ public class PostHandler extends AbstractHttpHandler{
 
         String output = null;
         try {
-            output = handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues),
-                    true);
+            output = (String) handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues),
+                    true).getEntity();
         } catch (IllegalIncludeRedirectException e) {
             throw new HttpErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
         }
@@ -155,10 +159,10 @@ public class PostHandler extends AbstractHttpHandler{
         return map;
     }
 
-    private String handleCommonPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
-                                    @PathParam("controller") String controller,
-                                    @PathParam("view") String view, @PathParam("path") String extraPath,
-                                    MultivaluedMap<String, Object> formValues, boolean reRenderingPost)
+    private Response handleCommonPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+                                      @PathParam("controller") String controller,
+                                      @PathParam("view") String view, @PathParam("path") String extraPath,
+                                      MultivaluedMap<String, Object> formValues, boolean reRenderingPost)
             throws IllegalIncludeRedirectException, HttpErrorException {
 
         // create the context
@@ -195,24 +199,32 @@ public class PostHandler extends AbstractHttpHandler{
                 throw new IllegalIncludeRedirectException("Redirect and include is not allowed");
             }
 
+            String viewHTML;
+
             if (context.isWillInclude()) {
                 // remove the messages from the flash, otherwise they will show up twice
                 for (AsamalContext.MessageSeverity ms : AsamalContext.MessageSeverity.values()) {
                     req.removeAttribute(AsamalContext.FLASH_PREFIX + ms.name());
                 }
 
-                return viewHandler.showView(req,
+                viewHTML = viewHandler.showView(req,
                         controllerResolver.getController(), controller, context.getIncludeView());
             } else if (reRenderingPost) {
                 // include the previous view
                 ViewDescriptor viewDescriptor = viewHashGenerator.getViewHashMap().get(
                         formValues.getFirst(ViewHashGenerator.VIEWHASH));
 
-                return viewHandler.showView(req, controllerResolver.getController(), viewDescriptor.getController(),
+                viewHTML = viewHandler.showView(req, controllerResolver.getController(), viewDescriptor.getController(),
                         viewDescriptor.getView());
+            } else {
+                // nothing to show, return nothing
+                return null;
             }
 
-            return null;
+            return Response.status(Response.Status.OK)
+                    .entity(viewHTML)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML + "; charset=UTF-8")
+                    .build();
         } catch (FilterStopException e) {
             // stop execution
             return null;
