@@ -6,15 +6,27 @@ import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.controller.AsamalFilter;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.FilterStopException;
-import pl.softwaremill.asamal.controller.annotation.*;
+import pl.softwaremill.asamal.controller.annotation.ControllerImpl;
+import pl.softwaremill.asamal.controller.annotation.Download;
+import pl.softwaremill.asamal.controller.annotation.Filters;
+import pl.softwaremill.asamal.controller.annotation.Get;
+import pl.softwaremill.asamal.controller.annotation.Json;
+import pl.softwaremill.asamal.controller.annotation.PathParameter;
+import pl.softwaremill.asamal.controller.annotation.Post;
+import pl.softwaremill.asamal.controller.annotation.RequestParameter;
 import pl.softwaremill.asamal.controller.exception.AmbiguousViewMethodsException;
 import pl.softwaremill.asamal.controller.exception.RequiredParameterNotFoundException;
+import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.common.util.dependency.D;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Class that resolves the controller beans and view actions
@@ -211,6 +223,11 @@ public class ControllerResolver {
     }
 
     public boolean skipViewHash(String view) throws NoSuchMethodException {
+        if(System.getProperty(ResourceResolver.ASAMAL_DEV_DIR) != null) {
+            // in DEV mode, ignore view hashes
+            return true;
+        }
+
         try {
             return findViewMethod(view, controller.getRealClass()).getAnnotation(Post.class).skipViewHash();
         } catch (AmbiguousViewMethodsException e) {
