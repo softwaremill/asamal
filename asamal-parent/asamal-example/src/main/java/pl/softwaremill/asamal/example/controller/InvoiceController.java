@@ -3,8 +3,11 @@ package pl.softwaremill.asamal.example.controller;
 import com.ibm.icu.text.RuleBasedNumberFormat;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
+import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.PathParameter;
+import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
+import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -14,14 +17,22 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 @Controller("invoice")
+@Filters(AuthorizationFilter.class)
 public class InvoiceController extends ControllerBean {
 
     @Inject
     private TicketService ticketService;
 
+    @Inject
+    private LoginBean loginBean;
+
     @Get(params = "/id")
     public void pdf(@PathParameter("id") Long invoiceId) {
         Invoice invoice = ticketService.loadInvoice(invoiceId);
+
+        if (!loginBean.isAdmin() && !invoice.getUser().equals(loginBean.getUser())) {
+            throw new RuntimeException("You are trying to view an invoice that does not belong to you!");
+        }
 
         if (invoice == null) {
             throw new RuntimeException("No such invoice with id: "+invoiceId);

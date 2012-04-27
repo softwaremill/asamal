@@ -221,6 +221,10 @@ public class Tickets extends ControllerBean implements Serializable {
     public void edit(@PathParameter("id") Long invoiceId) {
         invoice = ticketService.loadInvoice(invoiceId);
 
+        if (!loginBean.isAdmin() && !invoice.getUser().equals(loginBean.getUser())) {
+            throw new RuntimeException("You are trying to edit an invoice that does not belong to you!");
+        }
+
         if (!invoice.getEditable()) {
             addMessageToFlash(getFromMessageBundle("invoice.already.accounted",
                     configurationBean.getProperty(Conf.INVOICE_ID) + invoiceId),
@@ -235,6 +239,10 @@ public class Tickets extends ControllerBean implements Serializable {
     @Post(params = "/id")
     public void doUpdate(@PathParameter("id") Long invoiceId) {
         invoice = ticketService.loadInvoice(invoiceId);
+
+        if (!loginBean.isAdmin() && !invoice.getUser().equals(loginBean.getUser())) {
+            throw new RuntimeException("You are trying to edit an invoice that does not belong to you!");
+        }
 
         bindInvoiceDetails();
 
@@ -327,6 +335,10 @@ public class Tickets extends ControllerBean implements Serializable {
     @Get(params = "/id")
     public void pay(@PathParameter("id") Long invoiceId) {
         invoice = ticketService.loadInvoice(invoiceId);
+
+        if (!loginBean.isAdmin() && !invoice.getUser().equals(loginBean.getUser())) {
+            throw new RuntimeException("You are trying to pay for an invoice that does not belong to you!");
+        }
 
         putInContext("invoice", invoice);
     }

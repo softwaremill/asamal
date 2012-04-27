@@ -5,10 +5,12 @@ import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.DownloadDescription;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Download;
+import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.controller.annotation.RequestParameter;
+import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Discount;
@@ -33,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller("admin")
+@Filters(AuthorizationFilter.class)
 @Secure("#{login.admin}")
 public class Admin extends ControllerBean {
 
