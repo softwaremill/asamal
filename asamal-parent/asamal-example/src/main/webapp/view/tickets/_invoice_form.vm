@@ -35,6 +35,7 @@
     <h3>$m['invoice.edit.paid']</h3>
 #else
     <h3>$m['tickets.payment.method']</h3>
+    <i>$m['tickets.free.any.payment']</i><br/>
     <input type="radio" name="paymentMethod" value="paypal"
         #if($c.invoice.method == 'PAYPAL')
            checked="true"

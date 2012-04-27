@@ -26,6 +26,7 @@ import pl.softwaremill.asamal.example.model.ticket.TicketOptionDefinition;
 import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.ticket.TicketOptionService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
+import pl.softwaremill.common.cdi.transaction.Transactional;
 import pl.softwaremill.common.paypal.button.PaypalButtonGenerator;
 
 import javax.inject.Inject;
@@ -87,6 +88,7 @@ public class Tickets extends ControllerBean implements Serializable {
     }
 
     @Post
+    @Transactional
     public void doBuy() {
         System.out.println("param names = " + getParameterNames());
         bindTickets();
@@ -103,9 +105,22 @@ public class Tickets extends ControllerBean implements Serializable {
                 allGood = false;
                 addMessageToFlash(getFromMessageBundle("discount.code.wrong"), AsamalContext.MessageSeverity.ERR);
             } else {
-                if (discount.getNumberOfUses() > 0 && discount.getNumberOfUses() <= discount.getNumberOfTickets()) {
+                Integer numberOfTicketsOnDiscount = discount.getNumberOfTickets();
+                int totalTickets = getTotalTickets();
+
+                if (discount.getNumberOfUses() > 0 &&
+                        discount.getNumberOfUses() < (numberOfTicketsOnDiscount + totalTickets)) {
                     allGood = false;
-                    addMessageToFlash(getFromMessageBundle("discount.code.expired"), AsamalContext.MessageSeverity.ERR);
+
+                    if (discount.getNumberOfUses().equals(numberOfTicketsOnDiscount)) {
+                        addMessageToFlash(getFromMessageBundle("discount.code.expired"), AsamalContext.MessageSeverity.ERR);
+                    }
+                    else {
+                        addMessageToFlash(
+                                getFromMessageBundle("discount.uses.left",
+                                        discount.getNumberOfUses() - numberOfTicketsOnDiscount),
+                                AsamalContext.MessageSeverity.ERR);
+                    }
                 }
 
                 invoice.setDiscount(discount);
@@ -164,14 +179,42 @@ public class Tickets extends ControllerBean implements Serializable {
 
             includeView("buy");
         } else {
+            // check the amount
+            InvoiceTotals invoiceTotals = invoiceTotalsCounter.countInvoice(invoice);
+
             ticketService.addInvoice(invoice);
 
-            addMessageToFlash(getFromMessageBundle("tickets.book.ok"), AsamalContext.MessageSeverity.SUCCESS);
-            redirect("pay", new PageParameters(invoice.getId()));
+            // if the user had 100% discount, make the invoice paid
+            System.out.println("TOTAL: "+invoiceTotals.getTotalAmount());
+            if (invoiceTotals.getTotalAmount().equals(new BigDecimal("0.00"))) {
+                invoice.setDatePaid(new Date());
+                invoice.setEditable(false);
+                invoice.setStatus(InvoiceStatus.PAID);
+
+                ticketService.updateInvoice(invoice);
+
+                addMessageToFlash(getFromMessageBundle("tickets.free.book.ok"), AsamalContext.MessageSeverity.SUCCESS);
+                redirect("home", "index");
+            }
+            else {
+                addMessageToFlash(getFromMessageBundle("tickets.book.ok"), AsamalContext.MessageSeverity.SUCCESS);
+                redirect("pay", new PageParameters(invoice.getId()));
+            }
 
             // schedule thank you email
             emailService.sendThankYouEmail(invoice);
         }
+    }
+
+    private int getTotalTickets() {
+        int i = 0;
+
+        for (Ticket[] tickets : ticketsByCategory) {
+            if (tickets != null)
+                i += tickets.length;
+        }
+
+        return i;
     }
 
     @Get(params = "/id")

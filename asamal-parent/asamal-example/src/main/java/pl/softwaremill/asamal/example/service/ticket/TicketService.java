@@ -6,6 +6,7 @@ import pl.softwaremill.asamal.example.model.json.ViewUsers;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Discount;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.i18n.Messages;
@@ -148,7 +149,8 @@ public class TicketService {
 
         return new ViewUsers(entityManager.createQuery(
                 "select new pl.softwaremill.asamal.example.model.json.ViewTicket(t) from Ticket t" +
-                        " where t.invoice.datePaid is not null order by t.invoice.datePaid, t.id")
+                        " where t.invoice.status = :status order by t.invoice.datePaid, t.id")
+                .setParameter("status", InvoiceStatus.PAID)
                 .setFirstResult(pageNumber * resultsPerPage).
                         setMaxResults(resultsPerPage).getResultList(),
                 optionLabels);
@@ -158,7 +160,8 @@ public class TicketService {
     public Long countAllSoldTickets() {
         return (Long) entityManager.createQuery(
                 "select count(t) from Ticket t" +
-                        " where t.invoice.datePaid is not null order by t.invoice.datePaid, t.id")
+                        " where t.invoice.status = :status order by t.invoice.datePaid, t.id")
+                .setParameter("status", InvoiceStatus.PAID)
                 .getSingleResult();
     }
 
@@ -166,7 +169,8 @@ public class TicketService {
     public Long getSoldByCategory(TicketCategory category) {
         return (Long) entityManager.createQuery(
                 "select count(t) from Ticket t " +
-                        "where t.ticketCategory = :category and t.invoice.datePaid is not null")
+                        "where t.ticketCategory = :category and t.invoice.status = :status")
+                .setParameter("status", InvoiceStatus.PAID)
                 .setParameter("category", category)
                 .getSingleResult();
     }

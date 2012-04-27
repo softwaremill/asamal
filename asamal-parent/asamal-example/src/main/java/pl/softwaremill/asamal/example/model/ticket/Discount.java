@@ -71,9 +71,10 @@ public class Discount extends BaseEntity {
     public Integer getNumberOfTickets() {
         Integer tickets = 0;
 
-        for (Invoice invoice : invoices) {
-            tickets += invoice.getTickets().size();
-        }
+        if (invoices != null)
+            for (Invoice invoice : invoices) {
+                tickets += invoice.getTickets().size();
+            }
 
         return tickets;
     }
