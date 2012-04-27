@@ -85,6 +85,7 @@ public class AdminService {
 
             // for each invoice generate PDF and put it in the zip file
             for (Long invoiceId : invoices) {
+                System.out.println("Generating invoice: "+invoiceId);
                 InputStream input = (InputStream) asamalGetHandler.handlePDFGet(servletRequestInstance.get(),
                         servletResponseInstance.get(), "invoice", "pdf",
                         invoiceId.toString());

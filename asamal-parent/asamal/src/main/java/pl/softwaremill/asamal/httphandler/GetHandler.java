@@ -125,7 +125,9 @@ public class GetHandler extends AbstractHttpHandler {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             org.w3c.dom.Document doc = builder.parse(
-                    new ByteArrayInputStream(page.getEntity().toString().getBytes("UTF-8")));
+                    new ByteArrayInputStream(page.getEntity().toString()
+                            .replaceAll("\\&oacute;", "ó").replaceAll("\\&Oacute;", "Ó").replaceAll("\\&nbsp;", " ")
+                            .getBytes("UTF-8")));
 
             ITextRenderer renderer = new ITextRenderer();
             renderer.getFontResolver().addFont("/Library/Fonts/Microsoft/Lucida Sans Unicode.ttf",

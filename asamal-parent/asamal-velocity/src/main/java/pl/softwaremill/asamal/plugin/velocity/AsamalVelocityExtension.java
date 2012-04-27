@@ -49,7 +49,8 @@ public class AsamalVelocityExtension implements PresentationExtension {
         VelocityPresentationContext velocityContext = (VelocityPresentationContext) context;
 
         StringWriter w = new StringWriter();
-
+        Velocity.setProperty("input.encoding", "UTF-8");
+        Velocity.setProperty("output.encoding", "UTF-8");
         Velocity.evaluate(velocityContext.getVelocityContext(), w, LOG_TAG, template);
 
         String layout;
