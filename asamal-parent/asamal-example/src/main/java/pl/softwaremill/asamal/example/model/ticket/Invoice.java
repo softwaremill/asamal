@@ -93,11 +93,14 @@ public class Invoice extends BaseEntity{
     private Boolean editable;
     
     public Invoice() {
+        editable = true;
     }
 
     public Invoice(Set<Ticket> tickets, String name, String companyName, String vat, String address,
                    String postalCode, String city, String country, InvoiceStatus status, PaymentMethod method, User user, Date dateCreated,
                    Date datePaid, Discount discount, Boolean editable) {
+        this();
+
         this.tickets = tickets;
         this.name = name;
         this.companyName = companyName;

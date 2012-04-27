@@ -95,11 +95,6 @@
                         <a href="$a.link('home', 'index')">Home</a></li>
                     <li #if($c.name == 'tickets' && $view == 'buy')class="active"#end>
                         <a href="$a.link('tickets', 'buy')">Buy Tickets</a></li>
-                    #if($login.loggedIn == false)
-                        <li #if($c.name == 'login' && $view == 'register')class="active"#end>
-                            <a href="$a.link('login', 'register')">Register</a></li>
-                    #end
-
                 </ul>
 
                 <ul class="nav pull-right">

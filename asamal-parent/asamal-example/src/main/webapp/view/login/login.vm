@@ -3,8 +3,6 @@
 #region('content')
     <h1>$m['login.pleaselogin']</h1>
 
-    <p>No account yet ? <a href="$a.link('login', 'register')">Register now</a>.</p>
-
     <form accept-charset="UTF-8" action="$a.formAction('login', 'doLogin')" method="POST"
           class="form-horizontal">
         <label>$m['login.login']</label>
@@ -13,4 +11,8 @@
         <input type="password" name="password" value=""/>
         <input type="submit" value="Login"/>
     </form>
+
+    <h3>$m['no.account.register']</h3>
+
+    #renderPartial('register')
 #end
