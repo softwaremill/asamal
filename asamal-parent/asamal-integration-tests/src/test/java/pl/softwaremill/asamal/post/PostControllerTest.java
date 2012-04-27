@@ -27,6 +27,7 @@ import pl.softwaremill.common.util.dependency.D;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -69,7 +70,7 @@ public class PostControllerTest extends ControllerTest {
         addViewHash("view-hash", "post", "doPost");
 
         // when
-        String output = postHandler.handlePost(req, resp, "post", "doPost", null, new MultivaluedMapImpl<String, String>(){
+        Response output = postHandler.handlePost(req, resp, "post", "doPost", null, new MultivaluedMapImpl<String, String>(){
             {
                 put(ViewHashGenerator.VIEWHASH, Arrays.asList("view-hash"));
             }
@@ -105,7 +106,7 @@ public class PostControllerTest extends ControllerTest {
         when(formValues.entrySet()).thenReturn(entries);
 
         // when
-        String output = postHandler.handlePostFormData(req, resp, "post", "doFormDataPost", null, dataInput);
+        Response output = postHandler.handlePostFormData(req, resp, "post", "doFormDataPost", null, dataInput);
 
         // then
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("doFormDataPost");
@@ -123,7 +124,7 @@ public class PostControllerTest extends ControllerTest {
 
         // when
         String output = postHandler.handlePost(req, resp, "post", "doPost", null,
-                new MultivaluedMapImpl<String, String>());
+                new MultivaluedMapImpl<String, String>()).getEntity().toString();
     }
 
     @Test
@@ -133,7 +134,7 @@ public class PostControllerTest extends ControllerTest {
         addViewHash("view-hash", "post", "doPost");
 
         // when
-        String output = postHandler.handlePost(req, resp, "post", "doPostWithoutViewHashCheck", null,
+        Response output = postHandler.handlePost(req, resp, "post", "doPostWithoutViewHashCheck", null,
                 new MultivaluedMapImpl<String, String>());
 
         // then
@@ -151,7 +152,7 @@ public class PostControllerTest extends ControllerTest {
         formValues.putSingle("name", "postParam");
         formValues.putSingle(ViewHashGenerator.VIEWHASH, "view-hash");
 
-        String output = postHandler.handlePost(req, resp, "post", "postWithParams", "10",
+        Response output = postHandler.handlePost(req, resp, "post", "postWithParams", "10",
                 formValues);
 
         // then
