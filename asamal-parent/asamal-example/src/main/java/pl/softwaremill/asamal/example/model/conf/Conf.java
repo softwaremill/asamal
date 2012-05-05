@@ -2,6 +2,8 @@ package pl.softwaremill.asamal.example.model.conf;
 
 public enum Conf {
 
+    CONFERENCE_NAME("Conference"),
+
     INVOICE_NAME(""),
     INVOICE_COMPANY("Foo (Pty) Ltd."),
     INVOICE_VAT("FB 123-456-789"),
@@ -33,6 +35,19 @@ public enum Conf {
                                    "#foreach($ticket in $tickets)\n" +
                                    "$ticket.firstName $ticket.lastName\n" +
                                    "#end\n" +
+                                   "\n" +
+                                   "--\n" +
+                                   "The Conference Team", TYPE.TEXT_AREA),
+
+    TICKETS_TRANSFER_RECEIVED_SUBJECT("Your payment for Conference has been received!"),
+
+    TICKETS_TRANSFER_RECEIVED_EMAIL("Dear $name,\n" +
+                                   "\n" +
+                                   "We got your payment and everything is in order.\n" +
+                                   "\n" +
+                                   "You can check your invoice on $invoice_link\n" +
+                                   "\n" +
+                                   "That means your tickets are confirmed, see you there!" +
                                    "\n" +
                                    "--\n" +
                                    "The Conference Team", TYPE.TEXT_AREA),

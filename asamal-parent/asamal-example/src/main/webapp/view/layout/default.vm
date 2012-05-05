@@ -87,7 +87,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="#">Tickets Registration</a>
+            <a class="brand" href="#">$conf.getProperty('CONFERENCE_NAME')</a>
 
             <div class="nav-collapse">
                 <ul class="nav">

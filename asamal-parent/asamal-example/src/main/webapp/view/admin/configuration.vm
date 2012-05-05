@@ -12,7 +12,7 @@
             #elseif ($c.key.string)
                 <input type="text" name="$c.key" value="$c.value"/>
             #elseif ($c.key.textArea)
-                <textarea rows="10" cols="60" name="$c.key">$a.e($c.value)</textarea>
+                <textarea rows="10" cols="60" name="$c.key">$esc.html($c.value)</textarea>
             #end
         #end
         <input type="Submit" value="$m['configuration.save']">

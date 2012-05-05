@@ -21,6 +21,7 @@ import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.model.ticket.TicketOptionDefinition;
 import pl.softwaremill.asamal.example.service.admin.AdminService;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
+import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.ticket.TicketOptionService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
@@ -51,6 +52,9 @@ public class Admin extends ControllerBean {
 
     @Inject
     private AdminService adminService;
+
+    @Inject
+    private EmailService emailService;
 
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -103,6 +107,8 @@ public class Admin extends ControllerBean {
             invoice.setStatus(InvoiceStatus.PAID);
 
             invoice = ticketService.updateInvoice(invoice);
+
+            emailService.sendTransferAcceptedEmail(invoice);
 
             putInContext("invoice", invoice);
         } catch (ParseException e) {

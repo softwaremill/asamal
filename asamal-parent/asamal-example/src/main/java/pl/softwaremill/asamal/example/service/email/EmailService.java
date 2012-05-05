@@ -23,6 +23,9 @@ public class EmailService {
     private LoginBean loginBean;
 
     @Inject
+    private AsamalHelper asamalHelper;
+
+    @Inject
     private HttpServletRequest request;
 
     public void sendThankYouEmail(Invoice invoice) {
@@ -30,6 +33,7 @@ public class EmailService {
 
         context.put("name", invoice.getName());
         context.put("tickets", invoice.getTickets());
+        context.put("paymentMethod", invoice.getMethod());
 
         String emailTemplate = configurationBean.getProperty(Conf.TICKETS_THANKYOU_EMAIL);
 
@@ -45,6 +49,34 @@ public class EmailService {
 
         context.put("name", invoice.getName());
 
+        context.put("invoice_link", getInvoiceLink(invoice));
+
+        String emailTemplate = configurationBean.getProperty(Conf.INVOICE_EMAIL);
+
+        StringWriter sw = new StringWriter();
+        Velocity.evaluate(context, sw, "emailInvoice", emailTemplate);
+
+        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(loginBean.getUser().getUsername(),
+                sw.toString(), configurationBean.getProperty(Conf.INVOICE_EMAIL_SUBJECT))));
+    }
+
+    public void sendTransferAcceptedEmail(Invoice invoice) {
+        VelocityContext context = new VelocityContext();
+
+        context.put("name", invoice.getName());
+
+        context.put("invoice_link", getInvoiceLink(invoice));
+
+        String emailTemplate = configurationBean.getProperty(Conf.TICKETS_TRANSFER_RECEIVED_EMAIL);
+
+        StringWriter sw = new StringWriter();
+        Velocity.evaluate(context, sw, "emailTransferReceived", emailTemplate);
+
+        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(loginBean.getUser().getUsername(),
+                sw.toString(), configurationBean.getProperty(Conf.TICKETS_TRANSFER_RECEIVED_SUBJECT))));
+    }
+
+    private String getInvoiceLink(Invoice invoice) {
         String url = "";
 
         url += (request.isSecure() ? "https://" : "http://");
@@ -54,15 +86,7 @@ public class EmailService {
         url += ((request.isSecure() && request.getLocalPort() != 443) ||
                 (!request.isSecure() && request.getLocalPort() != 80)) ? ":" + request.getLocalPort() : "";
 
-        context.put("invoice_link",url + new AsamalHelper(request.getContextPath(), null).pdf("invoice", "pdf") +
-                "/" + invoice.getId());
-
-        String emailTemplate = configurationBean.getProperty(Conf.INVOICE_EMAIL);
-
-        StringWriter sw = new StringWriter();
-        Velocity.evaluate(context, sw, "emailInvoice", emailTemplate);
-
-        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(loginBean.getUser().getUsername(),
-                sw.toString(), configurationBean.getProperty(Conf.INVOICE_EMAIL_SUBJECT))));
+        return url + asamalHelper.pdf("invoice", "pdf") +
+                "/" + invoice.getId();
     }
 }
