@@ -19,6 +19,7 @@ import pl.softwaremill.asamal.servlet.AsamalListener;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import pl.softwaremill.common.util.dependency.D;
 
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,15 +39,18 @@ public class AsamalViewHandler {
     private ViewHashGenerator viewHashGenerator;
     private ResourceResolver.Factory resourceResolverFactory;
     private PresentationExtensionResolver presentationExtensionResolver;
+    private Instance<AsamalHelper> asamalHelperInstance;
 
     @Inject
     public AsamalViewHandler(AsamalAnnotationScanner asamalAnnotationScanner, ViewHashGenerator viewHashGenerator,
                              ResourceResolver.Factory resourceResolverFactory,
-                             PresentationExtensionResolver presentationExtensionResolver) {
+                             PresentationExtensionResolver presentationExtensionResolver,
+                             Instance<AsamalHelper> asamalHelperInstance) {
         this.asamalAnnotationScanner = asamalAnnotationScanner;
         this.viewHashGenerator = viewHashGenerator;
         this.resourceResolverFactory = resourceResolverFactory;
         this.presentationExtensionResolver = presentationExtensionResolver;
+        this.asamalHelperInstance = asamalHelperInstance;
     }
 
     public AsamalViewHandler() {
@@ -98,7 +102,7 @@ public class AsamalViewHandler {
             }
 
             // put some context
-            AsamalHelper asamalHelper = new AsamalHelper(req.getContextPath(), context);
+            AsamalHelper asamalHelper = asamalHelperInstance.get();
 
             context.put(ContextConstants.ASAMAL_HELPER, asamalHelper);
             context.put(ContextConstants.ASAMAL_HELPER_OLD, asamalHelper);

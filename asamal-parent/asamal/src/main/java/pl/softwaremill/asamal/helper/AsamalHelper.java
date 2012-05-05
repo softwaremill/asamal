@@ -1,9 +1,10 @@
 package pl.softwaremill.asamal.helper;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import pl.softwaremill.asamal.extension.view.PresentationContext;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
 
 /**
@@ -16,8 +17,9 @@ public class AsamalHelper {
     private final String contextPath;
     private final PresentationContext presentationContext;
 
-    public AsamalHelper(String contextPath, PresentationContext presentationContext) {
-        this.contextPath = contextPath;
+    @Inject
+    public AsamalHelper(HttpServletRequest request, PresentationContext presentationContext) {
+        this.contextPath = request.getContextPath();
         this.presentationContext = presentationContext;
     }
     
@@ -88,13 +90,6 @@ public class AsamalHelper {
 
     public String imgLink(String imgName) {
         return staticLink("img", imgName);
-    }
-
-    /**
-     * Escapes given html
-     */
-    public String e(String html) {
-        return StringEscapeUtils.escapeHtml(html);
     }
     
     private String staticLink(String type, String name) {

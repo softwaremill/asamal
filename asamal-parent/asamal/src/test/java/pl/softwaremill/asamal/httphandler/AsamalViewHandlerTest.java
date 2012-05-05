@@ -9,10 +9,13 @@ import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.cdi.AsamalAnnotationScanner;
 import pl.softwaremill.asamal.extension.view.PresentationExtensionResolver;
 import pl.softwaremill.asamal.extension.view.ResourceResolver;
+import pl.softwaremill.asamal.helper.AsamalHelper;
 import pl.softwaremill.asamal.plugin.velocity.AsamalVelocityExtension;
+import pl.softwaremill.asamal.plugin.velocity.context.VelocityPresentationContext;
 import pl.softwaremill.asamal.resource.ResourceResolverImpl;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 
+import javax.enterprise.inject.Instance;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
@@ -84,6 +87,11 @@ public class AsamalViewHandlerTest {
     }
 
     private void setupMocks(Class<? extends ControllerBean> controllerBeanClass) throws Exception {
+        request = mock(HttpServletRequest.class);
+        ServletContext context = mock(ServletContext.class);
+        when(request.getServletContext()).thenReturn(context);
+        when(request.getContextPath()).thenReturn("/");
+
         AsamalAnnotationScanner checkerExtension = mock(AsamalAnnotationScanner.class);
 
         ViewHashGenerator viewHashGenerator = mock(ViewHashGenerator.class);
@@ -99,14 +107,14 @@ public class AsamalViewHandlerTest {
         PresentationExtensionResolver presentationExtensionResolver = mock(PresentationExtensionResolver.class);
         when(presentationExtensionResolver.resolvePresentationExtension((ResourceResolver) anyObject(),
                 anyString(), anyString())).thenReturn(new AsamalVelocityExtension());
+        Instance<AsamalHelper> asamalHelperInstance = (Instance<AsamalHelper>)mock(Instance.class);
+        AsamalHelper asamalHelper = new AsamalHelper(request, new VelocityPresentationContext());
+        when(asamalHelperInstance.get()).thenReturn(asamalHelper);
 
         viewHandler = new AsamalViewHandler(checkerExtension, viewHashGenerator,
-                resourceResolverFactory, presentationExtensionResolver);
+                resourceResolverFactory, presentationExtensionResolver, asamalHelperInstance);
         controller = controllerBeanClass.newInstance();
-        request = mock(HttpServletRequest.class);
-        ServletContext context = mock(ServletContext.class);
-        when(request.getServletContext()).thenReturn(context);
-        when(request.getContextPath()).thenReturn("/");
+
         when(context.getResourceAsStream(anyString())).then(new Answer<InputStream>() {
             @Override
             public InputStream answer(InvocationOnMock invocation) throws Throwable {
