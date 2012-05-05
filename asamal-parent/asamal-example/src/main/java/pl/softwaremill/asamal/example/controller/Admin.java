@@ -331,6 +331,17 @@ public class Admin extends ControllerBean {
         addMessageToFlash("Option Deleted", AsamalContext.MessageSeverity.SUCCESS);
     }
 
+    @Get
+    public void email() { }
+
+    @Post
+    public void sendEmail(@RequestParameter("subject") String subject, @RequestParameter("message") String message) {
+        emailService.sendEmailToAll(subject, message);
+
+        addMessageToFlash("Emails scheduled for sending", AsamalContext.MessageSeverity.SUCCESS);
+
+        redirect("email");
+    }
 
     public List<Discount> getDiscounts() {
         return discountService.getDiscounts();

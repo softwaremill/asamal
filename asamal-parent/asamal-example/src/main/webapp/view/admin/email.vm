@@ -1,0 +1,15 @@
+#layout('default')
+
+#region('content')
+    <h1>$m['welcome.email']</h1>
+        <form class="form-horizontal" id="ticketForm" class="form-horizontal" method="post"
+              action="$a.formAction("admin", "sendEmail")">
+            <label>$m['email.subject']</label>
+            <input type="text" name="subject"/>
+            <label>$m['email.message']</label>
+            <textarea rows="20" cols="40" name="message"></textarea>
+            <input type="submit" value="$m['email.send']"/>
+        </form>
+    </div>
+
+#end

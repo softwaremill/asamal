@@ -7,12 +7,16 @@ import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.helper.AsamalHelper;
+import pl.softwaremill.common.cdi.transaction.Transactional;
 import pl.softwaremill.common.sqs.email.SendEmailTask;
 import pl.softwaremill.common.sqs.util.EmailDescription;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
+import java.util.List;
 
 public class EmailService {
 
@@ -27,6 +31,9 @@ public class EmailService {
 
     @Inject
     private HttpServletRequest request;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public void sendThankYouEmail(Invoice invoice) {
         VelocityContext context = new VelocityContext();
@@ -75,6 +82,19 @@ public class EmailService {
 
         EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(loginBean.getUser().getUsername(),
                 sw.toString(), configurationBean.getProperty(Conf.TICKETS_TRANSFER_RECEIVED_SUBJECT))));
+    }
+
+    @Transactional
+    public void sendEmailToAll(String subject, String message) {
+        List<String> allEmails = entityManager.createQuery(
+                "select distinct(i.user.username) from Invoice i").getResultList();
+
+        allEmails.add(configurationBean.getProperty(Conf.TICKETS_THANKYOU_BCC));
+
+        // for each user create new task
+        for (String email : allEmails) {
+            EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(email, message, subject)));
+        }
     }
 
     private String getInvoiceLink(Invoice invoice) {

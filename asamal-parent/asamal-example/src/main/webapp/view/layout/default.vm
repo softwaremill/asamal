@@ -120,6 +120,8 @@
                                     <a href="$a.link('admin', 'options')">Ticket Options</a></li>
                                 <li #if($c.name == 'stats' && $view == 'dashboard')class="active"#end>
                                     <a href="$a.link('stats', 'dashboard')">Stats</a></li>
+                                <li #if($c.name == 'admin' && $view == 'email')class="active"#end>
+                                    <a href="$a.link('admin', 'email')">Group Email</a></li>
                             </ul>
                         </li>
                     #end
