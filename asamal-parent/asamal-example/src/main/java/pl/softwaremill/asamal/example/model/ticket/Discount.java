@@ -33,6 +33,9 @@ public class Discount extends BaseEntity {
     @NotNull
     private Integer numberOfUses;
 
+    @Column(name = "late_discount")
+    private String lateDiscount;
+
     @OneToMany(mappedBy = "discount")
     private Set<Invoice> invoices;
 
@@ -68,14 +71,11 @@ public class Discount extends BaseEntity {
         this.invoices = invoices;
     }
 
-    public Integer getNumberOfTickets() {
-        Integer tickets = 0;
+    public String getLateDiscount() {
+        return lateDiscount;
+    }
 
-        if (invoices != null)
-            for (Invoice invoice : invoices) {
-                tickets += invoice.getTickets().size();
-            }
-
-        return tickets;
+    public void setLateDiscount(String lateDiscount) {
+        this.lateDiscount = lateDiscount;
     }
 }

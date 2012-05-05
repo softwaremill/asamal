@@ -16,14 +16,14 @@
         #foreach($total in $totals.allTotals)
             <tr>
                 <td>$total.numberOfTickets x $total.category.name</td>
-                <td>$total.amount</td>
-                <td>$total.vatAmount</td>
+                <td>$total.amount $conf.getProperty('INVOICE_CURRENCY')</td>
+                <td>$total.vatAmount $conf.getProperty('INVOICE_CURRENCY')</td>
             </tr>
         #end
         <tr>
             <th>SUM</th>
-            <th>$totals.totalAmount</th>
-            <th>$totals.totalVat</th>
+            <th>$totals.totalAmount $conf.getProperty('INVOICE_CURRENCY')</th>
+            <th>$totals.totalVat $conf.getProperty('INVOICE_CURRENCY')</th>
         </tr>
         #if($totals.discounted)
         <tr>
@@ -33,7 +33,7 @@
         #end
         <tr>
             <th colspan="2">Total Due:</th>
-            <th>$totals.totalGrossAmount</th>
+            <th>$totals.totalGrossAmount $conf.getProperty('INVOICE_CURRENCY')</th>
         </tr>
     </table>
 

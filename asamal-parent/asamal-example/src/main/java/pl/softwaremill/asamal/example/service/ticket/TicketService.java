@@ -4,7 +4,6 @@ import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.json.ViewUsers;
 import pl.softwaremill.asamal.example.model.security.User;
-import pl.softwaremill.asamal.example.model.ticket.Discount;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
@@ -15,7 +14,6 @@ import pl.softwaremill.common.cdi.transaction.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
@@ -122,24 +120,6 @@ public class TicketService {
 
     public Invoice loadInvoice(Long invoiceId) {
         return entityManager.find(Invoice.class, invoiceId);
-    }
-
-    @Transactional
-    public void addDiscount(Discount discount) {
-        entityManager.persist(discount);
-    }
-
-    public List<Discount> getDiscounts() {
-        return entityManager.createQuery("select d from Discount d").getResultList();
-    }
-
-    public Discount loadDiscount(String discountCode) {
-        try {
-            return (Discount) entityManager.createQuery("select d from Discount d where d.discountCode = :discountCode")
-                    .setParameter("discountCode", discountCode).getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
     }
 
     @Transactional

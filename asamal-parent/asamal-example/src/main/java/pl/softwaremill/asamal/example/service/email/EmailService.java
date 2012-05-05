@@ -41,7 +41,8 @@ public class EmailService {
         Velocity.evaluate(context, sw, "emailThankYou", emailTemplate);
 
         EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(loginBean.getUser().getUsername(),
-                sw.toString(), configurationBean.getProperty(Conf.TICKETS_THANKYOU_EMAIL_SUBJECT))));
+                sw.toString(), configurationBean.getProperty(Conf.TICKETS_THANKYOU_EMAIL_SUBJECT), null, null,
+                configurationBean.getProperty(Conf.TICKETS_THANKYOU_BCC))));
     }
 
     public void sendInvoiceEmail(Invoice invoice) {

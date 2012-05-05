@@ -9,6 +9,7 @@ import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
+import pl.softwaremill.asamal.example.logic.admin.DiscountService;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotal;
@@ -77,6 +78,9 @@ public class Tickets extends ControllerBean implements Serializable {
     @Inject
     private TicketOptionService optionService;
 
+    @Inject
+    private DiscountService discountService;
+
     @Get
     public void buy() {
         putInContext("toBePaid", 0);
@@ -99,13 +103,13 @@ public class Tickets extends ControllerBean implements Serializable {
         Discount discount = null;
 
         if (discountCode != null && discountCode.length() > 0) {
-            discount = ticketService.loadDiscount(discountCode);
+            discount = discountService.loadDiscount(discountCode);
 
             if (discount == null) {
                 allGood = false;
                 addMessageToFlash(getFromMessageBundle("discount.code.wrong"), AsamalContext.MessageSeverity.ERR);
             } else {
-                Integer numberOfTicketsOnDiscount = discount.getNumberOfTickets();
+                Integer numberOfTicketsOnDiscount = discountService.getNumberOfUses(discount);
                 int totalTickets = getTotalTickets();
 
                 if (discount.getNumberOfUses() > 0 &&
@@ -113,7 +117,17 @@ public class Tickets extends ControllerBean implements Serializable {
                     allGood = false;
 
                     if (discount.getNumberOfUses().equals(numberOfTicketsOnDiscount)) {
-                        addMessageToFlash(getFromMessageBundle("discount.code.expired"), AsamalContext.MessageSeverity.ERR);
+                        if (discountService.shouldShowLateDiscount(discount)) {
+                            Discount lateDiscount = discountService.loadDiscount(discount.getLateDiscount());
+
+                            addMessageToFlash(getFromMessageBundle("discount.code.expired.show.late",
+                                    lateDiscount.getDiscountCode(), lateDiscount.getDiscountAmount()),
+                                    AsamalContext.MessageSeverity.WARN);
+                        }
+                        else {
+                            addMessageToFlash(getFromMessageBundle("discount.code.expired"),
+                                    AsamalContext.MessageSeverity.ERR);
+                        }
                     }
                     else {
                         addMessageToFlash(

@@ -20,6 +20,8 @@ public enum Conf {
 
     TICKETS_MAX("200"),
 
+    DISCOUNT_LATE_MAX_TIME("60"),
+
     PAYPAL_SANDBOX("true", TYPE.BOOLEAN),
     PAYPAL_EMAIL("email_paypal@test.com"),
 
@@ -38,6 +40,8 @@ public enum Conf {
                                    "\n" +
                                    "--\n" +
                                    "The Conference Team", TYPE.TEXT_AREA),
+
+    TICKETS_THANKYOU_BCC("foo@bar.com"),
 
     TICKETS_TRANSFER_RECEIVED_SUBJECT("Your payment for Conference has been received!"),
 

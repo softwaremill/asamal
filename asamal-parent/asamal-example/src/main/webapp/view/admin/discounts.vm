@@ -2,11 +2,13 @@
 
 #region('content')
 
-    <table>
+    <table class="table">
         <tr>
             <th>$m['discount.code']</th>
             <th>$m['discount.amount']</th>
             <th>$m['discount.number']</th>
+            <th>$m['discount.late_discount_label']</th>
+            <th>$m['discount.used']</th>
         </tr>
         #foreach($discount in $c.discounts)
             <tr>
@@ -18,6 +20,12 @@
                     #else
                         $m['discount.number.unlimited']
                     #end
+                </td>
+                <td>
+                    $!discount.lateDiscount
+                </td>
+                <td>
+                    $discountHelper.getNumberOfUses($discount)
                 </td>
             </tr>
         #end
@@ -41,6 +49,10 @@
         <input type="checkbox" name="discount.unlimited"
                onchange="document.getElementById('discount.numberOfUses').disabled = this.checked" value="Unlimited">
             $m['discount.number.unlimited']</input>
+
+        <label>$m['discount.late_discount']</label>
+        <input type="text" name="discount.lateDiscount" id="discount.lateDiscount"/>
+        #err('discount.lateDiscount')
 
         <input type="submit" value="$m['discount.add']"/>
     </form>

@@ -11,6 +11,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import pl.softwaremill.asamal.example.logic.admin.DiscountService;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.BaseEntity;
 import pl.softwaremill.asamal.example.model.conf.Conf;
@@ -55,6 +56,7 @@ public class TicketsTest {
                 .addPackage(TicketOptionService.class.getPackage())
                 .addClasses(ConfigurationBean.class, ConfigurationService.class, ConfigurationProperty.class, Conf.class)
                 .addPackage(ViewUsers.class.getPackage())
+                .addClass(DiscountService.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(EmptyAsset.INSTANCE, "messages.properties")
                 .addAsManifestResource("test-persistence.xml", "persistence.xml");

@@ -11,6 +11,7 @@ import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.controller.annotation.RequestParameter;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
+import pl.softwaremill.asamal.example.logic.admin.DiscountService;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Discount;
@@ -46,6 +47,9 @@ public class Admin extends ControllerBean {
 
     @Inject
     private TicketService ticketService;
+
+    @Inject
+    private DiscountService discountService;
 
     @Inject
     private ConfigurationBean configurationBean;
@@ -139,7 +143,8 @@ public class Admin extends ControllerBean {
 
     @Post
     public void addDiscount() {
-        doOptionalAutoBinding("discount.discountCode", "discount.discountAmount", "discount.numberOfUses");
+        doOptionalAutoBinding("discount.discountCode", "discount.discountAmount", "discount.numberOfUses",
+                "discount.lateDiscount");
 
         if ("Unlimited".equals(getParameter("discount.unlimited"))) {
             discount.setNumberOfUses(-1);
@@ -148,7 +153,7 @@ public class Admin extends ControllerBean {
         boolean beanOk = validateBean("discount", discount);
 
         if (beanOk) {
-            ticketService.addDiscount(discount);
+            discountService.addDiscount(discount);
 
             addMessageToFlash("Discount added", AsamalContext.MessageSeverity.SUCCESS);
 
@@ -328,7 +333,7 @@ public class Admin extends ControllerBean {
 
 
     public List<Discount> getDiscounts() {
-        return ticketService.getDiscounts();
+        return discountService.getDiscounts();
     }
 
     public Discount getDiscount() {
