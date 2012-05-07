@@ -165,7 +165,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
+                    <filters>
+                        <filter>filters/dev.properties</filter>
+                    </filters>
                     <webappDirectory>target/war/asamal-example.war</webappDirectory>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>

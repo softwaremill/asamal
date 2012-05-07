@@ -14,7 +14,6 @@ import pl.softwaremill.asamal.example.service.hash.StringHasher;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.asamal.example.service.user.UserService;
 
-import javax.annotation.sql.DataSourceDefinition;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,12 +23,6 @@ import javax.servlet.annotation.WebListener;
 import java.util.Date;
 
 @WebListener
-@DataSourceDefinition(
-        name = "java:jboss/datasources/AsamalExampleDS",
-        url = "jdbc:mysql://localhost:3306/asamal-example?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8",
-        user = "root",
-        className = "com.mysql.jdbc.jdbc2.optional.MysqlDataSource"
-)
 public class DBPopulator implements ServletContextListener{
     
     @Inject
