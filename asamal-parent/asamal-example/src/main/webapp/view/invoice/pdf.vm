@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
-<body style="font-family: 'Cousine-Regular-Latin'; font-size: small;">
+<body style="font-family: 'Alegreya'; font-size: small;">
     <h2 style="text-align: center">$m.getFromBundle('invoice.title', $invoiceType)
         $m['invoice.title.number'] $!{proformaId}$conf.getProperty('INVOICE_ID')$invoice.id</h2>
     <div style="float: right;">

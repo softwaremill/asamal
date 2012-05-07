@@ -146,6 +146,18 @@ public class GetHandler extends AbstractHttpHandler {
                     BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             renderer.getFontResolver().addFont("fonts/Cousine-Regular-Latin.ttf",
                     BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Alegreya-Black.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Alegreya-BlackItalic.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Alegreya-Bold.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Alegreya-BoldItalic.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Alegreya-Italic.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Alegreya-Regular.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             renderer.setDocument(doc, null);
 
             ByteArrayOutputStream os = new ByteArrayOutputStream();
