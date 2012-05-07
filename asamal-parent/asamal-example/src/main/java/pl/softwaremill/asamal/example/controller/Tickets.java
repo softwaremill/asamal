@@ -360,7 +360,9 @@ public class Tickets extends ControllerBean implements Serializable {
     public String paypalButton() {
         PaypalButtonGenerator pbg = new PaypalButtonGenerator(configurationBean.getProperty(Conf.PAYPAL_EMAIL),
                 configurationBean.getBooleanProperty(Conf.PAYPAL_SANDBOX),
-                configurationBean.getProperty(Conf.INVOICE_CURRENCY)).withInvoiceNumber(String.valueOf(invoice.getId()));
+                configurationBean.getProperty(Conf.INVOICE_CURRENCY))
+                .withInvoiceNumber(String.valueOf(invoice.getId()))
+                .withNotifyUrl(configurationBean.getProperty(Conf.SYSTEM_URL) + "/paypal");
 
         InvoiceTotals invoiceTotals = invoiceTotalsCounter.countInvoice(invoice);
 

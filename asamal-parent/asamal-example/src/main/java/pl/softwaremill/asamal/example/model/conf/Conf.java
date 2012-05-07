@@ -65,7 +65,9 @@ public enum Conf {
             "$invoice_link\n" +
             "\n" +
             "--\n" +
-            "The Conference Team", TYPE.TEXT_AREA);
+            "The Conference Team", TYPE.TEXT_AREA),
+
+    SYSTEM_URL("fill-me-in-in-settings");
 
     enum TYPE {
         STRING,

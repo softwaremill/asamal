@@ -98,16 +98,7 @@ public class EmailService {
     }
 
     private String getInvoiceLink(Invoice invoice) {
-        String url = "";
-
-        url += (request.isSecure() ? "https://" : "http://");
-
-        url += request.getLocalName();
-
-        url += ((request.isSecure() && request.getLocalPort() != 443) ||
-                (!request.isSecure() && request.getLocalPort() != 80)) ? ":" + request.getLocalPort() : "";
-
-        return url + asamalHelper.pdf("invoice", "pdf") +
+        return configurationBean.getProperty(Conf.SYSTEM_URL) + asamalHelper.pdf("invoice", "pdf") +
                 "/" + invoice.getId();
     }
 }
