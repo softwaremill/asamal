@@ -130,7 +130,21 @@ public class GetHandler extends AbstractHttpHandler {
                             .getBytes("UTF-8")));
 
             ITextRenderer renderer = new ITextRenderer();
-            renderer.getFontResolver().addFont("/Library/Fonts/Microsoft/Lucida Sans Unicode.ttf",
+            renderer.getFontResolver().addFont("fonts/Pfennig.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/PfennigBold.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/PfennigBoldItalic.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/PfennigItalic.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Cousine-Bold-Latin.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Cousine-BoldItalic-Latin.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Cousine-Italic-Latin.ttf",
+                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            renderer.getFontResolver().addFont("fonts/Cousine-Regular-Latin.ttf",
                     BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             renderer.setDocument(doc, null);
 
