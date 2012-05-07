@@ -166,7 +166,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <filters>
-                        <filter>filters/dev.properties</filter>
+                        <filter>${project.basedir}/filters/dev.properties</filter>
                     </filters>
                     <webappDirectory>target/war/asamal-example.war</webappDirectory>
                     <webResources>
