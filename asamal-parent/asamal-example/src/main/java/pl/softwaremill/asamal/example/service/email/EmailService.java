@@ -6,7 +6,6 @@ import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
-import pl.softwaremill.asamal.helper.AsamalHelper;
 import pl.softwaremill.common.cdi.transaction.Transactional;
 import pl.softwaremill.common.sqs.email.SendEmailTask;
 import pl.softwaremill.common.sqs.util.EmailDescription;
@@ -14,7 +13,6 @@ import pl.softwaremill.common.sqs.util.EmailDescription;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
 import java.util.List;
 
@@ -25,12 +23,6 @@ public class EmailService {
 
     @Inject
     private LoginBean loginBean;
-
-    @Inject
-    private AsamalHelper asamalHelper;
-
-    @Inject
-    private HttpServletRequest request;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -98,7 +90,6 @@ public class EmailService {
     }
 
     private String getInvoiceLink(Invoice invoice) {
-        return configurationBean.getProperty(Conf.SYSTEM_URL) + asamalHelper.pdf("invoice", "pdf") +
-                "/" + invoice.getId();
+        return configurationBean.getProperty(Conf.SYSTEM_URL) + "/pdf/invoice/pdf/" + invoice.getId();
     }
 }
