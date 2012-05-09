@@ -11,3 +11,4 @@ USER:
     username: "tomek"
     password: "butter"
     admin: 0
+    pass_reset: 0
