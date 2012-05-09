@@ -63,7 +63,7 @@ public abstract class ControllerBean {
         return name;
     }
 
-    protected void putInContext(String key, Object value) {
+    public void putInContext(String key, Object value) {
         params.put(key, value);
     }
 
@@ -75,15 +75,15 @@ public abstract class ControllerBean {
         params.clear();
     }
 
-    protected void doAutoBinding(String... parameterNames) {
+    public void doAutoBinding(String... parameterNames) {
         doAutoBinding(false, parameterNames);
     }
 
-    protected void doOptionalAutoBinding(String... parameterNames) {
+    public void doOptionalAutoBinding(String... parameterNames) {
         doAutoBinding(true, parameterNames);
     }
 
-    protected void doAutoBinding(boolean optionalParams, String... parameterNames) {
+    public void doAutoBinding(boolean optionalParams, String... parameterNames) {
         for (String parameterName : parameterNames) {
             if (!getParameterNames().contains(parameterName)) {
                 if (!optionalParams) {
