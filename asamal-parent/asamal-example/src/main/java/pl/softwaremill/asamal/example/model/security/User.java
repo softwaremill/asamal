@@ -30,6 +30,9 @@ public class User extends BaseEntity {
     @Column(name = "admin", nullable = false)
     private boolean admin = false;
 
+    @Column(name = "pass_reset", nullable = false)
+    private Boolean passReset = false;
+
     @OneToMany(mappedBy = "user")
     private Set<Invoice> invoices;
 
@@ -64,6 +67,14 @@ public class User extends BaseEntity {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public Boolean getPassReset() {
+        return passReset;
+    }
+
+    public void setPassReset(Boolean passReset) {
+        this.passReset = passReset;
     }
 
     @Override

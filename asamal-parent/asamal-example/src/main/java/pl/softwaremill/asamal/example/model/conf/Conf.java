@@ -56,6 +56,17 @@ public enum Conf {
                                    "--\n" +
                                    "The Conference Team", TYPE.TEXT_AREA),
 
+    PASSWORD_FORGOT_SUBJECT("Your new password"),
+
+    PASSWORD_FORGOT_EMAIL("Dear User,\n" +
+            "\n" +
+            "Your password has been reset. Your new password is $new_password .\n" +
+            "\n" +
+            "System will ask you to reset your password once you login.\n" +
+            "\n" +
+            "--\n" +
+            "The Conference Team", TYPE.TEXT_AREA),
+
     INVOICE_EMAIL_SUBJECT("Invoice for Conference"),
 
     INVOICE_EMAIL("Dear $name,\n" +

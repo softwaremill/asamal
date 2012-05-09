@@ -10,6 +10,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import java.io.Serializable;
+import java.util.Random;
 
 /**
  * Everything about Users
@@ -55,5 +56,41 @@ public class UserService implements Serializable {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public String resetPassword(String login) {
+        User user = loadUser(login);
+
+        if (user == null) {
+            return null;
+        }
+
+        String newPass = generateNewPassword(9);
+
+        user.setPassword(stringHasher.encode(newPass));
+        user.setPassReset(true);
+
+        entityManager.merge(user);
+
+        return newPass;
+    }
+
+    private String generateNewPassword(int length) {
+        StringBuffer sb = new StringBuffer();
+
+        Random r = new Random();
+
+        for (int i = 0; i < length; i++) {
+            sb.append((char)(97 + r.nextInt(25)));
+        }
+
+        return sb.toString();
+    }
+
+    public User changePassword(User user, String password) {
+        user.setPassword(stringHasher.encode(password));
+        user.setPassReset(false);
+
+        return entityManager.merge(user);
     }
 }

@@ -11,4 +11,6 @@
         <input type="password" name="password" value=""/>
         <input type="submit" value="Login"/>
     </form>
+
+    <a href="$a.link('login', 'forgot')">$m['login.forgot']</a>
 #end

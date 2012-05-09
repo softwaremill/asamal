@@ -43,4 +43,12 @@ public class LoginBean implements Serializable {
     public void logout() {
         user = null;
     }
+
+    public String resetPassword(String login) {
+        return userService.resetPassword(login);
+    }
+
+    public void changePassword(String password) {
+        user = userService.changePassword(user, password);
+    }
 }

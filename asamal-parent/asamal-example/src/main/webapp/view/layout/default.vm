@@ -127,14 +127,22 @@
                     #end
                 </ul>
 
-                <p class="navbar-text pull-right">
+                <ul class="nav pull-right">
                     #if($login.loggedIn)
-                        Logged in as $login.user.username
-                        <a href="$a.link('login', 'logout')">Logout</a>
+                    <li class="dropdown #if($c.name == 'login')active #end">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Logged in as $login.user.username
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="$a.link('login', 'logout')">Logout</a></li>
+                            <li><a href="$a.link('login', 'changePassword')">Change Password</a></li>
+                        </ul>
+                    </li>
                     #else
-                        <a href="$a.link('login', 'login')">Log in</a>
+                        <li><a href="$a.link('login', 'login')">Log in</a></li>
                     #end
-                </p>
+                </ul>
             </div>
             <!--/.nav-collapse -->
         </div>

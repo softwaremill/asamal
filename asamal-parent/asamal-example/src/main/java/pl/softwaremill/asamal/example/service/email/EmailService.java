@@ -92,4 +92,18 @@ public class EmailService {
     private String getInvoiceLink(Invoice invoice) {
         return configurationBean.getProperty(Conf.SYSTEM_URL) + "/pdf/invoice/pdf/" + invoice.getId();
     }
+
+    public void sendForgotEmail(String email, String newPassword) {
+        VelocityContext context = new VelocityContext();
+
+        context.put("new_password", newPassword);
+
+        String emailTemplate = configurationBean.getProperty(Conf.PASSWORD_FORGOT_EMAIL);
+
+        StringWriter sw = new StringWriter();
+        Velocity.evaluate(context, sw, "emailTransferReceived", emailTemplate);
+
+        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(email,
+                sw.toString(), configurationBean.getProperty(Conf.PASSWORD_FORGOT_SUBJECT))));
+    }
 }
