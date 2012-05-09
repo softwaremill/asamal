@@ -11,8 +11,4 @@
         <input type="password" name="password" value=""/>
         <input type="submit" value="Login"/>
     </form>
-
-    <h3>$m['no.account.register']</h3>
-
-    #renderPartial('register')
 #end

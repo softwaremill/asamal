@@ -13,8 +13,6 @@ import javax.inject.Inject;
  */
 public class AuthorizationFilter implements AsamalFilter {
 
-    public static final String PREVIOUS_URI = "security.previous.uri";
-
     private AsamalContext context;
 
     private LoginBean loginBean;
@@ -27,8 +25,7 @@ public class AuthorizationFilter implements AsamalFilter {
 
     public void doFilter() {
         if (!loginBean.isLoggedIn()) {
-            context.addObjectToFlash(PREVIOUS_URI, context.getCurrentLink());
-            context.redirect("login", "login", null);
+            context.redirect("tickets", "buy", null);
         }
     }
 }

@@ -11,10 +11,12 @@ import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.admin.DiscountService;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
+import pl.softwaremill.asamal.example.logic.auth.RegisterBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotal;
 import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotals;
 import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotalsCounter;
+import pl.softwaremill.asamal.example.logic.utils.TicketBinder;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Discount;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
@@ -22,10 +24,7 @@ import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
-import pl.softwaremill.asamal.example.model.ticket.TicketOption;
-import pl.softwaremill.asamal.example.model.ticket.TicketOptionDefinition;
 import pl.softwaremill.asamal.example.service.email.EmailService;
-import pl.softwaremill.asamal.example.service.ticket.TicketOptionService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.cdi.transaction.Transactional;
 import pl.softwaremill.common.paypal.button.PaypalButtonGenerator;
@@ -33,13 +32,10 @@ import pl.softwaremill.common.paypal.button.PaypalButtonGenerator;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,11 +44,9 @@ import java.util.Set;
  * User: szimano
  */
 @Controller("tickets")
-@Filters(AuthorizationFilter.class)
 public class Tickets extends ControllerBean implements Serializable {
 
     private final static Integer maxTickets = 5;
-    private static final String NUMBER_OF_TICKETS_PREFIX = "numberOfTickets-";
 
     @Inject
     private TicketService ticketService;
@@ -76,10 +70,13 @@ public class Tickets extends ControllerBean implements Serializable {
     private InvoiceTotalsCounter invoiceTotalsCounter;
 
     @Inject
-    private TicketOptionService optionService;
+    private TicketBinder ticketBinder;
 
     @Inject
     private DiscountService discountService;
+
+    @Inject
+    private RegisterBean registerBean;
 
     @Get
     public void buy() {
@@ -88,16 +85,17 @@ public class Tickets extends ControllerBean implements Serializable {
 
     @Post
     public void changeNumber() {
-        bindTickets();
+        ticketBinder.bindTickets(this, getAvailableCategories(), invoice);
     }
 
-    @Post
+    @Post(skipViewHash = true)
     @Transactional
     public void doBuy() {
-        System.out.println("param names = " + getParameterNames());
-        bindTickets();
+        ticketBinder.bindTickets(this, getAvailableCategories(), invoice);
 
-        boolean allGood = validateBean("invoice", invoice);
+        boolean allGood = validateBean("invoice", invoice) &&
+                // if not logged in, try creating the user first
+                (loginBean.isLoggedIn() || registerBean.registerUser(this));
 
         String discountCode = getParameter("invoice.discount");
         Discount discount = null;
@@ -232,6 +230,7 @@ public class Tickets extends ControllerBean implements Serializable {
     }
 
     @Get(params = "/id")
+    @Filters(AuthorizationFilter.class)
     public void edit(@PathParameter("id") Long invoiceId) {
         invoice = ticketService.loadInvoice(invoiceId);
 
@@ -251,6 +250,7 @@ public class Tickets extends ControllerBean implements Serializable {
     }
 
     @Post(params = "/id")
+    @Filters(AuthorizationFilter.class)
     public void doUpdate(@PathParameter("id") Long invoiceId) {
         invoice = ticketService.loadInvoice(invoiceId);
 
@@ -258,7 +258,7 @@ public class Tickets extends ControllerBean implements Serializable {
             throw new RuntimeException("You are trying to edit an invoice that does not belong to you!");
         }
 
-        bindInvoiceDetails();
+        ticketBinder.bindInvoiceDetails(this);
 
         invoice.setMethod(PaymentMethod.valueOf(getParameter("paymentMethod").toUpperCase()));
 
@@ -275,80 +275,9 @@ public class Tickets extends ControllerBean implements Serializable {
         }
     }
 
-    private void bindInvoiceDetails() {
-        // bind invoice
-        doOptionalAutoBinding("invoice.name", "invoice.companyName", "invoice.vat",
-                "invoice.address", "invoice.postalCode", "invoice.city", "invoice.country");
-    }
-
-    private void bindTickets() {
-        // initiate first
-
-        ticketsByCategory = new Ticket[getAvailableCategories().size()][];
-        ArrayList<String> paramNames = new ArrayList<String>();
-
-        List<TicketOptionDefinition> optionDefinitions = optionService.getAllOptionDefinitions();
-
-        for (int i = 0; i < getAvailableCategories().size(); i++) {
-            int numberOfAttendees = Integer.parseInt(
-                    getParameter(NUMBER_OF_TICKETS_PREFIX + getAvailableCategories().get(i).getIdName())
-            );
-
-            if (numberOfAttendees > 0) {
-                ticketsByCategory[i] = new Ticket[numberOfAttendees];
-                for (int j = 0; j < numberOfAttendees; j++) {
-                    ticketsByCategory[i][j] = new Ticket();
-                    ticketsByCategory[i][j].setTicketCategory(getAvailableCategories().get(i));
-                    ticketsByCategory[i][j].setInvoice(invoice);
-
-                    String attendeePrefix = "ticketsByCategory[" + i + "][" + j + "]";
-                    paramNames.add(attendeePrefix + ".firstName");
-                    paramNames.add(attendeePrefix + ".lastName");
-
-                    List<TicketOption> options = new ArrayList<TicketOption>();
-                    for (int k = 0; k < optionDefinitions.size(); k++) {
-                        TicketOptionDefinition optionDefinition = optionDefinitions.get(k);
-
-                        TicketOption ticketOption = new TicketOption(optionDefinition, ticketsByCategory[i][j]);
-                        ticketOption.setValue(getParameter("ticketOption["+i+"]["+j+"]["+k+"]"));
-                        System.out.println("Option ticketOption["+i+"]["+j+"]["+k+"] value: "+getParameter("ticketOption["+i+"]["+j+"]["+k+"]"));
-                        options.add(ticketOption);
-                    }
-
-                    ticketsByCategory[i][j].setOptions(options);
-                }
-            } else {
-                ticketsByCategory[i] = null;
-            }
-        }
-
-        // bind attendees
-        doOptionalAutoBinding(paramNames.toArray(new String[paramNames.size()]));
-
-        bindInvoiceDetails();
-
-        // count toBePaid
-        Integer toBePaid = 0;
-
-        for (int i = 0; i < getAvailableCategories().size(); i++) {
-            toBePaid += getAvailableCategories().get(i).getPrice() * (ticketsByCategory[i] == null ? 0 :
-                    ticketsByCategory[i].length);
-        }
-
-        putInContext("toBePaid", toBePaid);
-
-        Map<String, Integer> toBuy = new HashMap<String, Integer>();
-
-        for (String paramName : getParameterNames()) {
-            if (paramName.startsWith(NUMBER_OF_TICKETS_PREFIX)) {
-                toBuy.put(paramName.substring(NUMBER_OF_TICKETS_PREFIX.length()),
-                        new Integer(getParameter(paramName)));
-            }
-        }
-        putInContext("ticketsToBuy", toBuy);
-    }
 
     @Get(params = "/id")
+    @Filters(AuthorizationFilter.class)
     public void pay(@PathParameter("id") Long invoiceId) {
         invoice = ticketService.loadInvoice(invoiceId);
 

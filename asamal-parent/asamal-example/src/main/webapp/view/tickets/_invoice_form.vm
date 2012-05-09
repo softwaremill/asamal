@@ -1,3 +1,23 @@
+#if($login.loggedIn == false)
+    <!-- register form if user not logged in -->
+    <label>$m['register.enter.email']</label>
+    <input type="text" name="user.username" value="$!username"/>
+    #err('user.username')
+    <label>$m['register.enter.password']</label>
+    <input type="password" name="password" value=""/>
+    #err('user.password')
+    <label>$m['register.enter.password2']</label>
+    <input type="password" name="password2" value=""/>
+
+    <span>
+        $m['register.already.loginfirst']
+
+        <a href="$a.link('login','login')">
+            <button class="btn">$m['register.button.login']</button>
+        </a>
+    </span>
+#end
+
 <label>$m['tickets.buy.name']</label>
 <input type="text" name="invoice.name" value="$!c.invoice.name"/>
 #err('invoice.name')

@@ -9,7 +9,6 @@ import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.model.ticket.TicketOptionType;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
-import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.example.service.hash.StringHasher;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.asamal.example.service.user.UserService;
@@ -23,28 +22,28 @@ import javax.servlet.annotation.WebListener;
 import java.util.Date;
 
 @WebListener
-public class DBPopulator implements ServletContextListener{
-    
+public class DBPopulator implements ServletContextListener {
+
     @Inject
     private UserService userService;
-    
+
     @Inject
     private TicketService ticketService;
 
     @Inject
     private StringHasher stringHasher;
-    
+
     @Inject
     private ConfigurationService configurationService;
 
     @PersistenceContext
     private EntityManager entityManager;
-    
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 
         updateConfigurations();
-        
+
         if (entityManager.createQuery("select u from User u").getResultList().size() == 0) {
             populateDB();
         }
@@ -64,20 +63,21 @@ public class DBPopulator implements ServletContextListener{
                 configurationService.saveProperty(conf, conf.defaultValue);
             }
         }
-        
+
     }
 
     private void populateDB() {
-        // create users
-        userService.createNewUser(new User("szimano@szimano.org", stringHasher.encode("szimano"), true));
-
-        // create main tickets
         try {
+            // create users
+            userService.createNewUser(new User("szimano@szimano.org", stringHasher.encode("szimano"), true));
+
+            // create main tickets
+
             ticketService.addTicketCategory(
                     new TicketCategory(new Date(),
                             new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), 50, "Early Birds",
                             "Early Birds", 300, "Early Birds Tickets"));
-        } catch (TicketsExceededException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
