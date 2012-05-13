@@ -5,6 +5,6 @@
 <label>Type</label>
 <select name="option.type">
     #foreach($type in $options.types)
-        <option value="$type" label="$type" #if($type == $option.type)selected#end/>
+        <option value="$type" #if($type == $option.type)selected#end>$type</option>
     #end
 </select>

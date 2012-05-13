@@ -28,9 +28,10 @@
                                 <select id="numberOfTickets-$ticketCat.idName"
                                         onchange="ajaxPost('tickets', 'changeNumber', 'ticketForm', 'tickets-form')"
                                         name="numberOfTickets-$ticketCat.idName">
-                                    <option label="-" value="0"/>
+                                    <option value="0">-</option>
                                     #foreach( $i in [1..$c.getMaxTickets($ticketCat)] )
-                                    <option label="$i" value="$i" #if($i == $ticketsToBuy[$ticketCat.idName])selected #end/>
+                                        <option value="$i" #if($i == $ticketsToBuy[$ticketCat.idName])selected #end
+                                            >$i</option>
                                     #end
                                 </select>
 
@@ -48,7 +49,8 @@
                             #end
 
                             <h3>
-                                $m['tickets.totalAmount']: $toBePaid PLN
+                                #set($vat = $math.mul($toBePaid, $math.div($conf.getAsInt('INVOICE_VAT_RATE'), 100)))
+                                $m['tickets.totalAmount']: $toBePaid + $vat VAT = $math.add($toBePaid, $vat) $conf.getProperty('INVOICE_CURRENCY')
                             </h3>
                         </div>
                     </div>

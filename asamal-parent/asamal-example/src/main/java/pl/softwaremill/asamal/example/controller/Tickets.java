@@ -3,11 +3,7 @@ package pl.softwaremill.asamal.example.controller;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.PageParameters;
-import pl.softwaremill.asamal.controller.annotation.Controller;
-import pl.softwaremill.asamal.controller.annotation.Filters;
-import pl.softwaremill.asamal.controller.annotation.Get;
-import pl.softwaremill.asamal.controller.annotation.PathParameter;
-import pl.softwaremill.asamal.controller.annotation.Post;
+import pl.softwaremill.asamal.controller.annotation.*;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.admin.DiscountService;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
@@ -18,12 +14,7 @@ import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotals;
 import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotalsCounter;
 import pl.softwaremill.asamal.example.logic.utils.TicketBinder;
 import pl.softwaremill.asamal.example.model.conf.Conf;
-import pl.softwaremill.asamal.example.model.ticket.Discount;
-import pl.softwaremill.asamal.example.model.ticket.Invoice;
-import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
-import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
-import pl.softwaremill.asamal.example.model.ticket.Ticket;
-import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.model.ticket.*;
 import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.cdi.transaction.Transactional;
@@ -32,11 +23,7 @@ import pl.softwaremill.common.paypal.button.PaypalButtonGenerator;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Tickets controller
@@ -92,6 +79,8 @@ public class Tickets extends ControllerBean implements Serializable {
     @Transactional
     public void doBuy() {
         ticketBinder.bindTickets(this, getAvailableCategories(), invoice);
+
+        putInContext("username", getParameter("user.username"));
 
         boolean allGood = validateBean("invoice", invoice) &&
                 // if not logged in, try creating the user first

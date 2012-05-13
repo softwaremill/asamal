@@ -32,8 +32,6 @@ public class RegisterBean {
 
         user.setUsername(login);
 
-        bean.putInContext("username", login);
-
         String password = bean.getParameter("password");
         if (password.equals(bean.getParameter("password2"))) {
             user.setPassword(password);

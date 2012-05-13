@@ -40,11 +40,11 @@
 <select name="invoice.country">
     <option label="-" value=""/>
     #foreach($country in $countries.countries)
-        <option label="$country.name" value="$country.name"
+        <option value="$country.name"
             #if($country.name == $c.invoice.country)
                 selected="selected"
             #end
-                />
+                >$country.name</option>
     #end
 </select>
 #err('invoice.country')

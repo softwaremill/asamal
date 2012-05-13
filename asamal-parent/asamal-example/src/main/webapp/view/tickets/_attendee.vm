@@ -16,10 +16,11 @@
         <label>$ticketOption.optionDefinition.label</label>
         #if($ticketOption.optionDefinition.type == 'DROPDOWN')
             <select name="ticketOption[$catNo][$ticketNo][$optionNo]">
-                <option label="-" />
+                <option>-</option>
                 #foreach($optionLabel in $options.dropdownValues($ticketOption.optionDefinition.config))
-                    <option label="$optionLabel" value="$optionLabel"
-                            #if($optionLabel == $c.ticketsByCategory[$catNo][$ticketNo].options.get($optionNo).value)selected#end/>
+                    <option value="$optionLabel"
+                            #if($optionLabel == $c.ticketsByCategory[$catNo][$ticketNo].options.get($optionNo).value)selected#end
+                            >$optionLabel</option>
                 #end
             </select>
         #elseif($ticketOption.optionDefinition.type == 'FREETEXT')
