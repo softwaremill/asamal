@@ -37,7 +37,7 @@
 
                                 <hr/>
 
-                                #if($ticketsToBuy[$ticketCat.idName] > 0)
+                                #if($ticketsToBuy && $ticketsToBuy[$ticketCat.idName] && $ticketsToBuy[$ticketCat.idName] > 0)
                                     #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])
                                         <h4>Attendee $i</h4>
 
@@ -50,7 +50,10 @@
 
                             <h3>
                                 #set($vat = $math.mul($toBePaid, $math.div($conf.getAsInt('INVOICE_VAT_RATE'), 100)))
-                                $m['tickets.totalAmount']: $toBePaid + $vat VAT = $math.add($toBePaid, $vat) $conf.getProperty('INVOICE_CURRENCY')
+                                $m['tickets.totalAmount']: $number.format('#0.00', $toBePaid) +
+                                    $number.format('#0.00', $vat) VAT =
+                                    $number.format('#0.00', $math.add($toBePaid, $vat))
+                                    $conf.getProperty('INVOICE_CURRENCY')
                             </h3>
                         </div>
                     </div>
