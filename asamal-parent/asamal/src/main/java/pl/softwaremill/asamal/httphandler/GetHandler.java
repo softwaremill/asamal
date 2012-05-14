@@ -104,7 +104,7 @@ public class GetHandler extends AbstractHttpHandler {
 
     @GET
     @Path("/asamal/{path:.*}")
-    public Object handleStaticCCDWebGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
+    public Object handleStaticAsamalWebGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                                         @PathParam("path") String path) {
         setHttpObjects(req, resp);
 

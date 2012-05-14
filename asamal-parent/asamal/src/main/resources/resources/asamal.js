@@ -39,7 +39,13 @@ function doAjaxPost(url, elementIds, reRenderList, viewHash) {
                 $("#"+id).empty().html(html);
             });
         })
-        .error(function(xhr, status, error) {console.log("An AJAX error occured: " + status + "\nError: " + error);});
+        .error(function(xhr, status, error) {
+                try {
+                    console.log("An AJAX error occured: " + status + "\nError: " + error);
+                } catch (e) {
+                    // console log not available, ignore
+                }
+            });
 
     return false;
 }

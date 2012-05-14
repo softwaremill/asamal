@@ -28,7 +28,8 @@ public class LayoutDirective extends Directive {
     }
 
     @Override
-    public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException,
+            ResourceNotFoundException, ParseErrorException, MethodInvocationException {
         Object value = node.jjtGetChild(0).value( context );
         String layoutName;
         if ( value != null )

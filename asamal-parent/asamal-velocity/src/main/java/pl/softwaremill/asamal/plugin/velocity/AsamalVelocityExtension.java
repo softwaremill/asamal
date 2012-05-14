@@ -3,6 +3,7 @@ package pl.softwaremill.asamal.plugin.velocity;
 import org.apache.velocity.app.Velocity;
 import pl.softwaremill.asamal.extension.AsamalExtension;
 import pl.softwaremill.asamal.extension.exception.ResourceNotFoundException;
+import pl.softwaremill.asamal.extension.view.ContextConstants;
 import pl.softwaremill.asamal.extension.view.PresentationContext;
 import pl.softwaremill.asamal.extension.view.PresentationExtension;
 import pl.softwaremill.asamal.extension.view.ResourceResolver;
@@ -17,8 +18,6 @@ import java.util.Properties;
  */
 @AsamalExtension
 public class AsamalVelocityExtension implements PresentationExtension {
-
-    private static final String LOG_TAG = "velocity";
 
     public final static String VELOCITY_EXTENSION = "vm";
 
@@ -51,7 +50,12 @@ public class AsamalVelocityExtension implements PresentationExtension {
         StringWriter w = new StringWriter();
         Velocity.setProperty("input.encoding", "UTF-8");
         Velocity.setProperty("output.encoding", "UTF-8");
-        Velocity.evaluate(velocityContext.getVelocityContext(), w, LOG_TAG, template);
+        String viewLink = context.get(ContextConstants.CONTROLLER_NAME).toString() +
+                "/" + context.get(ContextConstants.VIEW).toString() +
+                "." + getExtension();
+        Velocity.evaluate(velocityContext.getVelocityContext(), w,
+                viewLink,
+                template);
 
         String layout;
         while ((layout = (String) context.get(LayoutDirective.LAYOUT)) != null) {
@@ -64,7 +68,8 @@ public class AsamalVelocityExtension implements PresentationExtension {
             } catch (ResourceNotFoundException e) {
                 throw new RuntimeException("Cannot find layout: " + layout);
             }
-            Velocity.evaluate(velocityContext.getVelocityContext(), w, LOG_TAG, template);
+            Velocity.evaluate(velocityContext.getVelocityContext(), w, "[layout{"+layout+"}view{"+viewLink+"}]",
+                    template);
         }
 
         return w.toString();
