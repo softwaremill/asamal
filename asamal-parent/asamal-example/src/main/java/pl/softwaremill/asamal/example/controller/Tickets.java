@@ -1,9 +1,16 @@
 package pl.softwaremill.asamal.example.controller;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.PageParameters;
-import pl.softwaremill.asamal.controller.annotation.*;
+import pl.softwaremill.asamal.controller.annotation.Controller;
+import pl.softwaremill.asamal.controller.annotation.Filters;
+import pl.softwaremill.asamal.controller.annotation.Get;
+import pl.softwaremill.asamal.controller.annotation.PathParameter;
+import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.admin.DiscountService;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
@@ -14,7 +21,12 @@ import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotals;
 import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotalsCounter;
 import pl.softwaremill.asamal.example.logic.utils.TicketBinder;
 import pl.softwaremill.asamal.example.model.conf.Conf;
-import pl.softwaremill.asamal.example.model.ticket.*;
+import pl.softwaremill.asamal.example.model.ticket.Discount;
+import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
+import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
+import pl.softwaremill.asamal.example.model.ticket.Ticket;
+import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.cdi.transaction.Transactional;
@@ -22,8 +34,13 @@ import pl.softwaremill.common.paypal.button.PaypalButtonGenerator;
 
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Tickets controller
@@ -34,6 +51,8 @@ import java.util.*;
 public class Tickets extends ControllerBean implements Serializable {
 
     private final static Integer maxTickets = 5;
+
+    private final static Logger log = LoggerFactory.getLogger(Tickets.class);
 
     @Inject
     private TicketService ticketService;
@@ -68,6 +87,38 @@ public class Tickets extends ControllerBean implements Serializable {
     @Get
     public void buy() {
         putInContext("toBePaid", 0);
+
+        if (loginBean.isLoggedIn()) {
+            // check if the user didn't have any invoices yet, so we can prefill has invoice data
+            List<Invoice> invoices = ticketService.getInvoicesForUser(loginBean.getUser());
+
+            if (!invoices.isEmpty()) {
+                try {
+                    invoice = (Invoice) BeanUtils.cloneBean(invoices.get(0));
+
+                    // clear the per-invoice specific data
+                    invoice.getTickets().clear();
+                    invoice.setStatus(null);
+                    invoice.setMethod(null);
+                    invoice.setEditable(true);
+                    invoice.setDiscount(null);
+                    invoice.setDueDate(null);
+                    invoice.setDateCreated(null);
+                    invoice.setDatePaid(null);
+                } catch (IllegalAccessException e) {
+                    // something went wrong, log but ignore - we still want user to buy the ticket,
+                    // just show him empty one
+
+                    log.warn("Got error when trying to clone user's invoice", e);
+                } catch (InstantiationException e) {
+                    log.warn("Got error when trying to clone user's invoice", e);
+                } catch (InvocationTargetException e) {
+                    log.warn("Got error when trying to clone user's invoice", e);
+                } catch (NoSuchMethodException e) {
+                    log.warn("Got error when trying to clone user's invoice", e);
+                }
+            }
+        }
     }
 
     @Post
