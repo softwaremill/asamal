@@ -140,6 +140,7 @@ public class PostHandler extends AbstractHttpHandler {
             Elements elements = document.select("#" + id);
 
             pageMap.put(id, elements.html());
+            System.out.println("RERENDER ("+id+") = \n"+elements.html());
         }
 
         return pageMap;

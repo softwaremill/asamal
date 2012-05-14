@@ -23,8 +23,8 @@ public class UTF8HttpFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
 
-        request.setCharacterEncoding("UTF8");
-        response.setCharacterEncoding("UTF8");
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
         chain.doFilter(request, response);
     }

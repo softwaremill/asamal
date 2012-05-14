@@ -16,7 +16,7 @@
         <label>$ticketOption.optionDefinition.label</label>
         #if($ticketOption.optionDefinition.type == 'DROPDOWN')
             <select name="ticketOption[$catNo][$ticketNo][$optionNo]">
-                <option>-</option>
+                <option value="">-</option>
                 #foreach($optionLabel in $options.dropdownValues($ticketOption.optionDefinition.config))
                     <option value="$optionLabel"
                             #if($optionLabel == $c.ticketsByCategory[$catNo][$ticketNo].options.get($optionNo).value)selected#end

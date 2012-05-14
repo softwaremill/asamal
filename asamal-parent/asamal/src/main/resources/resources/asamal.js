@@ -36,9 +36,10 @@ function doAjaxPost(url, elementIds, reRenderList, viewHash) {
     $.post(url, input.substring(1),
         function(page){
             $.each(page, function(id, html){
-                $("#"+id).html(html);
+                $("#"+id).empty().html(html);
             });
-        }, "json");
+        })
+        .error(function(xhr, status, error) {console.log("An AJAX error occured: " + status + "\nError: " + error);});
 
     return false;
 }
