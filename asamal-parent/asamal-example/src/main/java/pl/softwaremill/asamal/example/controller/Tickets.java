@@ -300,7 +300,9 @@ public class Tickets extends ControllerBean implements Serializable {
 
         ticketBinder.bindInvoiceDetails(this);
 
-        invoice.setMethod(PaymentMethod.valueOf(getParameter("paymentMethod").toUpperCase()));
+        if (invoice.getStatus() != InvoiceStatus.PAID) {
+            invoice.setMethod(PaymentMethod.valueOf(getParameter("paymentMethod").toUpperCase()));
+        }
 
         if (validateBean("invoice", invoice)) {
             ticketService.updateInvoice(invoice);
