@@ -15,17 +15,17 @@
                 <th>
                     #if($invoice.editable)
                         <a href="$a.link('tickets', 'edit')/$invoice.id">
-                            <button class="btn">$m['home.ticket.edit']</button>
+                            <span class="label label-info">$m['home.ticket.edit']</span>
                         </a>
                     #end
 
                     #if($invoice.status == 'UNPAID')
                         <a href="$a.link('tickets', 'pay')/$invoice.id">
-                            <button class="btn">$m['home.ticket.pay']</button>
+                            <span class="label label-info">$m['home.ticket.pay']</span>
                         </a>
                     #end
                     <a href="$a.pdf('invoice', 'pdf')/$invoice.id/${c.getInvoiceId($invoice)}.pdf">
-                        <button class="btn">$m['home.ticket.invoice']</button>
+                        <span class="label label-info">$m['home.ticket.invoice']</span>
                     </a>
                 </th>
             </tr>

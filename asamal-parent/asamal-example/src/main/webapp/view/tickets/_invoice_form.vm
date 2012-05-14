@@ -13,7 +13,7 @@
         $m['register.already.loginfirst']
 
         <a href="$a.link('login','login')">
-            <button class="btn">$m['register.button.login']</button>
+            $m['register.button.login']
         </a>
     </span>
 #end
