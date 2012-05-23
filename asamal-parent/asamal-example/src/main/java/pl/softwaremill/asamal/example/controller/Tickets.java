@@ -333,8 +333,11 @@ public class Tickets extends ControllerBean implements Serializable {
     public String paypalButton() {
         String systemUrl = configurationBean.getProperty(Conf.SYSTEM_URL);
 
+        String goBackLink = systemUrl + "/home/index";
+
         PaypalButtonGenerator pbg = new PaypalButtonGenerator(configurationBean.getProperty(Conf.PAYPAL_EMAIL),
-                systemUrl + "/home/index",
+                goBackLink,
+                goBackLink,
                 configurationBean.getBooleanProperty(Conf.PAYPAL_SANDBOX),
                 configurationBean.getProperty(Conf.INVOICE_CURRENCY))
                 .withInvoiceNumber(String.valueOf(invoice.getId()))
