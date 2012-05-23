@@ -35,12 +35,12 @@ public class ElasticMQStarter implements ServletContextListener{
         server = SQSRestServerFactory.start(node.nativeClient(), 8855, new NodeAddress("http://localhost:8855"));
 
         // start email sending
-        emailSendingBean.startTimer(10000);
+//        emailSendingBean.startTimer(10000);
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        emailSendingBean.destroyTimer();
+//        emailSendingBean.destroyTimer();
         server.stop();
         node.shutdown();
     }
