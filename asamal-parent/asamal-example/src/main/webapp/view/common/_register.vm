@@ -1,0 +1,8 @@
+<label>$m['register.enter.email']</label>
+<input type="text" name="user.username" value="$!username"/>
+#err('user.username')
+<label>$m['register.enter.password']</label>
+<input type="password" name="password" value=""/>
+#err('user.password')
+<label>$m['register.enter.password2']</label>
+<input type="password" name="password2" value=""/>

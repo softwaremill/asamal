@@ -25,7 +25,7 @@ public class RegisterBean {
 
     private static final Logger log = LoggerFactory.getLogger(RegisterBean.class);
 
-    public boolean registerUser(ControllerBean bean) {
+    public User registerUser(ControllerBean bean) {
         User user = new User();
 
         String login = bean.getParameter("user.username");
@@ -51,7 +51,7 @@ public class RegisterBean {
                         // login the user
                         loginBean.doLogin(login, password);
 
-                        return true;
+                        return user;
                     } catch (UserExistsException e) {
                         log.error("User exists", e);
                         bean.addMessageToFlash("user.username",
@@ -65,6 +65,6 @@ public class RegisterBean {
                     bean.getFromMessageBundle("register.password.notmatch"), ERR);
         }
 
-        return false;
+        return null;
     }
 }

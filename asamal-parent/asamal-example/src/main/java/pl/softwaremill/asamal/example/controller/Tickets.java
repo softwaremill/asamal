@@ -137,7 +137,7 @@ public class Tickets extends ControllerBean implements Serializable {
 
         boolean allGood = validateBean("invoice", invoice) &&
                 // if not logged in, try creating the user first
-                (loginBean.isLoggedIn() || registerBean.registerUser(this));
+                (loginBean.isLoggedIn() || (registerBean.registerUser(this) != null));
 
         String discountCode = getParameter("invoice.discount");
         Discount discount = null;

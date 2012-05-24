@@ -50,7 +50,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>$pageTitle</title>
+    <title>$conf.getProperty('CONFERENCE_NAME')</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -87,7 +87,10 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="#">$conf.getProperty('CONFERENCE_NAME')</a>
+            <a class="brand" href="#">
+                <img height="30px" src="$conf.getProperty('CONFERENCE_LOGO')" alt="Logo"/>
+                $conf.getProperty('CONFERENCE_NAME')
+            </a>
 
             <div class="nav-collapse">
                 <ul class="nav">
@@ -122,6 +125,8 @@
                                     <a href="$a.link('stats', 'dashboard')">Stats</a></li>
                                 <li #if($c.name == 'admin' && $view == 'email')class="active"#end>
                                     <a href="$a.link('admin', 'email')">Group Email</a></li>
+                                <li #if($c.name == 'admin' && $view == 'registerAdmin')class="active"#end>
+                                    <a href="$a.link('admin', 'registerAdmin')">Register Admin User</a></li>
                             </ul>
                         </li>
                     #end

@@ -6,6 +6,8 @@ public enum Conf {
 
     CONFERENCE_NAME("Conference"),
 
+    CONFERENCE_LOGO(""),
+
     INVOICE_NAME(""),
     INVOICE_COMPANY("Foo (Pty) Ltd."),
     INVOICE_VAT("FB 123-456-789"),

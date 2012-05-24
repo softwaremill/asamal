@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import pl.softwaremill.asamal.controller.DownloadDescription;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
+import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.httphandler.GetHandler;
@@ -105,5 +106,11 @@ public class AdminService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public User makeUserAnAdmin(User user) {
+        user.setAdmin(true);
+
+        return entityManager.merge(user);
     }
 }

@@ -13,8 +13,10 @@ import pl.softwaremill.asamal.controller.annotation.RequestParameter;
 import pl.softwaremill.asamal.example.filters.ActiveFilter;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.admin.DiscountService;
+import pl.softwaremill.asamal.example.logic.auth.RegisterBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
+import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Discount;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
@@ -28,6 +30,7 @@ import pl.softwaremill.asamal.example.service.exception.TicketsExceededException
 import pl.softwaremill.asamal.example.service.ticket.TicketOptionService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.cdi.security.Secure;
+import pl.softwaremill.common.cdi.transaction.Transactional;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
@@ -60,6 +63,9 @@ public class Admin extends ControllerBean {
 
     @Inject
     private EmailService emailService;
+
+    @Inject
+    private RegisterBean registerBean;
 
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -351,4 +357,25 @@ public class Admin extends ControllerBean {
     public Discount getDiscount() {
         return discount;
     }
+
+    @Get
+    public void registerAdmin() { }
+
+    @Post
+    @Transactional
+    public void doRegisterAdmin() {
+        User user = registerBean.registerUser(this);
+
+        if (user == null) {
+            addMessageToFlash("Admin user creation failed", AsamalContext.MessageSeverity.ERR);
+        }
+        else {
+            adminService.makeUserAnAdmin(user);
+
+            addMessageToFlash("Admin user created", AsamalContext.MessageSeverity.SUCCESS);
+        }
+
+        redirect("registerAdmin");
+    }
+
 }
