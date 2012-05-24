@@ -87,7 +87,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="#">
+            <a class="brand" href="$a.link('home', 'index')">
                 <img height="30px" src="$conf.getProperty('CONFERENCE_LOGO')" alt="Logo"/>
                 $conf.getProperty('CONFERENCE_NAME')
             </a>
