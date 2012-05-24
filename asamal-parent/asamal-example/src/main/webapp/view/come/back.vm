@@ -1,0 +1,8 @@
+#layout('default')
+
+#region('content')
+
+    <h2>$m['welcome.notYet']</h2>
+
+    <div>$m['notYet.message']</div>
+#end

@@ -10,6 +10,7 @@ import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.controller.annotation.RequestParameter;
+import pl.softwaremill.asamal.example.filters.ActiveFilter;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.admin.DiscountService;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
@@ -37,7 +38,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller("admin")
-@Filters(AuthorizationFilter.class)
+@Filters({ActiveFilter.class, AuthorizationFilter.class})
 @Secure("#{login.admin}")
 public class Admin extends ControllerBean {
 

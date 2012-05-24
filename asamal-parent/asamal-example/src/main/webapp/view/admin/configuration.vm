@@ -10,7 +10,7 @@
             #if($c.key.bool)
                 <input type="checkbox" name="$c.key" #if($c.value == 'true')checked="true"#end/>
             #elseif ($c.key.string)
-                <input type="text" name="$c.key" value="$c.value"/>
+                <input type="text" name="$c.key" value="$esc.html($c.value)"/>
             #elseif ($c.key.textArea)
                 <textarea rows="10" cols="60" name="$c.key">$esc.html($c.value)</textarea>
             #end

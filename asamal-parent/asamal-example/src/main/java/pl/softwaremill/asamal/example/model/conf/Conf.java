@@ -2,6 +2,8 @@ package pl.softwaremill.asamal.example.model.conf;
 
 public enum Conf {
 
+    ACTIVE("false", TYPE.BOOLEAN),
+
     CONFERENCE_NAME("Conference"),
 
     INVOICE_NAME(""),

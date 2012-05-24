@@ -4,6 +4,7 @@ import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
+import pl.softwaremill.asamal.example.filters.ActiveFilter;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
@@ -20,7 +21,7 @@ import java.io.Serializable;
  * User: szimano
  */
 @Controller("home")
-@Filters(AuthorizationFilter.class)
+@Filters({ActiveFilter.class, AuthorizationFilter.class})
 public class Home extends ControllerBean implements Serializable {
 
     @Inject

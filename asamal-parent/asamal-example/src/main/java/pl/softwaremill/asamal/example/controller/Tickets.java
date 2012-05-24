@@ -11,6 +11,7 @@ import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
+import pl.softwaremill.asamal.example.filters.ActiveFilter;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.admin.DiscountService;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
@@ -48,6 +49,7 @@ import java.util.Set;
  * User: szimano
  */
 @Controller("tickets")
+@Filters({ActiveFilter.class})
 public class Tickets extends ControllerBean implements Serializable {
 
     private final static Integer maxTickets = 5;
@@ -237,7 +239,6 @@ public class Tickets extends ControllerBean implements Serializable {
             ticketService.addInvoice(invoice);
 
             // if the user had 100% discount, make the invoice paid
-            System.out.println("TOTAL: "+invoiceTotals.getTotalAmount());
             if (invoiceTotals.getTotalAmount().equals(new BigDecimal("0.00"))) {
                 invoice.setDatePaid(new Date());
                 invoice.setEditable(false);

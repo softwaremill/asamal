@@ -6,6 +6,7 @@ import pl.softwaremill.asamal.controller.annotation.Controller;
 import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.PathParameter;
+import pl.softwaremill.asamal.example.filters.ActiveFilter;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
@@ -17,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 @Controller("invoice")
-@Filters(AuthorizationFilter.class)
+@Filters({ActiveFilter.class, AuthorizationFilter.class})
 public class InvoiceController extends ControllerBean {
 
     @Inject
