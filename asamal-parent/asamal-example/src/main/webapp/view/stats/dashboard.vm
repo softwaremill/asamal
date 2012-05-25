@@ -30,7 +30,28 @@
         </tr>
     </table>
 
-    <h3>Total money earned: $total $conf.getProperty('INVOICE_CURRENCY')</h3>
+    <h3>Unpaid by category</h3>
+
+    #set($totalTickets = 0)
+
+    <table class="table table-striped">
+        <tr>
+            <th>Category Name</th>
+            <th>Total Booked And Unpaid</th>
+        </tr>
+        #foreach($category in $tickets.availableCategories)
+            <tr>
+                <td>$category.name</td>
+                #set($unpaidInCategory = $tickets.getNotPaidByCategory($category))
+                <td>$unpaidInCategory</td>
+                #set($totalTickets = $totalTickets + $unpaidInCategory)
+            </tr>
+        #end
+        <tr>
+            <td><strong>TOTAL</strong></td>
+            <td><strong>$totalTickets</strong></td>
+        </tr>
+    </table>
 
     <h3>Attendants</h3>
 
@@ -86,7 +107,7 @@
         }
 
         function next() {
-            if (currentPage < (totalTickets / 10 - 1)) {
+            if (currentPage < (totalTickets / 10)) {
                 currentPage++;
 
                 reloadTickets();

@@ -95,7 +95,7 @@ public class TicketService {
     }
 
     @Transactional
-    public Integer getSoldTicketsInCategory(TicketCategory ticketCategory) {
+    public Integer getNumberOfBookedTicketsInCategory(TicketCategory ticketCategory) {
         return ((Long) entityManager.createQuery(
                 "select count(t) from Ticket t where t.ticketCategory = :ticketCategory")
                 .setParameter("ticketCategory", ticketCategory)
@@ -151,6 +151,16 @@ public class TicketService {
                 "select count(t) from Ticket t " +
                         "where t.ticketCategory = :category and t.invoice.status = :status")
                 .setParameter("status", InvoiceStatus.PAID)
+                .setParameter("category", category)
+                .getSingleResult();
+    }
+
+    @Transactional
+    public Long getNotPaidByCategory(TicketCategory category) {
+        return (Long) entityManager.createQuery(
+                "select count(t) from Ticket t " +
+                        "where t.ticketCategory = :category and t.invoice.status = :status")
+                .setParameter("status", InvoiceStatus.UNPAID)
                 .setParameter("category", category)
                 .getSingleResult();
     }

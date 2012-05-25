@@ -139,6 +139,8 @@ public class Tickets extends ControllerBean implements Serializable {
                 // if not logged in, try creating the user first
                 (loginBean.isLoggedIn() || (registerBean.registerUser(this) != null));
 
+        boolean discountOk = true;
+
         String discountCode = getParameter("invoice.discount");
         Discount discount = null;
 
@@ -146,7 +148,7 @@ public class Tickets extends ControllerBean implements Serializable {
             discount = discountService.loadDiscount(discountCode);
 
             if (discount == null) {
-                allGood = false;
+                discountOk = false;
                 addMessageToFlash(getFromMessageBundle("discount.code.wrong"), AsamalContext.MessageSeverity.ERR);
             } else {
                 Integer numberOfTicketsOnDiscount = discountService.getNumberOfUses(discount);
@@ -154,7 +156,7 @@ public class Tickets extends ControllerBean implements Serializable {
 
                 if (discount.getNumberOfUses() > 0 &&
                         discount.getNumberOfUses() < (numberOfTicketsOnDiscount + totalTickets)) {
-                    allGood = false;
+                    discountOk = false;
 
                     if (discount.getNumberOfUses().equals(numberOfTicketsOnDiscount)) {
                         if (discountService.shouldShowLateDiscount(discount)) {
@@ -228,8 +230,11 @@ public class Tickets extends ControllerBean implements Serializable {
             addMessageToFlash(getFromMessageBundle("tickets.no.tickets"), AsamalContext.MessageSeverity.ERR);
         }
 
-        if (!allGood) {
-            addMessageToFlash(getFromMessageBundle("tickets.validation.errors"), AsamalContext.MessageSeverity.ERR);
+        if (!allGood || !discountOk) {
+            if (!allGood) {
+                addMessageToFlash(getFromMessageBundle("tickets.validation.errors"),
+                        AsamalContext.MessageSeverity.ERR);
+            }
 
             includeView("buy");
         } else {
@@ -365,7 +370,7 @@ public class Tickets extends ControllerBean implements Serializable {
     }
 
     public Integer getMaxTickets(TicketCategory category) {
-        Integer soldTickets = ticketService.getSoldTicketsInCategory(category);
+        Integer soldTickets = ticketService.getNumberOfBookedTicketsInCategory(category);
         Integer ticketsLeft = category.getNumberOfTickets() - soldTickets;
 
         return (ticketsLeft > maxTickets) ? maxTickets : ticketsLeft;
