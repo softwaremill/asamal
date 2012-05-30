@@ -2,58 +2,55 @@
 
 #region('content')
 
-    <table class="table">
-        <tr>
-            <th>$m['discount.code']</th>
-            <th>$m['discount.amount']</th>
-            <th>$m['discount.number']</th>
-            <th>$m['discount.late_discount_label']</th>
-            <th>$m['discount.used']</th>
-        </tr>
-        #foreach($discount in $c.discounts)
+    <div id="discounts">
+        <table class="table">
             <tr>
-                <td>$discount.discountCode</td>
-                <td>$discount.discountAmount</td>
-                <td>
-                    #if($discount.numberOfUses > 0)
-                        $discount.numberOfUses
-                    #else
-                        $m['discount.number.unlimited']
-                    #end
-                </td>
-                <td>
-                    $!discount.lateDiscount
-                </td>
-                <td>
-                    $discountHelper.getNumberOfUses($discount)
-                </td>
+                <th>$m['discount.code']</th>
+                <th>$m['discount.amount']</th>
+                <th>$m['discount.number']</th>
+                <th>$m['discount.late_discount_label']</th>
+                <th>$m['discount.used']</th>
+                <th>Actions</th>
             </tr>
-        #end
-    </table>
+            #foreach($discount in $c.discounts)
+                <tr>
+                    <td>$discount.discountCode</td>
+                    <td>$discount.discountAmount</td>
+                    <td>
+                        #if($discount.numberOfUses > 0)
+                            $discount.numberOfUses
+                        #else
+                            $m['discount.number.unlimited']
+                        #end
+                    </td>
+                    <td>
+                        $!discount.lateDiscount
+                    </td>
+                    <td>
+                        $discountHelper.getNumberOfUses($discount)
+                    </td>
+                    <td>
+                        <a href="$a.link('admin', 'editDiscount')/$discount.id">Edit</a>
 
-    <form action="$a.formAction('admin', 'addDiscount')" method="post"
-          class="form-horizontal">
+                        <form id="deleteDiscount$discount.id" accept-charset="UTF-8">
+                            <input type="hidden" value="$discount.id" name="id">
+                        </form>
 
-        <label>$m['discount.code']</label>
-        <input type="text" name="discount.discountCode"/>
-        #err('discount.discountCode')
+                        <a href="#"
+                           onclick="if (confirm('Are you sure to delete $discount.discountCode ?')) {ajaxPost('admin', 'deleteDiscount', 'deleteDiscount$discount.id', 'discounts')}">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            #end
+        </table>
 
-        <label>$m['discount.amount']</label>
-        <input type="text" name="discount.discountAmount"/>
-        #err('discount.discountAmount')
+        <form action="$a.formAction('admin', 'addDiscount')" method="post"
+              class="form-horizontal">
 
-        <label>$m['discount.number']</label>
-        <input type="text" name="discount.numberOfUses" id="discount.numberOfUses"/>
-        #err('discount.numberOfUses')
+            #renderPartial('discount_edit')
 
-        <input type="checkbox" name="discount.unlimited"
-               onchange="document.getElementById('discount.numberOfUses').disabled = this.checked" value="Unlimited">
-            $m['discount.number.unlimited']</input>
-
-        <label>$m['discount.late_discount']</label>
-        <input type="text" name="discount.lateDiscount" id="discount.lateDiscount"/>
-        #err('discount.lateDiscount')
-
-        <input type="submit" value="$m['discount.add']"/>
-    </form>
+            <input type="submit" value="$m['discount.add']"/>
+        </form>
+    </div>
 #end

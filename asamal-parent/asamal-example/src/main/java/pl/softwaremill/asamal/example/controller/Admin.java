@@ -41,7 +41,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller("admin")
-@Filters({ActiveFilter.class, AuthorizationFilter.class})
+@Filters(AuthorizationFilter.class)
 @Secure("#{login.admin}")
 public class Admin extends ControllerBean {
 
@@ -148,16 +148,20 @@ public class Admin extends ControllerBean {
     public void discounts() {
     }
 
-    @Post
-    public void addDiscount() {
+    private void bindDiscount() {
         doOptionalAutoBinding("discount.discountCode", "discount.discountAmount", "discount.numberOfUses",
                 "discount.lateDiscount");
 
         if ("Unlimited".equals(getParameter("discount.unlimited"))) {
             discount.setNumberOfUses(-1);
         }
+    }
 
-        boolean beanOk = validateBean("discount", discount);
+    @Post
+    public void addDiscount() {
+        bindDiscount();
+
+        boolean beanOk = validateDiscount();
 
         if (beanOk) {
             discountService.addDiscount(discount);
@@ -168,6 +172,49 @@ public class Admin extends ControllerBean {
         } else {
             includeView("discounts");
         }
+    }
+
+    @Get(params = "/id")
+    public void editDiscount(@PathParameter("id") Long id) {
+        discount = discountService.loadDiscount(id);
+
+        addObjectToFlash("discount", discount);
+    }
+
+    @Post
+    public void doEditDiscount() {
+        discount = (Discount) getObjectFromFlash("discount");
+
+        bindDiscount();
+
+        boolean beanOk = validateDiscount();
+
+        if (beanOk) {
+            discountService.mergeDiscount(discount);
+            addMessageToFlash("Discount updated", AsamalContext.MessageSeverity.SUCCESS);
+
+            redirect("discounts");
+        }
+        else {
+            addObjectToFlash("discount", discount);
+
+            includeView("editDiscount");
+        }
+    }
+
+    private boolean validateDiscount() {
+        boolean ok = validateBean("discount", discount);
+
+        if (discount.getLateDiscount() != null && !discount.getLateDiscount().isEmpty()) {
+           if (discountService.loadDiscount(discount.getLateDiscount()) == null) {
+               addMessageToFlash("You are trying to use non-existing late discount with code: "+
+                       discount.getLateDiscount(), AsamalContext.MessageSeverity.ERR);
+
+               ok = false;
+           }
+        }
+
+        return ok;
     }
 
     @Get
@@ -247,8 +294,14 @@ public class Admin extends ControllerBean {
     }
 
     @Post
-    public void deleteTicketCategory() {
-        ticketService.deleteTicketCategory(Long.valueOf(getParameter("id")));
+    public void deleteTicketCategory(@RequestParameter("id") String id) {
+        ticketService.deleteTicketCategory(Long.valueOf(id));
+    }
+
+    @Post
+    @Transactional
+    public void deleteDiscount(@RequestParameter("id") String id) {
+        discountService.deleteDiscount(Long.valueOf(id));
     }
 
     @Inject

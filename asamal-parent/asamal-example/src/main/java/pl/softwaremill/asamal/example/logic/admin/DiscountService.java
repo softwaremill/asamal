@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal.example.logic.admin;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Discount;
@@ -16,7 +18,6 @@ import java.util.List;
 
 @Named("discountHelper")
 @Transactional
-
 public class DiscountService {
 
     @PersistenceContext
@@ -24,6 +25,8 @@ public class DiscountService {
 
     @Inject
     private ConfigurationBean configurationBean;
+
+    private static Logger log = LoggerFactory.getLogger(DiscountService.class);
 
     public Integer getNumberOfUses(Discount discount) {
         return ((Long)entityManager.createQuery("select count(t) from Ticket t where t.invoice.discount = :discount")
@@ -63,5 +66,24 @@ public class DiscountService {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public void deleteDiscount(Long id) {
+        Discount discount = entityManager.find(Discount.class, id);
+
+        if (getNumberOfUses(discount) == 0) {
+            entityManager.remove(discount);
+        }
+        else {
+            log.warn("Trying to delete non empty discount "+discount);
+        }
+    }
+
+    public Discount loadDiscount(Long id) {
+        return entityManager.find(Discount.class, id);
+    }
+
+    public void mergeDiscount(Discount discount) {
+        entityManager.merge(discount);
     }
 }

@@ -1,0 +1,13 @@
+#layout('default')
+
+#region('content')
+
+        <form action="$a.formAction('admin', 'doEditDiscount')" method="post"
+              class="form-horizontal">
+
+            #renderPartial('discount_edit')
+
+            <input type="submit" value="Submit"/>
+        </form>
+    </div>
+#end

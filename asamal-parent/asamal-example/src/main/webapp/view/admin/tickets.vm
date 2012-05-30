@@ -1,52 +1,51 @@
 #layout('default')
 
 #region('content')
-    <h1>$m['welcome.tickets']</h1>
+<h1>$m['welcome.tickets']</h1>
 
-    <div id="tickets">
-        <table class="table table-striped">
+<div id="tickets">
+    <table class="table table-striped">
+        <tr>
+            <th>Name</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Number of tickets</th>
+            <th>Description</th>
+            <th>Invoice Description</th>
+            <th>Price</th>
+            <th>Actions</th>
+        </tr>
+        #foreach($ticketCategory in $tickets.ticketCategories)
             <tr>
-                <th>Name</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Number of tickets</th>
-                <th>Description</th>
-                <th>Invoice Description</th>
-                <th>Price</th>
-                <th>Actions</th>
+                <td>$!ticketCategory.name</td>
+                <td>$!date.format("yyyy-MM-dd", $ticketCategory.fromDate)</td>
+                <td>$!date.format("yyyy-MM-dd", $ticketCategory.toDate)</td>
+                <td>$!ticketCategory.numberOfTickets</td>
+                <td>$!ticketCategory.description</td>
+                <td>$!ticketCategory.invoiceDescription</td>
+                <td>$!ticketCategory.price PLN</td>
+                <td>
+                    <a href="$a.link("admin", "editTicketCat")/$ticketCategory.id">Edit</a>
+
+                    <form id="deleteCategory$ticketCategory.id" accept-charset="UTF-8">
+                        <input type="hidden" value="$ticketCategory.id" name="id">
+                    </form>
+                    <a href="#"
+                       onclick="if (confirm('Are you sure to delete $ticketCategory.name ?')) {ajaxPost('admin', 'deleteTicketCategory', 'deleteCategory$ticketCategory.id', 'tickets')}">
+                        Delete
+                    </a>
+                </td>
             </tr>
-            #foreach($ticketCategory in $tickets.ticketCategories)
-                <tr>
-                    <td>$!ticketCategory.name</td>
-                    <td>$!date.format("yyyy-MM-dd", $ticketCategory.fromDate)</td>
-                    <td>$!date.format("yyyy-MM-dd", $ticketCategory.toDate)</td>
-                    <td>$!ticketCategory.numberOfTickets</td>
-                    <td>$!ticketCategory.description</td>
-                    <td>$!ticketCategory.invoiceDescription</td>
-                    <td>$!ticketCategory.price PLN</td>
-                    <td>
-                        <a href="$a.link("admin", "editTicketCat")/$ticketCategory.id">Edit</a>
-                        #if($ticketCategory.totalCategory == false)
-                            <form id="deleteCategory$ticketCategory.id" accept-charset="UTF-8">
-                                <input type="hidden" value="$ticketCategory.id" name="id">
-                            </form>
-                            <a href="#"
-                               onclick="if (confirm('Are you sure to delete $ticketCategory.name ?')) {ajaxPost('admin', 'deleteTicketCategory', 'deleteCategory$ticketCategory.id', 'tickets')}">
-                                Delete
-                            </a>
-                        #end
-                    </td>
-                </tr>
-            #end
-        </table>
+        #end
+    </table>
 
-        <form class="form-horizontal" id="ticketForm" accept-charset="UTF-8">
-            #renderPartial('ticket_cat_edit')
+    <form class="form-horizontal" id="ticketForm" accept-charset="UTF-8">
+        #renderPartial('ticket_cat_edit')
 
-            <input type="submit"
-                   onclick="return ajaxPost('admin', 'addTicketCategory', 'ticketForm', ['tickets', 'messages'])"
-                   value="Add Ticket Category"/>
-        </form>
-    </div>
+        <input type="submit"
+               onclick="return ajaxPost('admin', 'addTicketCategory', 'ticketForm', ['tickets', 'messages'])"
+               value="Add Ticket Category"/>
+    </form>
+</div>
 
 #end

@@ -1,5 +1,7 @@
 package pl.softwaremill.asamal.example.service.ticket;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.json.ViewUsers;
@@ -29,6 +31,8 @@ public class TicketService {
 
     @Inject
     private ConfigurationBean configurationBean;
+
+    private static Logger log = LoggerFactory.getLogger(TicketService.class);
 
     @Transactional
     public List<TicketCategory> getTicketCategories() {
@@ -69,7 +73,11 @@ public class TicketService {
     public void deleteTicketCategory(Long id) {
         TicketCategory category = entityManager.find(TicketCategory.class, id);
 
-        entityManager.remove(category);
+        if (category.getTickets().isEmpty()) {
+            entityManager.remove(category);
+        } else {
+            log.warn("Trying to delete non-empty ticket category "+category);
+        }
     }
 
     @Transactional

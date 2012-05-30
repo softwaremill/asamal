@@ -1,0 +1,22 @@
+<label>$m['discount.code']</label>
+<input type="text" name="discount.discountCode" value="$!c.discount.discountCode"/>
+#err('discount.discountCode')
+
+<label>$m['discount.amount']</label>
+<input type="text" name="discount.discountAmount" value="$!c.discount.discountAmount"/>
+#err('discount.discountAmount')
+
+<label>$m['discount.number']</label>
+<input type="text" name="discount.numberOfUses" id="discount.numberOfUses"
+       #if ($c.discount.numberOfUses < 0)disabled="true"#end
+       value="#if ($c.discount.numberOfUses > 0)${c.discount.numberOfUses}#end"/>
+#err('discount.numberOfUses')
+
+<input type="checkbox" name="discount.unlimited"
+       #if ($c.discount.numberOfUses < 0) checked="checked" #end
+       onchange="document.getElementById('discount.numberOfUses').disabled = this.checked" value="Unlimited">
+    $m['discount.number.unlimited']</input>
+
+<label>$m['discount.late_discount']</label>
+<input type="text" name="discount.lateDiscount" id="discount.lateDiscount"  value="$!c.discount.lateDiscount"/>
+#err('discount.lateDiscount')
