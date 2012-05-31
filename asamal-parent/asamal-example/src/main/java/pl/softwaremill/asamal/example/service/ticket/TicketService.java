@@ -8,6 +8,7 @@ import pl.softwaremill.asamal.example.model.json.ViewUsers;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
+import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.i18n.Messages;
@@ -16,6 +17,7 @@ import pl.softwaremill.common.cdi.transaction.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
@@ -177,5 +179,20 @@ public class TicketService {
                 .setParameter("status", InvoiceStatus.UNPAID)
                 .setParameter("category", category)
                 .getSingleResult();
+    }
+
+    public Long getNextInvoiceNumber(PaymentMethod method) {
+        try {
+            Long lastNumber = (Long) entityManager.createQuery("select max (i.invoiceNumber) from Invoice i " +
+                    "where i.method = :method")
+                    .setParameter("method", method)
+                    .getSingleResult();
+
+            if (lastNumber == null) { return 1l; }
+
+            return lastNumber + 1l;
+        } catch (NoResultException e) {
+            return 1l;
+        }
     }
 }

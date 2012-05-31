@@ -10,6 +10,7 @@ import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 
 import javax.inject.Inject;
@@ -39,7 +40,8 @@ public class Home extends ControllerBean implements Serializable {
     }
     
     public String getInvoiceId(Invoice invoice) {
-        return configurationBean.getProperty(Conf.INVOICE_ID).toLowerCase().replaceAll("/", "-") + invoice.getId();
+        return configurationBean.getProperty(Conf.INVOICE_ID).toLowerCase().replaceAll("/", "-") +
+                (invoice.getStatus() == InvoiceStatus.UNPAID ? invoice.getId() : invoice.getInvoiceNumber());
     }
 
 }

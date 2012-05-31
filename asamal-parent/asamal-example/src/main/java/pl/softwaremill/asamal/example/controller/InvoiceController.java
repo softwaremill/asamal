@@ -44,8 +44,10 @@ public class InvoiceController extends ControllerBean {
         if (invoice.getStatus() == InvoiceStatus.UNPAID) {
             putInContext("invoiceType", "Proforma");
             putInContext("proformaId", "PROF/");
+            putInContext("invoiceNumber", invoice.getId());
         } else if (invoice.getStatus() != InvoiceStatus.CANCELLED) {
             putInContext("invoiceType", "VAT");
+            putInContext("invoiceNumber", invoice.getInvoiceNumber());
         }
     }
     

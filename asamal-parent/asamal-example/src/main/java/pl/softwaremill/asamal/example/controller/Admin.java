@@ -10,7 +10,6 @@ import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.PathParameter;
 import pl.softwaremill.asamal.controller.annotation.Post;
 import pl.softwaremill.asamal.controller.annotation.RequestParameter;
-import pl.softwaremill.asamal.example.filters.ActiveFilter;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.admin.DiscountService;
 import pl.softwaremill.asamal.example.logic.auth.RegisterBean;
@@ -116,6 +115,7 @@ public class Admin extends ControllerBean {
 
             invoice.setDatePaid(datePaid);
             invoice.setStatus(InvoiceStatus.PAID);
+            invoice.setInvoiceNumber(ticketService.getNextInvoiceNumber(invoice.getMethod()));
 
             invoice = ticketService.updateInvoice(invoice);
 

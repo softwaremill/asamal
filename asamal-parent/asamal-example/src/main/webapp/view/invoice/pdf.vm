@@ -6,7 +6,7 @@
 </head>
 <body style="font-family: 'Alegreya'; font-size: small;">
     <h2 style="text-align: center">$m.getFromBundle('invoice.title', $invoiceType)
-        $m['invoice.title.number'] $!{proformaId}$conf.getProperty('INVOICE_ID')$invoice.method/$invoice.id</h2>
+        $m['invoice.title.number'] $!{proformaId}$conf.getProperty('INVOICE_ID')$invoice.method/$invoiceNumber</h2>
     <div style="float: right;">
         <h3>$m['invoice.seller']</h3>
         <table>

@@ -48,7 +48,7 @@
                 $conf.getProperty('INVOICE_BANK_NAME'),
                 $conf.getProperty('INVOICE_BANK_CODE'),
                 "$totals.totalGrossAmount $conf.getProperty('INVOICE_CURRENCY')",
-                "$conf.getProperty('INVOICE_ID')/$invoice.id")
+                "PROF/$conf.getProperty('INVOICE_ID')$invoice.method/$invoice.id")
         #elseif ($invoice.method == 'PAYPAL')
             $m["pay.thankyou.PAYPAL"]
             <br/>

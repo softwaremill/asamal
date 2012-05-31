@@ -62,6 +62,7 @@ public class VerifiedPaymentProcessor extends VerifiedPayPalProcessor {
             // otherwise all allright
             invoice.setStatus(InvoiceStatus.PAID);
             invoice.setDatePaid(new Date());
+            invoice.setInvoiceNumber(ticketService.getNextInvoiceNumber(invoice.getMethod()));
 
             ticketService.updateInvoice(invoice);
 

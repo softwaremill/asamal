@@ -91,6 +91,9 @@ public class Invoice extends BaseEntity{
 
     @Column(name = "editable", nullable = false)
     private Boolean editable;
+
+    @Column(name = "invoice_number")
+    private Long invoiceNumber;
     
     public Invoice() {
         editable = true;
@@ -98,7 +101,7 @@ public class Invoice extends BaseEntity{
 
     public Invoice(Set<Ticket> tickets, String name, String companyName, String vat, String address,
                    String postalCode, String city, String country, InvoiceStatus status, PaymentMethod method, User user, Date dateCreated,
-                   Date datePaid, Discount discount, Boolean editable) {
+                   Date datePaid, Discount discount, Boolean editable, Long invoiceNumber) {
         this();
 
         this.tickets = tickets;
@@ -257,6 +260,14 @@ public class Invoice extends BaseEntity{
         this.editable = editable;
     }
 
+    public Long getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(Long invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
     @Override
     public String toString() {
         return "Invoice{" +
@@ -276,6 +287,7 @@ public class Invoice extends BaseEntity{
                 ", dueDate=" + dueDate +
                 ", discount=" + discount +
                 ", editable=" + editable +
+                ", invoiceNumber=" + invoiceNumber +
                 '}';
     }
 }
