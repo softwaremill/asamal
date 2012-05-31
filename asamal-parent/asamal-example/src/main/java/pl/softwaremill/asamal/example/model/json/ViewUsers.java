@@ -4,20 +4,28 @@ import java.util.List;
 
 public class ViewUsers {
 
-    List<ViewUsers> users;
+    List<ViewTicket> tickets;
 
     List<String> ticketOptionLabels;
 
-    public ViewUsers(List<ViewUsers> users, List<String> ticketOptionLabels) {
-        this.users = users;
+    public ViewUsers(List<ViewTicket> tickets, List<String> ticketOptionLabels) {
+        this.tickets = tickets;
         this.ticketOptionLabels = ticketOptionLabels;
     }
 
-    public List<ViewUsers> getUsers() {
-        return users;
+    public List<ViewTicket> getTickets() {
+        return tickets;
     }
 
     public List<String> getTicketOptionLabels() {
         return ticketOptionLabels;
+    }
+
+    @Override
+    public String toString() {
+        return "ViewUsers{" +
+                "tickets=" + tickets +
+                ", ticketOptionLabels=" + ticketOptionLabels +
+                '}';
     }
 }

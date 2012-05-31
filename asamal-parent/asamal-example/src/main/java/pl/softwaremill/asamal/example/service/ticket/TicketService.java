@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 
@@ -132,16 +133,21 @@ public class TicketService {
 
     @Transactional
     public ViewUsers getAllSoldTickets(Integer pageNumber, Integer resultsPerPage) {
-        List<String> optionLabels = entityManager.createQuery("select t.label from TicketOptionDefinition t")
+        List<String> optionLabels = entityManager.createQuery("select t.label from TicketOptionDefinition t" +
+                " order by t.id")
                 .getResultList();
 
-        return new ViewUsers(entityManager.createQuery(
+        Query query = entityManager.createQuery(
                 "select new pl.softwaremill.asamal.example.model.json.ViewTicket(t) from Ticket t" +
                         " where t.invoice.status = :status order by t.invoice.datePaid, t.id")
-                .setParameter("status", InvoiceStatus.PAID)
-                .setFirstResult(pageNumber * resultsPerPage).
-                        setMaxResults(resultsPerPage).getResultList(),
-                optionLabels);
+                .setParameter("status", InvoiceStatus.PAID);
+
+        if (pageNumber >= 0) {
+            query.setFirstResult(pageNumber * resultsPerPage).
+                    setMaxResults(resultsPerPage);
+        }
+
+        return new ViewUsers(query.getResultList(), optionLabels);
     }
 
     @Transactional
