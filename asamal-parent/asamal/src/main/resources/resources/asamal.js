@@ -14,6 +14,12 @@ function doAjaxPost(url, elementIds, reRenderList, viewHash) {
             input += "&" + $("#"+this).serialize()
         })
     }
+    else if (elementIds instanceof Object) {
+        // expecting a map here
+        $.each(elementIds, function(key, value){
+            input += "&" + key + "=" + value;
+        });
+    }
     else {
         input += "&" + $("#"+elementIds).serialize()
     }
