@@ -2,9 +2,7 @@ package pl.softwaremill.asamal.example.controller;
 
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
-import pl.softwaremill.asamal.controller.DownloadDescription;
 import pl.softwaremill.asamal.controller.annotation.Controller;
-import pl.softwaremill.asamal.controller.annotation.Download;
 import pl.softwaremill.asamal.controller.annotation.Filters;
 import pl.softwaremill.asamal.controller.annotation.Get;
 import pl.softwaremill.asamal.controller.annotation.PathParameter;
@@ -17,9 +15,6 @@ import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Discount;
-import pl.softwaremill.asamal.example.model.ticket.Invoice;
-import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
-import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.model.ticket.TicketOptionDefinition;
 import pl.softwaremill.asamal.example.service.admin.AdminService;
@@ -32,11 +27,7 @@ import pl.softwaremill.common.cdi.security.Secure;
 import pl.softwaremill.common.cdi.transaction.Transactional;
 
 import javax.inject.Inject;
-import java.math.BigDecimal;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Controller("admin")
@@ -44,7 +35,6 @@ import java.util.List;
 @Secure("#{login.admin}")
 public class Admin extends ControllerBean {
 
-    private final static SimpleDateFormat monthDateFormat = new SimpleDateFormat("MMMM yyyy");
 
     private TicketCategory ticketCat = new TicketCategory();
 
@@ -53,9 +43,6 @@ public class Admin extends ControllerBean {
 
     @Inject
     private DiscountService discountService;
-
-    @Inject
-    private ConfigurationBean configurationBean;
 
     @Inject
     private AdminService adminService;
@@ -94,53 +81,7 @@ public class Admin extends ControllerBean {
         addObjectToFlash("ticketCat", ticketCat);
     }
 
-    @Get
-    public void approvePayments() {
 
-    }
-
-    @Post
-    public void searchPayment() {
-        putInContext("invoice", ticketService.loadInvoice(Long.parseLong(getParameter("paymentId"))));
-    }
-
-    @Post
-    public void approve() {
-        try {
-            Long invoiceId = Long.parseLong(getParameter("invoiceId"));
-
-            Date datePaid = dateFormat.parse(getParameter("paymentDate"));
-
-            Invoice invoice = ticketService.loadInvoice(invoiceId);
-
-            invoice.setDatePaid(datePaid);
-            invoice.setStatus(InvoiceStatus.PAID);
-            invoice.setInvoiceNumber(ticketService.getNextInvoiceNumber(invoice.getMethod()));
-
-            invoice = ticketService.updateInvoice(invoice);
-
-            emailService.sendTransferAcceptedEmail(invoice);
-
-            putInContext("invoice", invoice);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
-    @Post
-    public void cancel() {
-        Long invoiceId = Long.parseLong(getParameter("invoiceId"));
-
-        Invoice invoice = ticketService.loadInvoice(invoiceId);
-
-        invoice.setStatus(InvoiceStatus.CANCELLED);
-
-        invoice = ticketService.updateInvoice(invoice);
-
-        putInContext("invoice", invoice);
-    }
 
     private Discount discount = new Discount();
 
@@ -215,56 +156,6 @@ public class Admin extends ControllerBean {
         }
 
         return ok;
-    }
-
-    @Get
-    public void accounting() {
-
-    }
-
-    @Post
-    public void closeMonth(@RequestParameter("accountingMonth") String month) {
-        try {
-            Calendar accMonth = Calendar.getInstance();
-
-            accMonth.setTime(monthDateFormat.parse(month));
-
-            adminService.closeAccountingMonth(accMonth);
-
-            addMessageToFlash(getFromMessageBundle("accounting.closed", month), AsamalContext.MessageSeverity.SUCCESS);
-
-            redirect("accounting");
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Download(params = "/year/month")
-    public DownloadDescription downloadInvoices(@PathParameter("year") Integer year,
-                                                @PathParameter("month") Integer month) {
-        Calendar accMonth = Calendar.getInstance();
-        accMonth.set(Calendar.YEAR, year);
-        accMonth.set(Calendar.MONTH, month);
-        accMonth.set(Calendar.DAY_OF_MONTH, 1);
-        accMonth.set(Calendar.HOUR, 0);
-        accMonth.set(Calendar.MINUTE, 0);
-        accMonth.set(Calendar.SECOND, 0);
-        accMonth.set(Calendar.MILLISECOND, 0);
-
-        return adminService.generatePDFInvoicesForMonth(accMonth);
-    }
-
-    public BigDecimal countTotalAmount(Invoice invoice) {
-        BigDecimal amount = new BigDecimal("0.00");
-
-        BigDecimal vatAmount = new BigDecimal(configurationBean.getProperty(Conf.INVOICE_VAT_RATE))
-                .divide(new BigDecimal("100")).add(new BigDecimal("1"));
-
-        for (Ticket ticket : invoice.getTickets()) {
-            amount = amount.add(new BigDecimal(ticket.getTicketCategory().getPrice()));
-        }
-
-        return amount.multiply(vatAmount).setScale(2);
     }
 
     @Post

@@ -1,0 +1,158 @@
+#layout('default')
+
+#region('content')
+    <h3>Payments</h3>
+
+    <div id="nonpaid">
+        <label for="searchInput">Search (invoice number, name or company name)</label>
+            <input type="text" value="" id="searchInput" onkeypress="reloadInvoices()"/>
+
+         <table class='table table-striped' ">
+            <thead>
+            <tr>
+                <th>No</th>
+                <th>Proforma Invoice Number</th>
+                <th>Name &amp; Last Name</th>
+                <th>Company</th>
+                <th>Amount</th>
+                <th>Discount</th>
+                <th>Tickets</th>
+                <th>Date Approved</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody data-bind="foreach: invoices">
+            <tr>
+                <td data-bind="text: index++"/>
+                <td data-bind="text: invoiceNo"/>
+                <td data-bind="text: name"></td>
+                <td data-bind="text: company"></td>
+                <td data-bind="text: amount"></td>
+                <td data-bind="text: discount"></td>
+                <td data-bind="text: tickets"></td>
+                <td>
+                    <div data-bind="template: { name: 'DATEPICK', data: \$data }"></div>
+                </td>
+                <td>
+                    <div data-bind="template: { name: 'APPROVE', data: \$data }"></div>
+                    <div data-bind="template: { name: 'CANCEL', data: \$data }"></div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <ul class="pager">
+            <li>
+                <a href="#" onclick="return previous();">Previous</a>
+            </li>
+            <li>
+                <a href="#" onclick="return next();">Next</a>
+            </li>
+        </ul>
+    </div>
+
+    <div id="reload">
+
+        <script type="text/javascript">
+            $(function() {
+                reloadInvoices();
+            });
+        </script>
+    </div>
+
+
+
+    <script type="text/html" id="DATEPICK">
+            <input type="text" class="datepicker"
+                   data-bind="dateSelect: $data, attr: {id: name}" />
+        </script>
+
+        <script type="text/html" id="APPROVE">
+            <input class="btn btn-success" type="button"
+                   data-bind="attr: {name: 'approve', value: '$m['admin.approve.approve']'}, event: { click: \$root.approve }" />
+        </script>
+        <script type="text/html" id="CANCEL">
+            <input class="btn btn-danger" type="button"
+                   data-bind="attr: {name: 'approve', value: '$m['admin.approve.cancel']'}, event: { click: \$root.cancel }" />
+        </script>
+
+        <script type="text/javascript">
+
+            ko.bindingHandlers.dateSelect = {
+                init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+                    $(element).val(viewModel.dateValue())
+
+                    $(element).change(function () {
+                        var date = $(element).val()
+                        viewModel.dateValue(date);
+                    });
+                },
+                update:function (element, valueAccessor, allBindingsAccessor, viewModel) {
+                }
+            };
+
+
+            var currentPage = 0;
+            var jsonLink = "$a.jsonLink('payments','loadAttendants')";
+            var totalTickets = $totalTickets;
+            var viewModel;
+            var index = 0;
+
+            function previous() {
+                if (currentPage > 0) {
+                    currentPage--;
+
+                    reloadInvoices();
+                }
+
+                return false;
+            }
+
+            function next() {
+                if (currentPage < (totalTickets / 10)) {
+                    currentPage++;
+
+                    reloadInvoices();
+                }
+
+                return false;
+            }
+
+            function reloadInvoices() {
+                index = currentPage * 10 + 1;
+
+                $.get(jsonLink+"/"+currentPage+"/"+$("#searchInput").val(), function(data){
+                    $.each(data, function() {
+                        this['dateValue'] = $.datepicker.formatDate('yy-mm-dd', new Date());
+                    });
+
+                    if (viewModel == null) {
+
+                        viewModel = ko.mapping.fromJS({"invoices": data});
+
+                        console.log(data);
+                        console.log(viewModel);
+
+                        viewModel.approve = function (element) {
+                            return ajaxPost('payments', 'approve',
+                                    {'invoiceId': element.invoiceId(), 'paymentDate': element.dateValue()},
+                                    'reload')
+                        };
+                        viewModel.cancel = function (element) {
+                            return ajaxPost('payments', 'cancel',
+                                    {'invoiceId': element.invoiceId()},
+                                    'reload')
+                        };
+
+                        ko.applyBindings(viewModel);
+
+                    }
+                    else {
+                        ko.mapping.fromJS({"invoices": data}, viewModel);
+                    }
+
+                    $(".datepicker").datepicker({ dateFormat:"yy-mm-dd" });
+                });
+            }
+
+        </script>
+#end

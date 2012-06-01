@@ -19,8 +19,12 @@ import java.util.Map;
 @Named("totalsCounter")
 public class InvoiceTotalsCounter {
 
-    @Inject
     private ConfigurationBean configurationBean;
+
+    @Inject
+    public InvoiceTotalsCounter(ConfigurationBean configurationBean) {
+        this.configurationBean = configurationBean;
+    }
 
     public InvoiceTotals countInvoice(Invoice invoice) {
 

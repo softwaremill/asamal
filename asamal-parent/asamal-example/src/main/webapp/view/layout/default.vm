@@ -111,14 +111,14 @@
 
                                 <li #if($c.name == 'admin' && $view == 'tickets')class="active"#end>
                                     <a href="$a.link('admin', 'tickets')">Tickets</a></li>
-                                <li #if($c.name == 'admin' && $view == 'approvePayments')class="active"#end>
-                                    <a href="$a.link('admin', 'approvePayments')">Payments</a></li>
+                                <li #if($c.name == 'payments' && $view == 'approvePayments')class="active"#end>
+                                    <a href="$a.link('payments', 'approvePayments')">Payments</a></li>
                                 <li #if($c.name == 'admin' && $view == 'configuration')class="active"#end>
                                     <a href="$a.link('admin', 'configuration')">Configuration</a></li>
                                 <li #if($c.name == 'admin' && $view == 'discounts')class="active"#end>
                                     <a href="$a.link('admin', 'discounts')">Discounts</a></li>
-                                <li #if($c.name == 'admin' && $view == 'accounting')class="active"#end>
-                                    <a href="$a.link('admin', 'accounting')">Accounting</a></li>
+                                <li #if($c.name == 'payments' && $view == 'accounting')class="active"#end>
+                                    <a href="$a.link('payments', 'accounting')">Accounting</a></li>
                                 <li #if($c.name == 'admin' && $view == 'options')class="active"#end>
                                     <a href="$a.link('admin', 'options')">Ticket Options</a></li>
                                 <li #if($c.name == 'stats' && $view == 'dashboard')class="active"#end>

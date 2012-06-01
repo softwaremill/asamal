@@ -30,7 +30,7 @@
             });
         });
 
-        var downloadLink = '$a.download('admin', 'downloadInvoices')';
+        var downloadLink = '$a.download('payments', 'downloadInvoices')';
     </script>
     <style>
         .ui-datepicker-calendar {
@@ -42,7 +42,7 @@
 
     <h2>Close Accounting Month</h2>
     <div id="accounting">
-        <form action="$a.formAction('admin','closeMonth')" class="form-horizontal"
+        <form action="$a.formAction('payments','closeMonth')" class="form-horizontal"
               id="accountingForm" method="post">
             <label for="accountingMonth">$m['accounting.toClose']</label>
             <input name="accountingMonth" id="accountingMonth" class="date-picker" />

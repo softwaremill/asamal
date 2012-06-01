@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
+import pl.softwaremill.asamal.example.model.json.ViewInvoice;
 import pl.softwaremill.asamal.example.model.json.ViewUsers;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
@@ -79,7 +80,7 @@ public class TicketService {
         if (category.getTickets().isEmpty()) {
             entityManager.remove(category);
         } else {
-            log.warn("Trying to delete non-empty ticket category "+category);
+            log.warn("Trying to delete non-empty ticket category " + category);
         }
     }
 
@@ -188,11 +189,67 @@ public class TicketService {
                     .setParameter("method", method)
                     .getSingleResult();
 
-            if (lastNumber == null) { return 1l; }
+            if (lastNumber == null) {
+                return 1l;
+            }
 
             return lastNumber + 1l;
         } catch (NoResultException e) {
             return 1l;
         }
+    }
+
+    public List<ViewInvoice> getAllUnpaidInvoices(Integer pageNumber, int resultsPerPage, String search) {
+        Query query = getQuery(search);
+
+        if (pageNumber >= 0) {
+            query.setFirstResult(pageNumber * resultsPerPage).
+                    setMaxResults(resultsPerPage);
+        }
+
+        return query.getResultList();
+    }
+
+    public Long countAllUnpaidInvoices() {
+        return (Long) entityManager.createQuery(
+                "select count(i) from Invoice i" +
+                        " where i.status = :status")
+                .setParameter("status", InvoiceStatus.UNPAID).getSingleResult();
+    }
+
+    private Query getQuery(String search) {
+        String queryStr = "select new pl.softwaremill.asamal.example.model.json.ViewInvoice(i) from Invoice i" +
+                " where i.status = :status ";
+
+        Long searchLong = null;
+        boolean shouldSearch = search != null && !search.isEmpty();
+
+        if (shouldSearch) {
+            queryStr += " and ( ";
+
+            try {
+                searchLong = Long.valueOf(search);
+
+                queryStr += "i.id = :searchLong or ";
+            } catch (NumberFormatException e) {
+                // ignore, just don't add id search
+            }
+
+            queryStr += "lower(i.companyName) like :search or lower(i.name) like :search) ";
+        }
+
+        queryStr += "order by i.id";
+
+        Query query = entityManager.createQuery(queryStr)
+                .setParameter("status", InvoiceStatus.UNPAID);
+
+        if (shouldSearch) {
+            query.setParameter("search", "%"+search.toLowerCase()+"%");
+            if (searchLong != null) {
+                query.setParameter("searchLong", searchLong);
+            }
+        }
+
+        return query;
     }
 }
