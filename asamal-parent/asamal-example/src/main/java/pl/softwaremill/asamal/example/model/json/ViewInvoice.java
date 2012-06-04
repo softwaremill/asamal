@@ -33,9 +33,10 @@ public class ViewInvoice {
 
     public ViewInvoice(Invoice invoice) {
         boolean prof = invoice.getStatus() == InvoiceStatus.UNPAID;
+        boolean cancelled = invoice.getStatus() == InvoiceStatus.CANCELLED;
 
-        invoiceNo = (prof ? "PROF/" : "") + invoice.getMethod().toString() + "/" +
-                (prof ? invoice.getId() : invoice.getInvoiceNumber());
+        invoiceNo = (prof ? "PROF/" : "") + (cancelled ? "CANCELLED/" : "") + invoice.getMethod().toString() + "/" +
+                (prof || cancelled ? invoice.getId() : invoice.getInvoiceNumber());
 
         name = invoice.getName();
 

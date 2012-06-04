@@ -13,20 +13,24 @@
                     $m["home.ticket.status.$invoice.status"] $m["home.ticket.method.$invoice.method"]
                 </th>
                 <th>
-                    #if($invoice.editable)
-                        <a href="$a.link('tickets', 'edit')/$invoice.id">
-                            <span class="label label-info">$m['home.ticket.edit']</span>
-                        </a>
-                    #end
+                    #if($invoice.status != 'CANCELLED')
+                        #if($invoice.editable)
+                            <a href="$a.link('tickets', 'edit')/$invoice.id">
+                                <span class="label label-info">$m['home.ticket.edit']</span>
+                            </a>
+                        #end
 
-                    #if($invoice.status == 'UNPAID')
-                        <a href="$a.link('tickets', 'pay')/$invoice.id">
-                            <span class="label label-info">$m['home.ticket.pay']</span>
+                        #if($invoice.status == 'UNPAID')
+                            <a href="$a.link('tickets', 'pay')/$invoice.id">
+                                <span class="label label-info">$m['home.ticket.pay']</span>
+                            </a>
+                        #end
+                        <a href="$a.pdf('invoice', 'pdf')/$invoice.id/${c.getInvoiceId($invoice)}.pdf">
+                            <span class="label label-info">$m['home.ticket.invoice']</span>
                         </a>
+                    #else
+                        $m["home.ticket.status.$invoice.status"]
                     #end
-                    <a href="$a.pdf('invoice', 'pdf')/$invoice.id/${c.getInvoiceId($invoice)}.pdf">
-                        <span class="label label-info">$m['home.ticket.invoice']</span>
-                    </a>
                 </th>
             </tr>
             <tr>
