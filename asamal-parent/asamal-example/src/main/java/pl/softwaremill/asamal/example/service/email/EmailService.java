@@ -106,4 +106,10 @@ public class EmailService {
         EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(email,
                 sw.toString(), configurationBean.getProperty(Conf.PASSWORD_FORGOT_SUBJECT))));
     }
+
+    public void sendPaypalError(String message) {
+        EmailSendingBean.scheduleTask(new SendEmailTask(
+                new EmailDescription(
+                        configurationBean.getProperty(Conf.TICKETS_THANKYOU_BCC), message, "Paypal processing failed!")));
+    }
 }

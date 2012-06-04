@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
+import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.servlet.paypal.PaypalErrorProcessor;
 import pl.softwaremill.asamal.example.servlet.paypal.VerifiedPaymentProcessor;
 import pl.softwaremill.common.paypal.process.PayPalErrorHandler;
@@ -31,6 +32,9 @@ public class AsamalExamplePaypalServlet extends IPNServlet {
     @Inject
     private ConfigurationBean configurationBean;
 
+    @Inject
+    private EmailService emailService;
+
     @Override
     protected void checkIfInSandbox(ServletConfig config) {
         setPaypalAddress(configurationBean.getBooleanProperty(Conf.PAYPAL_SANDBOX));
@@ -39,7 +43,7 @@ public class AsamalExamplePaypalServlet extends IPNServlet {
 
     @Override
     protected PayPalErrorHandler getPayPalErrorProcessor() {
-        return new PaypalErrorProcessor();
+        return new PaypalErrorProcessor(emailService);
     }
 
     @Override
