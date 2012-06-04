@@ -112,8 +112,9 @@ public class TicketService {
     @Transactional
     public Integer getNumberOfBookedTicketsInCategory(TicketCategory ticketCategory) {
         return ((Long) entityManager.createQuery(
-                "select count(t) from Ticket t where t.ticketCategory = :ticketCategory")
+                "select count(t) from Ticket t where t.ticketCategory = :ticketCategory and t.invoice.status != :status")
                 .setParameter("ticketCategory", ticketCategory)
+                .setParameter("status", InvoiceStatus.CANCELLED)
                 .getSingleResult()).intValue();
     }
 
