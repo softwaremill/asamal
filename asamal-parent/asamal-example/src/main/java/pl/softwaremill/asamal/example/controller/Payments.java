@@ -52,7 +52,7 @@ public class Payments extends ControllerBean {
 
     @Get
     public void approvePayments() {
-        putInContext("totalTickets", ticketService.countAllUnpaidInvoices());
+        putInContext("totalTickets", ticketService.countAllInvoices());
     }
 
     @Json
@@ -60,7 +60,7 @@ public class Payments extends ControllerBean {
         Integer pageNumber = Integer.valueOf(getExtraPath()[0]);
         String search = (getExtraPath().length > 1 ? getExtraPath()[1] : null);
 
-        return ticketService.getAllUnpaidInvoices(pageNumber, 10, search);
+        return ticketService.getAllInvoices(pageNumber, 10, search);
     }
 
     @Post
@@ -80,7 +80,7 @@ public class Payments extends ControllerBean {
 
             emailService.sendTransferAcceptedEmail(invoice);
 
-            putInContext("totalTickets", ticketService.countAllUnpaidInvoices());
+            putInContext("totalTickets", ticketService.countAllInvoices());
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
@@ -98,7 +98,7 @@ public class Payments extends ControllerBean {
 
         invoice = ticketService.updateInvoice(invoice);
 
-        putInContext("totalTickets", ticketService.countAllUnpaidInvoices());
+        putInContext("totalTickets", ticketService.countAllInvoices());
     }
 
     @Get

@@ -7,6 +7,7 @@ import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.json.ViewInvoice;
 import pl.softwaremill.asamal.example.model.json.ViewUsers;
 import pl.softwaremill.asamal.example.model.security.User;
+import pl.softwaremill.asamal.example.model.ticket.Discount;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
@@ -21,12 +22,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 @Named("tickets")
 public class TicketService {
 
+    private static final BigDecimal HUNDRED = new BigDecimal(100);
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -199,7 +202,7 @@ public class TicketService {
         }
     }
 
-    public List<ViewInvoice> getAllUnpaidInvoices(Integer pageNumber, int resultsPerPage, String search) {
+    public List<ViewInvoice> getAllInvoices(Integer pageNumber, int resultsPerPage, String search) {
         Query query = getQuery(search);
 
         if (pageNumber >= 0) {
@@ -210,22 +213,19 @@ public class TicketService {
         return query.getResultList();
     }
 
-    public Long countAllUnpaidInvoices() {
+    public Long countAllInvoices() {
         return (Long) entityManager.createQuery(
-                "select count(i) from Invoice i" +
-                        " where i.status = :status")
-                .setParameter("status", InvoiceStatus.UNPAID).getSingleResult();
+                "select count(i) from Invoice i").getSingleResult();
     }
 
     private Query getQuery(String search) {
-        String queryStr = "select new pl.softwaremill.asamal.example.model.json.ViewInvoice(i) from Invoice i" +
-                " where i.status = :status ";
+        String queryStr = "select new pl.softwaremill.asamal.example.model.json.ViewInvoice(i) from Invoice i ";
 
         Long searchLong = null;
         boolean shouldSearch = search != null && !search.isEmpty();
 
         if (shouldSearch) {
-            queryStr += " and ( ";
+            queryStr += " where ";
 
             try {
                 searchLong = Long.valueOf(search);
@@ -235,13 +235,12 @@ public class TicketService {
                 // ignore, just don't add id search
             }
 
-            queryStr += "lower(i.companyName) like :search or lower(i.name) like :search) ";
+            queryStr += "lower(i.companyName) like :search or lower(i.name) like :search ";
         }
 
         queryStr += "order by i.id";
 
-        Query query = entityManager.createQuery(queryStr)
-                .setParameter("status", InvoiceStatus.UNPAID);
+        Query query = entityManager.createQuery(queryStr);
 
         if (shouldSearch) {
             query.setParameter("search", "%"+search.toLowerCase()+"%");
@@ -251,5 +250,32 @@ public class TicketService {
         }
 
         return query;
+    }
+
+    @Transactional
+    public BigDecimal getTotalEarnedByCategory(TicketCategory tc) {
+        List<Object[]> ticketsWithDiscounts =
+                entityManager.createQuery("select t.ticketCategory, dis from Ticket t " +
+                        "left join t.invoice.discount as dis " +
+                        "where t.ticketCategory = :ticketCategory and t.invoice.status = :status")
+                        .setParameter("ticketCategory", tc).setParameter("status", InvoiceStatus.PAID)
+                .getResultList();
+
+        BigDecimal total = new BigDecimal("0.0");
+
+        for (Object[] ticketsWithDiscount : ticketsWithDiscounts) {
+            BigDecimal price = new BigDecimal(((TicketCategory) ticketsWithDiscount[0]).getPrice());
+
+            if (ticketsWithDiscount[1] != null) {
+                BigDecimal discount = new BigDecimal(((Discount) ticketsWithDiscount[1]).getDiscountAmount()).
+                        divide(HUNDRED);
+
+                price = price.multiply(BigDecimal.ONE.subtract(discount));
+            }
+
+            total = total.add(price);
+        }
+
+        return total.setScale(2, BigDecimal.ROUND_HALF_DOWN);
     }
 }

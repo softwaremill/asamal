@@ -5,51 +5,46 @@
     <h3>Sold by category</h3>
 
     #set($totalMoney = 0)
+    #set($totalUnpaidTickets = 0)
+    #set($totalSoldTickets = 0)
+    #set($totalLeft = 0)
     #set($totalTickets = 0)
 
     <table class="table table-striped">
         <tr>
             <th>Category Name</th>
-            <th>Total Sold</th>
-            <th>Total Earned</th>
+            <th>Total in category</th>
+            <th>Left in category</th>
+            <th>Total Sold (paid)</th>
+            <th>Total Booked (unpaid)</th>
+            <th>Total Earned (net)</th>
         </tr>
         #foreach($category in $tickets.availableCategories)
             <tr>
-                <td>$category.name</td>
                 #set($soldInCategory = $tickets.getSoldByCategory($category))
-                <td>$soldInCategory</td>
-                <td>$math.mul($soldInCategory, $category.price) $conf.getProperty('INVOICE_CURRENCY')</td>
-                #set($totalMoney = $totalMoney + $math.mul($soldInCategory, $category.price))
-                #set($totalTickets = $totalTickets + $soldInCategory)
-            </tr>
-        #end
-        <tr>
-            <td><strong>TOTAL</strong></td>
-            <td><strong>$totalTickets</strong></td>
-            <td><strong>$totalMoney $conf.getProperty('INVOICE_CURRENCY')</strong></td>
-        </tr>
-    </table>
-
-    <h3>Unpaid by category</h3>
-
-    #set($totalTickets = 0)
-
-    <table class="table table-striped">
-        <tr>
-            <th>Category Name</th>
-            <th>Total Booked And Unpaid</th>
-        </tr>
-        #foreach($category in $tickets.availableCategories)
-            <tr>
-                <td>$category.name</td>
                 #set($unpaidInCategory = $tickets.getNotPaidByCategory($category))
+                #set($earnedByCat = $tickets.getTotalEarnedByCategory($category))
+                #set($ticketsLeft = $category.numberOfTickets - ($soldInCategory + $unpaidInCategory))
+                <td>$category.name</td>
+                <td>$category.numberOfTickets</td>
+                <td>$ticketsLeft</td>
+                <td>$soldInCategory</td>
                 <td>$unpaidInCategory</td>
-                #set($totalTickets = $totalTickets + $unpaidInCategory)
+                <td>$earnedByCat $conf.getProperty('INVOICE_CURRENCY')</td>
+                #set($totalMoney = $totalMoney + $earnedByCat)
+                #set($totalSoldTickets = $totalSoldTickets + $soldInCategory)
+                #set($totalUnpaidTickets = $totalUnpaidTickets + $unpaidInCategory)
+                #set($totalLeft = $totalLeft + $ticketsLeft)
+                #set($totalTickets = $totalTickets + $category.numberOfTickets)
             </tr>
         #end
         <tr>
             <td><strong>TOTAL</strong></td>
             <td><strong>$totalTickets</strong></td>
+            <td><strong>$totalLeft</strong></td>
+            <td><strong>$totalSoldTickets</strong></td>
+            <td><strong>$totalUnpaidTickets</strong></td>
+            <td><strong>$totalMoney $conf.getProperty('INVOICE_CURRENCY')</strong></td>
         </tr>
     </table>
 
@@ -96,7 +91,7 @@
 
         var currentPage = 0;
         var jsonLink = "$a.jsonLink('stats','loadAttendants')";
-        var totalTickets = $totalTickets;
+        var totalTickets = $totalSoldTickets;
         var viewModel;
         var index = 0;
 

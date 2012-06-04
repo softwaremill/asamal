@@ -7,7 +7,12 @@ import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.common.util.dependency.D;
 
+import java.text.SimpleDateFormat;
+
 public class ViewInvoice {
+
+    private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     private String invoiceNo;
 
     private String name;
@@ -21,6 +26,10 @@ public class ViewInvoice {
     private String invoiceId;
 
     private String tickets = "";
+
+    private InvoiceStatus status;
+
+    private String dateApproved;
 
     public ViewInvoice(Invoice invoice) {
         boolean prof = invoice.getStatus() == InvoiceStatus.UNPAID;
@@ -44,6 +53,10 @@ public class ViewInvoice {
         for (Ticket ticket : invoice.getTickets()) {
             tickets += ticket.getFirstName() + " " + ticket.getLastName() +"\n";
         }
+
+        status = invoice.getStatus();
+
+        dateApproved = (status == InvoiceStatus.PAID ? sdf.format(invoice.getDatePaid()) : "");
     }
 
     public String getInvoiceNo() {
@@ -74,6 +87,14 @@ public class ViewInvoice {
         return invoiceId;
     }
 
+    public InvoiceStatus getStatus() {
+        return status;
+    }
+
+    public String getDateApproved() {
+        return dateApproved;
+    }
+
     @Override
     public String toString() {
         return "ViewInvoice{" +
@@ -83,6 +104,8 @@ public class ViewInvoice {
                 ", amount='" + amount + '\'' +
                 ", discount='" + discount + '\'' +
                 ", tickets='" + tickets + '\'' +
+                ", status='" + status + '\'' +
+                ", dateApproved='" + dateApproved + '\'' +
                 '}';
     }
 }

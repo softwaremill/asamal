@@ -62,17 +62,26 @@
 
 
     <script type="text/html" id="DATEPICK">
+            <!-- ko if: status() == 'UNPAID' -->
             <input type="text" class="datepicker"
                    data-bind="dateSelect: $data, attr: {id: name}" />
+            <!-- /ko -->
+            <!-- ko if: status() == 'PAID' -->
+            <span data-bind="text: dateApproved"></span>
+            <!-- /ko -->
         </script>
 
         <script type="text/html" id="APPROVE">
+            <!-- ko if: status() == 'UNPAID' -->
             <input class="btn btn-success" type="button"
                    data-bind="attr: {name: 'approve', value: '$m['admin.approve.approve']'}, event: { click: \$root.approve }" />
+            <!-- /ko -->
         </script>
         <script type="text/html" id="CANCEL">
+            <!-- ko if: status() == 'UNPAID' -->
             <input class="btn btn-danger" type="button"
                    data-bind="attr: {name: 'approve', value: '$m['admin.approve.cancel']'}, event: { click: \$root.cancel }" />
+            <!-- /ko -->
         </script>
 
         <script type="text/javascript">
@@ -108,7 +117,7 @@
             }
 
             function next() {
-                if (currentPage < (totalTickets / 10)) {
+                if (currentPage < (totalTickets / 10) - 1) {
                     currentPage++;
 
                     reloadInvoices();
