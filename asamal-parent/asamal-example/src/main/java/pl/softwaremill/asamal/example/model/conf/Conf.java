@@ -114,7 +114,7 @@ public enum Conf {
             "Do not hesitate to contact us if something is not in order,\n" +
             "\n" +
             "--\n" +
-            "The Conference Team"),
+            "The Conference Team", TYPE.TEXT_AREA),
 
     ;
 
