@@ -134,7 +134,7 @@ public class EmailService {
     public void sendCategoryFinishingEmail(TicketCategory category, long ticketsLeft) {
         VelocityContext context = new VelocityContext();
 
-        context.put("category", category);
+        context.put("category", category.getName());
         context.put("tickets", ticketsLeft);
 
         String emailTemplate = configurationBean.getProperty(Conf.TICKETS_FINISHING_EMAIL);

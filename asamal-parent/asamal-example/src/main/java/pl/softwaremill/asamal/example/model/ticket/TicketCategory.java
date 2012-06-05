@@ -134,4 +134,17 @@ public class TicketCategory extends BaseEntity {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public String toString() {
+        return "TicketCategory{" +
+                "fromDate=" + fromDate +
+                ", toDate=" + toDate +
+                ", numberOfTickets=" + numberOfTickets +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", invoiceDescription='" + invoiceDescription + '\'' +
+                '}';
+    }
 }
