@@ -45,7 +45,7 @@ public enum Conf {
                                    "--\n" +
                                    "The Conference Team", TYPE.TEXT_AREA),
 
-    TICKETS_THANKYOU_BCC("foo@bar.com"),
+    NOTIFY_EMAIL("foo@bar.com"),
 
     TICKETS_TRANSFER_RECEIVED_SUBJECT("Your payment for Conference has been received!"),
 

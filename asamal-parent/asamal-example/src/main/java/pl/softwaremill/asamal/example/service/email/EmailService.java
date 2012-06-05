@@ -41,7 +41,7 @@ public class EmailService {
 
         EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(loginBean.getUser().getUsername(),
                 sw.toString(), configurationBean.getProperty(Conf.TICKETS_THANKYOU_EMAIL_SUBJECT), null, null,
-                configurationBean.getProperty(Conf.TICKETS_THANKYOU_BCC))));
+                configurationBean.getProperty(Conf.NOTIFY_EMAIL))));
     }
 
     public void sendInvoiceEmail(Invoice invoice) {
@@ -81,7 +81,7 @@ public class EmailService {
         List<String> allEmails = entityManager.createQuery(
                 "select distinct(i.user.username) from Invoice i").getResultList();
 
-        allEmails.add(configurationBean.getProperty(Conf.TICKETS_THANKYOU_BCC));
+        allEmails.add(configurationBean.getProperty(Conf.NOTIFY_EMAIL));
 
         // for each user create new task
         for (String email : allEmails) {
@@ -110,6 +110,6 @@ public class EmailService {
     public void sendPaypalError(String message) {
         EmailSendingBean.scheduleTask(new SendEmailTask(
                 new EmailDescription(
-                        configurationBean.getProperty(Conf.TICKETS_THANKYOU_BCC), message, "Paypal processing failed!")));
+                        configurationBean.getProperty(Conf.NOTIFY_EMAIL), message, "Paypal processing failed!")));
     }
 }
