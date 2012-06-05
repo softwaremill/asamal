@@ -6,6 +6,7 @@ import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.common.cdi.transaction.Transactional;
 import pl.softwaremill.common.sqs.email.SendEmailTask;
 import pl.softwaremill.common.sqs.util.EmailDescription;
@@ -111,5 +112,27 @@ public class EmailService {
         EmailSendingBean.scheduleTask(new SendEmailTask(
                 new EmailDescription(
                         configurationBean.getProperty(Conf.NOTIFY_EMAIL), message, "Paypal processing failed!")));
+    }
+
+    public void sendCategoryFinishingEmail(TicketCategory category, long ticketsLeft) {
+        VelocityContext context = new VelocityContext();
+
+        context.put("category", category);
+        context.put("tickets", ticketsLeft);
+
+        String emailTemplate = configurationBean.getProperty(Conf.TICKETS_FINISHING_EMAIL);
+        String subjectTemplate = configurationBean.getProperty(Conf.TICKETS_FINISHING_SUBJECT);
+
+        StringWriter sw = new StringWriter();
+
+        Velocity.evaluate(context, sw, "sendCategoryFinishingEmail", emailTemplate);
+        String email = sw.toString();
+
+        sw = new StringWriter();
+        Velocity.evaluate(context, sw, "sendCategoryFinishingEmail", subjectTemplate);
+
+        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(
+                configurationBean.getProperty(Conf.NOTIFY_EMAIL), email, sw.toString()
+        )));
     }
 }

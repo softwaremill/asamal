@@ -57,4 +57,8 @@ public class ConfigurationBean implements Serializable {
     public Integer getAsInt(String conf) {
         return Integer.parseInt(getProperty(conf));
     }
+
+    public Integer getAsInt(Conf conf) {
+        return Integer.parseInt(getProperty(conf));
+    }
 }

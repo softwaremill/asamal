@@ -12,6 +12,7 @@ import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
 import pl.softwaremill.asamal.i18n.Messages;
 import pl.softwaremill.common.cdi.transaction.Transactional;
@@ -38,6 +39,9 @@ public class TicketService {
 
     @Inject
     private ConfigurationBean configurationBean;
+
+    @Inject
+    private EmailService emailService;
 
     private static Logger log = LoggerFactory.getLogger(TicketService.class);
 
@@ -278,5 +282,22 @@ public class TicketService {
         }
 
         return total.setScale(2, BigDecimal.ROUND_HALF_DOWN);
+    }
+
+    public void checkIfCategoryFinishes(TicketCategory category) {
+        Integer threshold = configurationBean.getAsInt(Conf.NUMBER_OF_TICKETS_FINISHING);
+
+        Long number = (Long) entityManager.createQuery(
+                "select count(t) from Ticket t where t.invoice.status != :status and" +
+                " t.ticketCategory = :category")
+                .setParameter("status", InvoiceStatus.CANCELLED)
+                .setParameter("category", category)
+                .getSingleResult();
+
+        long ticketsLeft = category.getNumberOfTickets() - number;
+
+        if (ticketsLeft <= threshold) {
+            emailService.sendCategoryFinishingEmail(category, ticketsLeft);
+        }
     }
 }

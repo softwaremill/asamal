@@ -82,7 +82,18 @@ public enum Conf {
             "--\n" +
             "The Conference Team", TYPE.TEXT_AREA),
 
-    SYSTEM_URL("fill-me-in-in-settings");
+    SYSTEM_URL("fill-me-in-in-settings"),
+
+    TICKETS_FINISHING_SUBJECT("Ticket category $category is finishing"),
+
+    TICKETS_FINISHING_EMAIL("Dear Admins,\n" +
+            "\n" +
+            "Tickets in the category $category are finishing. Currently there are only $tickets tickets!" +
+            "\n" +
+            "--\n" +
+            "The Conference Team", TYPE.TEXT_AREA),
+
+    NUMBER_OF_TICKETS_FINISHING("3");
 
     enum TYPE {
         STRING,

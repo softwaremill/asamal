@@ -94,9 +94,13 @@ public class Invoice extends BaseEntity{
 
     @Column(name = "invoice_number")
     private Long invoiceNumber;
+
+    @Column(name = "notified")
+    private Boolean notified;
     
     public Invoice() {
         editable = true;
+        notified = false;
     }
 
     public Invoice(Set<Ticket> tickets, String name, String companyName, String vat, String address,
@@ -268,6 +272,14 @@ public class Invoice extends BaseEntity{
         this.invoiceNumber = invoiceNumber;
     }
 
+    public Boolean getNotified() {
+        return notified;
+    }
+
+    public void setNotified(Boolean notified) {
+        this.notified = notified;
+    }
+
     @Override
     public String toString() {
         return "Invoice{" +
@@ -288,6 +300,7 @@ public class Invoice extends BaseEntity{
                 ", discount=" + discount +
                 ", editable=" + editable +
                 ", invoiceNumber=" + invoiceNumber +
+                ", notified=" + notified +
                 '}';
     }
 }

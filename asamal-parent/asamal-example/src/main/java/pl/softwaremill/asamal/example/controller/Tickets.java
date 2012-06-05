@@ -262,6 +262,11 @@ public class Tickets extends ControllerBean implements Serializable {
 
             // schedule thank you email
             emailService.sendThankYouEmail(invoice);
+
+            // check finishing categories?
+            for (TicketCategory category : invoice.getTicketsByCategory().keySet()) {
+                ticketService.checkIfCategoryFinishes(category);
+            }
         }
     }
 
