@@ -93,7 +93,30 @@ public enum Conf {
             "--\n" +
             "The Conference Team", TYPE.TEXT_AREA),
 
-    NUMBER_OF_TICKETS_FINISHING("3");
+    NUMBER_OF_TICKETS_FINISHING("3"),
+
+    LATE_PAYMENT_SUBJECT("We have not seen your payment yet!"),
+
+    LATE_PAYMENT_EMAIL("Dear $name,\n" +
+            "\n" +
+            "Over a week ago you have booked tickets for the Conference, but unfortunately we have not seen" +
+            " your payment yet.\n" +
+            "\n" +
+            "Below is a list of the tickets you have ordered:\n" +
+            "#foreach($ticket in $tickets)\n" +
+            "* $ticket.firstName $ticket.lastName\n" +
+            "#end\n" +
+            "\n" +
+            "If possible please go to the conference website and make your payments.\n" +
+            "\n" +
+            "If we do not get the payment within next 5 days we will have to cancel Your order.\n" +
+            "\n" +
+            "Do not hesitate to contact us if something is not in order,\n" +
+            "\n" +
+            "--\n" +
+            "The Conference Team"),
+
+    ;
 
     enum TYPE {
         STRING,

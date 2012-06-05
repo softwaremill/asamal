@@ -135,4 +135,19 @@ public class EmailService {
                 configurationBean.getProperty(Conf.NOTIFY_EMAIL), email, sw.toString()
         )));
     }
+
+    public void sendLatePaymentNotification(Invoice invoice) {
+        VelocityContext context = new VelocityContext();
+
+        context.put("name", invoice.getName());
+        context.put("tickets", invoice.getTickets());
+
+        String emailTemplate = configurationBean.getProperty(Conf.LATE_PAYMENT_EMAIL);
+
+        StringWriter sw = new StringWriter();
+        Velocity.evaluate(context, sw, "emailThankYou", emailTemplate);
+
+        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(invoice.getUser().getUsername(),
+                sw.toString(), configurationBean.getProperty(Conf.LATE_PAYMENT_SUBJECT))));
+    }
 }
