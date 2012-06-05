@@ -4,8 +4,11 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
+import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotals;
+import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotalsCounter;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.common.cdi.transaction.Transactional;
 import pl.softwaremill.common.sqs.email.SendEmailTask;
@@ -15,6 +18,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class EmailService {
@@ -25,15 +29,28 @@ public class EmailService {
     @Inject
     private LoginBean loginBean;
 
+    @Inject
+    private InvoiceTotalsCounter invoiceTotalsCounter;
+
     @PersistenceContext
     private EntityManager entityManager;
 
     public void sendThankYouEmail(Invoice invoice) {
         VelocityContext context = new VelocityContext();
 
+        InvoiceTotals invoiceTotals = invoiceTotalsCounter.countInvoice(invoice);
+
         context.put("name", invoice.getName());
         context.put("tickets", invoice.getTickets());
         context.put("paymentMethod", invoice.getMethod());
+
+        context.put("amount",
+                invoiceTotals.getTotalGrossAmount().setScale(2, BigDecimal.ROUND_HALF_DOWN).toString() + " "
+                + configurationBean.getProperty(Conf.INVOICE_CURRENCY));
+        if (invoice.getMethod() == PaymentMethod.TRANSFER) {
+            context.put("invoiceId", "PROF/"+
+                    configurationBean.getProperty(Conf.INVOICE_ID)+"TRANSFER/"+invoice.getId());
+        }
 
         String emailTemplate = configurationBean.getProperty(Conf.TICKETS_THANKYOU_EMAIL);
 
