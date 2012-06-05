@@ -248,6 +248,7 @@ public class Tickets extends ControllerBean implements Serializable {
                 invoice.setDatePaid(new Date());
                 invoice.setEditable(false);
                 invoice.setStatus(InvoiceStatus.PAID);
+                invoice.setMethod(PaymentMethod.FREE);
                 invoice.setInvoiceNumber(ticketService.getNextInvoiceNumber(invoice.getMethod()));
 
                 ticketService.updateInvoice(invoice);

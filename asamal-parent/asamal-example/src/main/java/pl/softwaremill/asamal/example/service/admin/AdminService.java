@@ -7,6 +7,7 @@ import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.security.User;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
+import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.httphandler.GetHandler;
 import pl.softwaremill.common.cdi.transaction.Transactional;
@@ -76,10 +77,11 @@ public class AdminService {
 
             List<Long> invoices = entityManager.createQuery(
                     "select i.id from Invoice i where i.datePaid >= :dateStart and i.datePaid < :dateEnd" +
-                            " and i.status = :status")
+                            " and i.status = :status and i.method != :method")
                     .setParameter("dateStart", monthStart.getTime())
                     .setParameter("dateEnd", monthEnd.getTime())
                     .setParameter("status", InvoiceStatus.PAID)
+                    .setParameter("method", PaymentMethod.FREE)
                     .getResultList();
 
             File reports = File.createTempFile("reports", ".pdf");

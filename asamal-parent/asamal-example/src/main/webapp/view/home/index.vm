@@ -10,10 +10,13 @@
             <tr>
                 <th>$m['home.ticket.invoice'] $conf.getProperty('INVOICE_ID')$invoice.id</th>
                 <th>
-                    $m["home.ticket.status.$invoice.status"] $m["home.ticket.method.$invoice.method"]
+                    #if($invoice.method != 'FREE')
+                        $m["home.ticket.status.$invoice.status"]
+                    #end
+                    $m["home.ticket.method.$invoice.method"]
                 </th>
                 <th>
-                    #if($invoice.status != 'CANCELLED')
+                    #if($invoice.status != 'CANCELLED' and $invoice.method != 'FREE')
                         #if($invoice.editable)
                             <a href="$a.link('tickets', 'edit')/$invoice.id">
                                 <span class="label label-info">$m['home.ticket.edit']</span>
@@ -28,8 +31,10 @@
                         <a href="$a.pdf('invoice', 'pdf')/$invoice.id/${c.getInvoiceId($invoice)}.pdf">
                             <span class="label label-info">$m['home.ticket.invoice']</span>
                         </a>
-                    #else
+                    #elseif ($invoice.status == 'CANCELLED')
                         $m["home.ticket.status.$invoice.status"]
+                    #else
+                        $m["home.ticket.method.$invoice.method"]
                     #end
                 </th>
             </tr>
