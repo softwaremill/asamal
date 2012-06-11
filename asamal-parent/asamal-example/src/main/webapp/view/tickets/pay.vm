@@ -46,6 +46,7 @@
         #if($invoice.method == 'TRANSFER')
             $m.getFromBundle('pay.thankyou.TRANSFER',
                 $conf.getProperty('INVOICE_COMPANY'),
+                "$conf.getProperty('INVOICE_ADDRESS'), $conf.getProperty('INVOICE_CITY'), $conf.getProperty('INVOICE_COUNTRY')",
                 $conf.getProperty('INVOICE_IBAN'),
                 $conf.getProperty('INVOICE_BANK_NAME'),
                 $conf.getProperty('INVOICE_BANK_CODE'),

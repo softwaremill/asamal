@@ -23,8 +23,10 @@
         <h3>$m['invoice.buyer']</h3>
         <table>
             <tr><td>$m['invoice.name']</td><td>$invoice.name</td></tr>
-            <tr><td>$m['invoice.company']</td><td>$invoice.companyName</td></tr>
-            <tr><td>$m['invoice.vat']</td><td>$invoice.vat</td></tr>
+            #if(!$invoice.companyName.isEmpty() && !$invoice.vat.isEmpty())
+                <tr><td>$m['invoice.company']</td><td>$invoice.companyName</td></tr>
+                <tr><td>$m['invoice.vat']</td><td>$invoice.vat</td></tr>
+            #end
             <tr><td>$m['invoice.address']</td><td>$invoice.address</td></tr>
             <tr><td>$m['invoice.postal_code']</td><td>$invoice.postalCode</td></tr>
             <tr><td>$m['invoice.city']</td><td>$invoice.city</td></tr>

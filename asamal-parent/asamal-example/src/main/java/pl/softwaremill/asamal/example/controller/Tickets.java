@@ -1,6 +1,7 @@
 package pl.softwaremill.asamal.example.controller;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.controller.AsamalContext;
@@ -184,6 +185,8 @@ public class Tickets extends ControllerBean implements Serializable {
 
         }
 
+        allGood = checkCompanyData(invoice) && allGood;
+
         String paymentMethod = getParameter("paymentMethod");
 
         if (paymentMethod != null) {
@@ -269,6 +272,29 @@ public class Tickets extends ControllerBean implements Serializable {
                 ticketService.checkIfCategoryFinishes(category);
             }
         }
+    }
+
+    private boolean checkCompanyData(Invoice invoice) {
+        String vat = invoice.getVat();
+        String company = invoice.getCompanyName();
+
+        if (StringUtils.isNotEmpty(vat) || StringUtils.isNotEmpty(company)) {
+            if (StringUtils.isEmpty(vat)) {
+                addMessageToFlash("invoice.vat", getFromMessageBundle("tickets.vat.missing"),
+                        AsamalContext.MessageSeverity.ERR);
+
+                return false;
+            }
+
+            if (StringUtils.isEmpty(company)) {
+                addMessageToFlash("invoice.companyName", getFromMessageBundle("tickets.companyName.missing"),
+                        AsamalContext.MessageSeverity.ERR);
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private int getTotalTickets() {
