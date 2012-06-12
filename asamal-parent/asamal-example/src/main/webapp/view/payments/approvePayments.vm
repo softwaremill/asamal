@@ -11,6 +11,7 @@
             <thead>
             <tr>
                 <th>No</th>
+                <th>Email</th>
                 <th>Proforma Invoice Number</th>
                 <th>Date Booked</th>
                 <th>Name &amp; Last Name</th>
@@ -25,6 +26,9 @@
             <tbody data-bind="foreach: invoices">
             <tr>
                 <td data-bind="text: index++"/>
+                <td>
+                    <a data-bind="text: email, attr: {href: 'mailto:'+email()}"></a>
+                </td>
                 <td data-bind="text: invoiceNo"/>
                 <td>
                     <span data-bind="text: dateCreated"></span>

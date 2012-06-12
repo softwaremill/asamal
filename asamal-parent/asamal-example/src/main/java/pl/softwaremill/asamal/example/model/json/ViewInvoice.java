@@ -15,6 +15,8 @@ public class ViewInvoice {
 
     private String invoiceNo;
 
+    private String email;
+
     private String name;
 
     private String company;
@@ -61,6 +63,8 @@ public class ViewInvoice {
 
         dateApproved = (status == InvoiceStatus.PAID ? sdf.format(invoice.getDatePaid()) : "");
         dateCreated = sdf.format(invoice.getDateCreated());
+
+        email = invoice.getUser().getUsername();
     }
 
     public String getInvoiceNo() {
@@ -107,16 +111,26 @@ public class ViewInvoice {
         this.dateCreated = dateCreated;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public String toString() {
         return "ViewInvoice{" +
                 "invoiceNo='" + invoiceNo + '\'' +
+                ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", company='" + company + '\'' +
                 ", amount='" + amount + '\'' +
                 ", discount='" + discount + '\'' +
+                ", invoiceId='" + invoiceId + '\'' +
                 ", tickets='" + tickets + '\'' +
-                ", status='" + status + '\'' +
+                ", status=" + status +
                 ", dateApproved='" + dateApproved + '\'' +
                 ", dateCreated='" + dateCreated + '\'' +
                 '}';
