@@ -28,13 +28,13 @@
                 <td data-bind="text: invoiceNo"/>
                 <td>
                     <span data-bind="text: dateCreated"></span>
-                    <!-- ko if: \$root.daysNotPaid(\$data) > 14 -->
+                    <!-- ko if: status() == 'UNPAID'  && \$root.daysNotPaid(\$data) > 14 -->
                         <span class="badge badge-important" data-bind="text: \$root.daysNotPaid(\$data) + ' days not paid'"></span>
                     <!-- /ko -->
-                    <!-- ko if: \$root.daysNotPaid(\$data) <= 14 && \$root.daysNotPaid(\$data) > 7 -->
+                    <!-- ko if: status() == 'UNPAID' && \$root.daysNotPaid(\$data) <= 14 && \$root.daysNotPaid(\$data) > 7 -->
                         <span class="badge badge-warning" data-bind="text: \$root.daysNotPaid(\$data) + ' days not paid'"></span>
                     <!-- /ko -->
-                    <!-- ko if: \$root.daysNotPaid(\$data) <= 7 -->
+                    <!-- ko if: status() == 'UNPAID' && \$root.daysNotPaid(\$data) <= 7 -->
                         <span class="badge badge-success" data-bind="text: \$root.daysNotPaid(\$data) + ' days not paid'"></span>
                     <!-- /ko -->
                 </td>
