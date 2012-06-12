@@ -31,6 +31,8 @@ public class ViewInvoice {
 
     private String dateApproved;
 
+    private String dateCreated;
+
     public ViewInvoice(Invoice invoice) {
         boolean prof = invoice.getStatus() == InvoiceStatus.UNPAID;
         boolean cancelled = invoice.getStatus() == InvoiceStatus.CANCELLED;
@@ -58,6 +60,7 @@ public class ViewInvoice {
         status = invoice.getStatus();
 
         dateApproved = (status == InvoiceStatus.PAID ? sdf.format(invoice.getDatePaid()) : "");
+        dateCreated = sdf.format(invoice.getDateCreated());
     }
 
     public String getInvoiceNo() {
@@ -96,6 +99,14 @@ public class ViewInvoice {
         return dateApproved;
     }
 
+    public String getDateCreated() {
+        return dateCreated;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     @Override
     public String toString() {
         return "ViewInvoice{" +
@@ -107,6 +118,7 @@ public class ViewInvoice {
                 ", tickets='" + tickets + '\'' +
                 ", status='" + status + '\'' +
                 ", dateApproved='" + dateApproved + '\'' +
+                ", dateCreated='" + dateCreated + '\'' +
                 '}';
     }
 }

@@ -12,6 +12,7 @@
             <tr>
                 <th>No</th>
                 <th>Proforma Invoice Number</th>
+                <th>Date Booked</th>
                 <th>Name &amp; Last Name</th>
                 <th>Company</th>
                 <th>Amount</th>
@@ -25,6 +26,18 @@
             <tr>
                 <td data-bind="text: index++"/>
                 <td data-bind="text: invoiceNo"/>
+                <td>
+                    <span data-bind="text: dateCreated"></span>
+                    <!-- ko if: \$root.daysNotPaid(\$data) > 14 -->
+                        <span class="badge badge-important" data-bind="text: \$root.daysNotPaid(\$data) + ' days not paid'"></span>
+                    <!-- /ko -->
+                    <!-- ko if: \$root.daysNotPaid(\$data) <= 14 && \$root.daysNotPaid(\$data) > 7 -->
+                        <span class="badge badge-warning" data-bind="text: \$root.daysNotPaid(\$data) + ' days not paid'"></span>
+                    <!-- /ko -->
+                    <!-- ko if: \$root.daysNotPaid(\$data) <= 7 -->
+                        <span class="badge badge-success" data-bind="text: \$root.daysNotPaid(\$data) + ' days not paid'"></span>
+                    <!-- /ko -->
+                </td>
                 <td data-bind="text: name"></td>
                 <td data-bind="text: company"></td>
                 <td data-bind="text: amount"></td>
@@ -85,6 +98,8 @@
         </script>
 
         <script type="text/javascript">
+
+            var ONE_DAY=1000*60*60*24
 
             ko.bindingHandlers.dateSelect = {
                 init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
@@ -151,6 +166,13 @@
                                     {'invoiceId': element.invoiceId()},
                                     'reload')
                         };
+                        viewModel.daysNotPaid = function (element) {
+                            var dateCreated = $.datepicker.parseDate('yy-mm-dd', element.dateCreated());
+
+                            var diff = new Date().getTime() - dateCreated.getTime();
+
+                            return Math.floor(diff / ONE_DAY);
+                        }
 
                         ko.applyBindings(viewModel);
 
