@@ -50,4 +50,18 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>asamal-repos</id>
+            <name>asamal-repos</name>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <url>http://tools.softwaremill.pl/nexus/content/groups/asamal-repos/</url>
+        </repository>
+    </repositories>
 </project>
