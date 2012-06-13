@@ -2,6 +2,7 @@ package pl.softwaremill.asamal.example.controller;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multiset;
+import org.apache.velocity.context.Context;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.persistence.Transactional;
@@ -11,22 +12,25 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import pl.softwaremill.asamal.AsamalParameters;
 import pl.softwaremill.asamal.example.logic.admin.DiscountService;
+import pl.softwaremill.asamal.example.logic.auth.LoginBean;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
+import pl.softwaremill.asamal.example.logic.invoice.InvoiceTotalsCounter;
 import pl.softwaremill.asamal.example.model.BaseEntity;
 import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.conf.ConfigurationProperty;
 import pl.softwaremill.asamal.example.model.json.ViewUsers;
 import pl.softwaremill.asamal.example.model.security.User;
-import pl.softwaremill.asamal.example.model.ticket.Invoice;
-import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
-import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
-import pl.softwaremill.asamal.example.model.ticket.Ticket;
-import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
+import pl.softwaremill.asamal.example.model.ticket.*;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
+import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
+import pl.softwaremill.asamal.example.service.hash.StringHasher;
 import pl.softwaremill.asamal.example.service.ticket.TicketOptionService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
+import pl.softwaremill.asamal.example.service.user.UserService;
+import pl.softwaremill.asamal.example.service.user.exception.UserExistsException;
 import pl.softwaremill.asamal.i18n.Messages;
 
 import javax.inject.Inject;
@@ -46,6 +50,12 @@ public class TicketsTest {
     {
         return ShrinkWrap.create(JavaArchive.class, "test.jar")
                 .addPackages(true, "org.fest")
+//                .addPackages(true, "org.apache.velocity")
+                .addPackages(true, "org.jdom")
+                .addPackages(true, "pl.softwaremill.common.task")
+                .addPackages(true, "pl.softwaremill.asamal.controller")
+                .addClass(AsamalParameters.class)
+                .addClass(Context.class)
                 .addClasses(Multimap.class, Multiset.class)
                 .addPackage(TicketService.class.getPackage())
                 .addPackage(TicketsExceededException.class.getPackage())
@@ -56,7 +66,13 @@ public class TicketsTest {
                 .addPackage(TicketOptionService.class.getPackage())
                 .addClasses(ConfigurationBean.class, ConfigurationService.class, ConfigurationProperty.class, Conf.class)
                 .addPackage(ViewUsers.class.getPackage())
+                .addPackage(InvoiceTotalsCounter.class.getPackage())
                 .addClass(DiscountService.class)
+                .addClass(EmailService.class)
+                .addClass(UserService.class)
+                .addClass(UserExistsException.class)
+                .addClass(StringHasher.class)
+                .addPackage(LoginBean.class.getPackage())
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml")
                 .addAsResource(EmptyAsset.INSTANCE, "messages.properties")
                 .addAsManifestResource("test-persistence.xml", "persistence.xml");
