@@ -107,6 +107,13 @@ public class TicketService {
     }
 
     @Transactional
+    public List<TicketCategory> getAllCategories() {
+        return entityManager.createQuery(
+                "select t from TicketCategory t order by t.name")
+                .getResultList();
+    }
+
+    @Transactional
     public TicketCategory getTicketCategory(String name) {
         return (TicketCategory) entityManager.createQuery("select t from TicketCategory t where t.name = :name")
                 .setParameter("name", name)

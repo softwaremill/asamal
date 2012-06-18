@@ -19,7 +19,7 @@
             <th>Total Booked (unpaid)</th>
             <th>Total Earned (net)</th>
         </tr>
-        #foreach($category in $tickets.availableCategories)
+        #foreach($category in $tickets.allCategories)
             <tr>
                 #set($soldInCategory = $tickets.getSoldByCategory($category))
                 #set($unpaidInCategory = $tickets.getNotPaidByCategory($category))
