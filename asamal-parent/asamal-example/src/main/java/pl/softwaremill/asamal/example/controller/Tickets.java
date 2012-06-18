@@ -91,6 +91,12 @@ public class Tickets extends ControllerBean implements Serializable {
     public void buy() {
         putInContext("toBePaid", 0);
 
+        String discountCode = getParameter("discountCode");
+
+        if (discountCode != null) {
+            putInContext("discountCode", discountCode);
+        }
+
         if (loginBean.isLoggedIn()) {
             // check if the user didn't have any invoices yet, so we can prefill has invoice data
             List<Invoice> invoices = ticketService.getInvoicesForUser(loginBean.getUser());

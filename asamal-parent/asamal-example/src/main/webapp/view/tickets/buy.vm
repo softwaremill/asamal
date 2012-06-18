@@ -15,7 +15,7 @@
                             #renderPartial('invoice_form')
 
                             <label>$m['tickets.buy.discount']</label>
-                            <input type="text" name="invoice.discount" value="$!c.invoice.discount.discountCode"/>
+                            <input type="text" name="invoice.discount" value="$!{c.invoice.discount.discountCode}$!{discountCode}"/>
                             #err('invoice.discount')
                         </div>
                         <div id="tickets-form" class="span6">
