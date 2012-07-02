@@ -126,6 +126,7 @@ public class GetHandler extends AbstractHttpHandler {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             org.w3c.dom.Document doc = builder.parse(
                     new ByteArrayInputStream(page.getEntity().toString()
+                            .replaceAll("\\&ouml;", "ö").replaceAll("\\&Ouml;", "Ö")
                             .replaceAll("\\&oacute;", "ó").replaceAll("\\&Oacute;", "Ó").replaceAll("\\&nbsp;", " ")
                             .getBytes("UTF-8")));
 
@@ -135,7 +136,7 @@ public class GetHandler extends AbstractHttpHandler {
             renderer.getFontResolver().addFont("fonts/PfennigBold.ttf",
                     BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             renderer.getFontResolver().addFont("fonts/PfennigBoldItalic.ttf",
-                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             renderer.getFontResolver().addFont("fonts/PfennigItalic.ttf",
                     BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             renderer.getFontResolver().addFont("fonts/Cousine-Bold-Latin.ttf",
