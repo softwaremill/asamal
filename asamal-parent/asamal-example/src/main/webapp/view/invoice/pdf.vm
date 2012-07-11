@@ -39,9 +39,9 @@
         <hr/>
 
         <table>
-            <tr><td>$m['invoice.issue_date']</td><td>$date.format('yyyy-MM-dd', $invoice.dateCreated)</td></tr>
-            <tr><td>$m['invoice.sale_date']</td><td>$date.format('yyyy-MM-dd', $invoice.dateCreated)</td></tr>
-            <tr><td>$m['invoice.due_date']</td><td>$date.format('yyyy-MM-dd', $invoice.dueDate)</td></tr>
+            <tr><td>$m['invoice.issue_date']</td><td>$date.format('yyyy-MM-dd', $invoice.datePaid)</td></tr>
+            <tr><td>$m['invoice.sale_date']</td><td>$date.format('yyyy-MM-dd', $invoice.datePaid)</td></tr>
+            <tr><td>$m['invoice.due_date']</td><td>$date.format('yyyy-MM-dd', $invoice.datePaid)</td></tr>
             <tr><td>$m['invoice.payment_method']</td><td>$m["invoice.pdf.method.$invoice.method"]</td></tr>
         </table>
         #if($invoice.method == 'TRANSFER')
