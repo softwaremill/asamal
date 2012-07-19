@@ -18,8 +18,8 @@ import java.util.Set;
 @Table(name = "USER")
 public class User extends BaseEntity {
 
-    @Column(unique = true, name = "username", nullable = false, length = 30)
-    @Size(min = 3, max = 30)
+    @Column(unique = true, name = "username", nullable = false, length = 130)
+    @Size(min = 3, max = 130)
     @Email
     private String username;
 
