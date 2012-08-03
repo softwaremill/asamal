@@ -250,7 +250,7 @@ public class TicketService {
             queryStr += "lower(i.companyName) like :search or lower(i.name) like :search ";
         }
 
-        queryStr += "order by i.id";
+        queryStr += "order by i.id desc";
 
         Query query = entityManager.createQuery(queryStr);
 
