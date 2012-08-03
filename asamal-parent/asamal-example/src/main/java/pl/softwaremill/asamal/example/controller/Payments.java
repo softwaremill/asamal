@@ -128,7 +128,7 @@ public class Payments extends ControllerBean {
                                                 @PathParameter("month") Integer month) {
         Calendar accMonth = Calendar.getInstance();
         accMonth.set(Calendar.YEAR, year);
-        accMonth.set(Calendar.MONTH, month + 1);
+        accMonth.set(Calendar.MONTH, month);
         accMonth.set(Calendar.DAY_OF_MONTH, 1);
         accMonth.set(Calendar.HOUR, 0);
         accMonth.set(Calendar.MINUTE, 0);

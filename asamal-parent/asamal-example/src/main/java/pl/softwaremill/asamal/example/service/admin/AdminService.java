@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -109,7 +110,8 @@ public class AdminService {
             zipOutputStream.close();
 
             return new DownloadDescription(new BufferedInputStream(new FileInputStream(reports)),
-                    "invoices-"+monthStart.get(Calendar.MONTH)+"-"+monthStart.get(Calendar.YEAR)+".zip");
+                    "invoices-"+monthStart.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault())
+                            +"-"+monthStart.get(Calendar.YEAR)+".zip");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
