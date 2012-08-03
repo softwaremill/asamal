@@ -34,14 +34,23 @@
         </table>
     </div>
 
+    #if($proformaId)
+        #set($issueDate = $invoice.dateCreated)
+        #set($saleDate = $invoice.dateCreated)
+        #set($dueDate = $invoice.dueDate)
+    #else
+        #set($issueDate = $invoice.datePaid)
+        #set($saleDate = $invoice.datePaid)
+        #set($dueDate = $invoice.datePaid)
+    #end
 
     <div style="float: left; width: 100%">
         <hr/>
 
         <table>
-            <tr><td>$m['invoice.issue_date']</td><td>$date.format('yyyy-MM-dd', $invoice.datePaid)</td></tr>
-            <tr><td>$m['invoice.sale_date']</td><td>$date.format('yyyy-MM-dd', $invoice.datePaid)</td></tr>
-            <tr><td>$m['invoice.due_date']</td><td>$date.format('yyyy-MM-dd', $invoice.datePaid)</td></tr>
+            <tr><td>$m['invoice.issue_date']</td><td>$date.format('yyyy-MM-dd', $issueDate)</td></tr>
+            <tr><td>$m['invoice.sale_date']</td><td>$date.format('yyyy-MM-dd', $saleDate)</td></tr>
+            <tr><td>$m['invoice.due_date']</td><td>$date.format('yyyy-MM-dd', $dueDate)</td></tr>
             <tr><td>$m['invoice.payment_method']</td><td>$m["invoice.pdf.method.$invoice.method"]</td></tr>
         </table>
         #if($invoice.method == 'TRANSFER')
@@ -96,10 +105,20 @@
 
     <div style="float: left; width: 100%">
 
+        #set($totalAmountStr = $number.format('#0.00', $totalAmount))
+
+        #if($proformaId)
+            #set($outstanding = $totalAmountStr)
+            #set($paid = $number.format('#0.00', 0))
+        #else
+            #set($outstanding = $number.format('#0.00', 0))
+            #set($paid = $totalAmountStr)
+        #end
+
         <table>
-            <tr><td><strong>$m['invoice.total_due']</strong></td><td>$number.format('#0.00', $totalAmount) $conf.getProperty('INVOICE_CURRENCY')</td></tr>
-            <tr><td>$m['invoice.paid']</td><td>0.00 $conf.getProperty('INVOICE_CURRENCY')</td></tr>
-            <tr><td>$m['invoice.outstanding']</td><td>$number.format('#0.00', $totalAmount) $conf.getProperty('INVOICE_CURRENCY')</td></tr>
+            <tr><td><strong>$m['invoice.total_due']</strong></td><td>$totalAmountStr $conf.getProperty('INVOICE_CURRENCY')</td></tr>
+            <tr><td>$m['invoice.paid']</td><td>$paid $conf.getProperty('INVOICE_CURRENCY')</td></tr>
+            <tr><td>$m['invoice.outstanding']</td><td>$outstanding $conf.getProperty('INVOICE_CURRENCY')</td></tr>
             <tr><td></td></tr>
             <tr><td>$m['invoice.inwords']</td><td>$c.toString('pl', $number.format('#0.00', $totalAmount), $conf.getProperty('INVOICE_CURRENCY')) <br/>
                 $c.toString('en', $number.format('#0.00', $totalAmount), $conf.getProperty('INVOICE_CURRENCY'))</td></tr>
