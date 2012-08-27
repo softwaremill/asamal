@@ -74,7 +74,7 @@ public class EmailService {
         StringWriter sw = new StringWriter();
         Velocity.evaluate(context, sw, "emailInvoice", emailTemplate);
 
-        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(loginBean.getUser().getUsername(),
+        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(invoice.getUser().getUsername(),
                 sw.toString(), configurationBean.getProperty(Conf.INVOICE_EMAIL_SUBJECT))));
     }
 
@@ -90,7 +90,7 @@ public class EmailService {
         StringWriter sw = new StringWriter();
         Velocity.evaluate(context, sw, "emailTransferReceived", emailTemplate);
 
-        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(loginBean.getUser().getUsername(),
+        EmailSendingBean.scheduleTask(new SendEmailTask(new EmailDescription(invoice.getUser().getUsername(),
                 sw.toString(), configurationBean.getProperty(Conf.TICKETS_TRANSFER_RECEIVED_SUBJECT))));
     }
 
