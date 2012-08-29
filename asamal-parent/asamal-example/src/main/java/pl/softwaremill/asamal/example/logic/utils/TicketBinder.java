@@ -25,7 +25,7 @@ public class TicketBinder {
     public void bindInvoiceDetails(ControllerBean bean) {
         // bind invoice
         bean.doOptionalAutoBinding("invoice.name", "invoice.companyName", "invoice.vat",
-                "invoice.address", "invoice.postalCode", "invoice.city", "invoice.country");
+                "invoice.address", "invoice.postalCode", "invoice.city", "invoice.country", "invoice.notes");
     }
 
     public void bindTickets(Tickets bean, List<TicketCategory> availableCategories, Invoice invoice) {

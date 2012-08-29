@@ -42,6 +42,10 @@
 </select>
 #err('invoice.country')
 
+<label>$m['tickets.buy.notes']</label>
+<input type="text" name="invoice.notes" value="$!c.invoice.notes"/>
+#err('invoice.notes')
+
 <br/>
 
 #if($c.invoice.datePaid)

@@ -24,25 +24,33 @@
                             #set($catNo = 0)
 
                             #foreach($ticketCat in $c.availableCategories)
-                                $ticketCat.name
-                                <select id="numberOfTickets-$ticketCat.idName"
-                                        onchange="ajaxPost('tickets', 'changeNumber', 'ticketForm', 'tickets-form')"
-                                        name="numberOfTickets-$ticketCat.idName">
-                                    <option value="0">-</option>
-                                    #foreach( $i in [1..$c.getMaxTickets($ticketCat)] )
-                                        <option value="$i" #if($i == $ticketsToBuy[$ticketCat.idName])selected #end
-                                            >$i</option>
+
+                                #set($maxTickets = $c.getMaxTickets($ticketCat))
+
+                                #if($maxTickets > 0)
+                                    $ticketCat.name
+
+                                    <select id="numberOfTickets-$ticketCat.idName"
+                                            onchange="ajaxPost('tickets', 'changeNumber', 'ticketForm', 'tickets-form')"
+                                            name="numberOfTickets-$ticketCat.idName">
+                                        <option value="0">-</option>
+                                        #foreach( $i in [1..$maxTickets] )
+                                            <option value="$i" #if($i == $ticketsToBuy[$ticketCat.idName])selected #end
+                                                >$i</option>
+                                        #end
+                                    </select>
+
+                                    <hr/>
+
+                                    #if($ticketsToBuy && $ticketsToBuy[$ticketCat.idName] && $ticketsToBuy[$ticketCat.idName] > 0)
+                                        #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])
+                                            <h4>Attendee $i</h4>
+
+                                            #renderPartial('attendee')
+                                        #end
                                     #end
-                                </select>
-
-                                <hr/>
-
-                                #if($ticketsToBuy && $ticketsToBuy[$ticketCat.idName] && $ticketsToBuy[$ticketCat.idName] > 0)
-                                    #foreach($i in [1..$ticketsToBuy[$ticketCat.idName]])
-                                        <h4>Attendee $i</h4>
-
-                                        #renderPartial('attendee')
-                                    #end
+                                #else
+                                    <h4>$ticketCat.name are sold out!</h4>
                                 #end
 
                                 #set($catNo = $catNo + 1)

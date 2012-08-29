@@ -22,7 +22,11 @@ import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.conf.ConfigurationProperty;
 import pl.softwaremill.asamal.example.model.json.ViewUsers;
 import pl.softwaremill.asamal.example.model.security.User;
-import pl.softwaremill.asamal.example.model.ticket.*;
+import pl.softwaremill.asamal.example.model.ticket.Invoice;
+import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
+import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
+import pl.softwaremill.asamal.example.model.ticket.Ticket;
+import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.conf.ConfigurationService;
 import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.exception.TicketsExceededException;
@@ -98,7 +102,7 @@ public class TicketsTest {
         tickets.add(new Ticket("Tomek", "Szymanski", tc));
 
         Invoice i = new Invoice(tickets, "Paying", "Customer", "123-456", "Address", "00123", "City", "Country",
-                InvoiceStatus.UNPAID, PaymentMethod.TRANSFER, u, new Date(), null, null, true, null);
+                InvoiceStatus.UNPAID, PaymentMethod.TRANSFER, u, new Date(), null, null, true, null, null);
         // when
         ticketService.addInvoice(i);
 

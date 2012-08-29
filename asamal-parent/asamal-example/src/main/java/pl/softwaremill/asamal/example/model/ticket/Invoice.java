@@ -97,6 +97,10 @@ public class Invoice extends BaseEntity{
 
     @Column(name = "notified")
     private Boolean notified;
+
+    @Column(name = "notes", length = 255)
+    @Size(max = 255)
+    private String notes;
     
     public Invoice() {
         editable = true;
@@ -105,7 +109,7 @@ public class Invoice extends BaseEntity{
 
     public Invoice(Set<Ticket> tickets, String name, String companyName, String vat, String address,
                    String postalCode, String city, String country, InvoiceStatus status, PaymentMethod method, User user, Date dateCreated,
-                   Date datePaid, Discount discount, Boolean editable, Long invoiceNumber) {
+                   Date datePaid, Discount discount, Boolean editable, Long invoiceNumber, String notes) {
         this();
 
         this.tickets = tickets;
@@ -124,6 +128,7 @@ public class Invoice extends BaseEntity{
         this.discount = discount;
         this.editable = editable;
         this.dueDate = new Date(dateCreated.getTime() + SEVEN_DAYS);
+        this.notes = notes;
     }
 
     public Set<Ticket> getTickets() {
@@ -280,6 +285,17 @@ public class Invoice extends BaseEntity{
         this.notified = notified;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+
+        if ("".equals(notes))
+            this.notes = null;
+    }
+
     @Override
     public String toString() {
         return "Invoice{" +
@@ -301,6 +317,7 @@ public class Invoice extends BaseEntity{
                 ", editable=" + editable +
                 ", invoiceNumber=" + invoiceNumber +
                 ", notified=" + notified +
+                ", notes=" + notes +
                 '}';
     }
 }

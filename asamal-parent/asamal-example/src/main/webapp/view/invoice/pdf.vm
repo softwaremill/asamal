@@ -125,6 +125,12 @@
         </table>
         <hr/>
 
+        #if($invoice.notes)
+            <strong>Uwagi / Notes:</strong><br/>
+            $invoice.notes
+            <hr/>
+        #end
+
     </div>
 
     <div style="border: 1px black solid; float: left; width: 320px; text-align: center; padding-top: 30px;">
