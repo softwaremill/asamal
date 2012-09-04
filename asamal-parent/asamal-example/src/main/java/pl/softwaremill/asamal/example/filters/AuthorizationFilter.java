@@ -25,7 +25,12 @@ public class AuthorizationFilter implements AsamalFilter {
 
     public void doFilter() {
         if (!loginBean.isLoggedIn()) {
-            context.redirect("login", "login", null);
+            if (context.getCurrentLink().endsWith("/home/index")) {
+                context.redirect("tickets", "buy", null);
+            }
+            else {
+                context.redirect("login", "login", null);
+            }
         }
     }
 }
