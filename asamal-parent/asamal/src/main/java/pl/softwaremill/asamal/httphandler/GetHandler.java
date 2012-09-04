@@ -122,6 +122,9 @@ public class GetHandler extends AbstractHttpHandler {
 
         Response page = handleGet(req, resp, controller, view, extraPath);
 
+        if (page == null)
+            return null;
+
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             org.w3c.dom.Document doc = builder.parse(
