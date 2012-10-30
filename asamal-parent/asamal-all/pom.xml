@@ -28,5 +28,11 @@
             <artifactId>asamal-velocity</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>pl.softwaremill.asamal</groupId>
+            <artifactId>asamal-scala</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

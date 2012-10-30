@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>asamal-parent</artifactId>
+        <groupId>pl.softwaremill</groupId>
+        <version>1-SNAPSHOT</version>
+    </parent>
+    <groupId>pl.softwaremill.asamal</groupId>
+    <artifactId>asamal-scala-example</artifactId>
+    <packaging>war</packaging>
+    <name>asamal-scala-example</name>
+    <url>http://maven.apache.org</url>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <scala-version>2.9.1</scala-version>
+        <scala-plugin-version>2.15.0</scala-plugin-version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <artifactId>asamal-all</artifactId>
+            <groupId>pl.softwaremill.asamal</groupId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-compiler</artifactId>
+            <version>${scala-version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>${scala-plugin-version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <jvmArgs>
+                        <jvmArg>-Xmx1024m</jvmArg>
+                    </jvmArgs>
+                    <args>
+                        <!-- arg>-unchecked</arg -->
+                        <arg>-deprecation</arg>
+                    </args>
+                    <scala-version>${scala-version}</scala-version>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
