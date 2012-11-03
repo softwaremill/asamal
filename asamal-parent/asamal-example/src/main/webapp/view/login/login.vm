@@ -3,7 +3,7 @@
 #region('content')
     <h1>$m['login.pleaselogin']</h1>
 
-    <form accept-charset="UTF-8" action="$a.formAction('login', 'doLogin')" method="POST"
+    <form accept-charset="UTF-8" action="$a.link('login', 'doLogin')" method="POST"
           class="form-horizontal">
         <label>$m['login.login']</label>
         <input type="text" name="login" value=""/>

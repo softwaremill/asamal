@@ -1,7 +1,5 @@
 package pl.softwaremill.asamal.controller.cdi;
 
-import pl.softwaremill.asamal.controller.annotation.Download;
-
 import java.lang.annotation.Annotation;
 
 /**
@@ -17,7 +15,9 @@ public enum RequestType {
 
     POST(pl.softwaremill.asamal.controller.annotation.Post.class),
 
-    DOWNLOAD(Download.class);
+    DELETE(pl.softwaremill.asamal.controller.annotation.Delete.class),
+
+    PUT(pl.softwaremill.asamal.controller.annotation.Put.class);
 
     private final Class<? extends Annotation> requestAnnotation;
 

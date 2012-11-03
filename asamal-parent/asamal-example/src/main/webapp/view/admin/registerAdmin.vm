@@ -3,7 +3,7 @@
 #region('content')
     <h1>Register new admin user</h1>
 
-    <form method="post" action="$a.formAction('admin', 'doRegisterAdmin')" class="form-horizontal">
+    <form method="post" action="$a.link('admin', 'doRegisterAdmin')" class="form-horizontal">
         #renderPartial("/common/register")
         <input type="submit"/>
     </form>

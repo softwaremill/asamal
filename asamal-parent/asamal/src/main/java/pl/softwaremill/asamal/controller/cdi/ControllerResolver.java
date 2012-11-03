@@ -6,27 +6,17 @@ import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.controller.AsamalFilter;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.FilterStopException;
-import pl.softwaremill.asamal.controller.annotation.ControllerImpl;
-import pl.softwaremill.asamal.controller.annotation.Download;
-import pl.softwaremill.asamal.controller.annotation.Filters;
-import pl.softwaremill.asamal.controller.annotation.Get;
-import pl.softwaremill.asamal.controller.annotation.Json;
-import pl.softwaremill.asamal.controller.annotation.PathParameter;
-import pl.softwaremill.asamal.controller.annotation.Post;
-import pl.softwaremill.asamal.controller.annotation.RequestParameter;
+import pl.softwaremill.asamal.controller.annotation.*;
 import pl.softwaremill.asamal.controller.exception.AmbiguousViewMethodsException;
 import pl.softwaremill.asamal.controller.exception.RequiredParameterNotFoundException;
 import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.common.util.dependency.D;
 
+import javax.ws.rs.core.MediaType;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class that resolves the controller beans and view actions
@@ -35,6 +25,7 @@ import java.util.Set;
  */
 public class ControllerResolver {
 
+    public static final String HTML_CONTENT_TYPE = MediaType.TEXT_HTML + "; charset=UTF-8";
     private ControllerBean controller;
 
     private final static Logger log = LoggerFactory.getLogger(ControllerResolver.class);
@@ -237,7 +228,26 @@ public class ControllerResolver {
 
     public String contentType(String view) {
         try {
-            return findViewMethod(view, controller.getRealClass()).getAnnotation(Download.class).contentType();
+            Method viewMethod = findViewMethod(view, controller.getRealClass());
+
+            for (Annotation annotation : viewMethod.getDeclaredAnnotations()) {
+                ContentType contentType = annotation.annotationType().getAnnotation(ContentType.class);
+                if (contentType != null) {
+                    return contentType.value();
+                }
+            }
+
+            return HTML_CONTENT_TYPE;
+        } catch (AmbiguousViewMethodsException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean isVoid(String view) {
+        try {
+            return findViewMethod(view, controller.getRealClass()).getReturnType().equals(Void.TYPE);
         } catch (AmbiguousViewMethodsException e) {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {

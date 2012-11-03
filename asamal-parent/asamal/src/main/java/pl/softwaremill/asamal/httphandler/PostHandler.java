@@ -19,13 +19,8 @@ import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -45,15 +40,13 @@ public class PostHandler extends AbstractHttpHandler {
 
 
     private ViewHashGenerator viewHashGenerator;
-    private AsamalViewHandler viewHandler;
 
     @Inject
     public PostHandler(AsamalProducers asamalProducers,
                        ViewHashGenerator viewHashGenerator, AsamalViewHandler viewHandler) {
-        super(asamalProducers);
+        super(asamalProducers, viewHandler);
 
         this.viewHashGenerator = viewHashGenerator;
-        this.viewHandler = viewHandler;
     }
 
     public PostHandler() {
@@ -61,14 +54,12 @@ public class PostHandler extends AbstractHttpHandler {
 
 
     @POST
-    @Path("/post-formdata/{controller}/{view}{sep:/?}{path:.*}")
+    @Path("/{controller}/{view}{sep:/?}{path:.*}")
     @Consumes("multipart/form-data")
     public Response handlePostFormData(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                                      @PathParam("controller") String controller, @PathParam("view") String view,
                                      @PathParam("path") String extraPath,
                                      MultipartFormDataInput multiInput) throws HttpErrorException {
-        setHttpObjects(req, resp);
-
         // create a multivalued map, to pass to the regulas post method
         MultivaluedMap<String, Object> formValues = new MultivaluedMapImpl<String, Object>();
 
@@ -95,14 +86,11 @@ public class PostHandler extends AbstractHttpHandler {
     }
 
     @POST
-    @Path("/post/{controller}/{view}{sep:/?}{path:.*}")
+    @Path("/{controller}/{view}{sep:/?}{path:.*}")
     public Response handlePost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                              @PathParam("controller") String controller, @PathParam("view") String view,
                              @PathParam("path") String extraPath,
                              MultivaluedMap<String, String> formValues) throws HttpErrorException {
-
-        setHttpObjects(req, resp);
-
         try {
             return handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues), false);
         } catch (IllegalIncludeRedirectException e) {
@@ -120,9 +108,6 @@ public class PostHandler extends AbstractHttpHandler {
                                                   @PathParam("view") String view, @PathParam("path") String extraPath,
                                                   MultivaluedMap<String, String> formValues)
             throws HttpErrorException {
-
-        setHttpObjects(req, resp);
-
         String output = null;
         try {
             output = (String) handleCommonPost(req, resp, controller, view, extraPath, rewriteStringToObject(formValues),
@@ -159,6 +144,7 @@ public class PostHandler extends AbstractHttpHandler {
         return map;
     }
 
+    //TODO Redo this method and try to use super.executeView
     private Response handleCommonPost(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                                       @PathParam("controller") String controller,
                                       @PathParam("view") String view, @PathParam("path") String extraPath,
@@ -192,14 +178,12 @@ public class PostHandler extends AbstractHttpHandler {
                 }
             }
 
-            controllerResolver.executeView(RequestType.POST, view);
+            Object viewResult = controllerResolver.executeView(RequestType.POST, view);
 
             if (reRenderingPost && (context.isWillInclude() || context.isWillRedirect())) {
                 // do not allow this
-                throw new IllegalIncludeRedirectException("Redirect and include is not allowed");
+                throw new IllegalIncludeRedirectException("Redirect and include is not allowed ");
             }
-
-            String viewHTML;
 
             if (context.isWillInclude()) {
                 // remove the messages from the flash, otherwise they will show up twice
@@ -207,24 +191,20 @@ public class PostHandler extends AbstractHttpHandler {
                     req.removeAttribute(AsamalContext.FLASH_PREFIX + ms.name());
                 }
 
-                viewHTML = viewHandler.showView(req,
-                        controllerResolver.getController(), controller, context.getIncludeView());
+                view = context.getIncludeView();
+
+                viewResult = viewHandler.showView(req,
+                        controllerResolver.getController(), controller, view);
             } else if (reRenderingPost) {
                 // include the previous view
                 ViewDescriptor viewDescriptor = viewHashGenerator.getViewHashMap().get(
                         formValues.getFirst(ViewHashGenerator.VIEWHASH));
 
-                viewHTML = viewHandler.showView(req, controllerResolver.getController(), viewDescriptor.getController(),
+                viewResult = viewHandler.showView(req, controllerResolver.getController(), viewDescriptor.getController(),
                         viewDescriptor.getView());
-            } else {
-                // nothing to show, return nothing
-                return null;
             }
 
-            return Response.status(Response.Status.OK)
-                    .entity(viewHTML)
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_HTML + "; charset=UTF-8")
-                    .build();
+            return buildResponse(viewResult, controllerResolver.contentType(view));
         } catch (FilterStopException e) {
             // stop execution
             return null;

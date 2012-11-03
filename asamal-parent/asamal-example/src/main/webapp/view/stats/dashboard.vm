@@ -50,7 +50,7 @@
 
     <h3>Attendants</h3>
 
-    <a href="$a.download('stats', 'exportAttendees')/all_attendees.csv">Export to CSV</a>
+    <a href="$a.link('stats', 'exportAttendees')/all_attendees.csv">Export to CSV</a>
 
     <table class='table table-striped' ">
         <thead>
@@ -90,7 +90,7 @@
     <script type="text/javascript">
 
         var currentPage = 0;
-        var jsonLink = "$a.jsonLink('stats','loadAttendants')";
+        var jsonLink = "$a.link('stats','loadAttendants')";
         var totalTickets = $totalSoldTickets;
         var viewModel;
         var index = 0;

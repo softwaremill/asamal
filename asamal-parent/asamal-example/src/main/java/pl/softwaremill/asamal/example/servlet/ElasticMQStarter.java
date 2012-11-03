@@ -24,7 +24,6 @@ public class ElasticMQStarter implements ServletContextListener{
     @Inject
     EmailSendingBean emailSendingBean;
 
-    @Override
     public void contextInitialized(ServletContextEvent sce) {
         InternalLoggerFactory.setDefaultFactory(new Slf4JLoggerFactory());
 
@@ -38,7 +37,6 @@ public class ElasticMQStarter implements ServletContextListener{
         emailSendingBean.startTimer(10000);
     }
 
-    @Override
     public void contextDestroyed(ServletContextEvent sce) {
         emailSendingBean.destroyTimer();
         server.stop();

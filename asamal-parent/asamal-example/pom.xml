@@ -17,6 +17,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <elasticmq.version>0.4</elasticmq.version>
+        <sml.common.version>65</sml.common.version>
     </properties>
 
     <dependencies>
@@ -87,21 +89,21 @@
         <dependency>
             <groupId>pl.softwaremill.common</groupId>
             <artifactId>softwaremill-paypal</artifactId>
-            <version>65-SNAPSHOT</version>
+            <version>${sml.common.version}</version>
         </dependency>
 
         <!-- email -->
         <dependency>
             <groupId>pl.softwaremill.common</groupId>
             <artifactId>softwaremill-sqs</artifactId>
-            <version>65-SNAPSHOT</version>
+            <version>${sml.common.version}</version>
         </dependency>
 
         <!-- elasticmq -->
         <dependency>
             <groupId>org.elasticmq</groupId>
             <artifactId>core_2.9.1</artifactId>
-            <version>0.4</version>
+            <version>${elasticmq.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
@@ -116,7 +118,7 @@
         <dependency>
             <groupId>org.elasticmq</groupId>
             <artifactId>rest-sqs_2.9.1</artifactId>
-            <version>0.4</version>
+            <version>${elasticmq.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>

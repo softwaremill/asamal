@@ -3,14 +3,7 @@ package pl.softwaremill.asamal.example.controller;
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.DownloadDescription;
-import pl.softwaremill.asamal.controller.annotation.Controller;
-import pl.softwaremill.asamal.controller.annotation.Download;
-import pl.softwaremill.asamal.controller.annotation.Filters;
-import pl.softwaremill.asamal.controller.annotation.Get;
-import pl.softwaremill.asamal.controller.annotation.Json;
-import pl.softwaremill.asamal.controller.annotation.PathParameter;
-import pl.softwaremill.asamal.controller.annotation.Post;
-import pl.softwaremill.asamal.controller.annotation.RequestParameter;
+import pl.softwaremill.asamal.controller.annotation.*;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
 import pl.softwaremill.asamal.example.model.conf.Conf;
@@ -55,6 +48,7 @@ public class Payments extends ControllerBean {
         putInContext("totalTickets", ticketService.countAllInvoices());
     }
 
+    @Get
     @Json
     public List<ViewInvoice> loadAttendants() {
         Integer pageNumber = Integer.valueOf(getExtraPath()[0]);
@@ -123,7 +117,8 @@ public class Payments extends ControllerBean {
         }
     }
 
-    @Download(params = "/year/month")
+    @Binary
+    @Get(params = "/year/month")
     public DownloadDescription downloadInvoices(@PathParameter("year") Integer year,
                                                 @PathParameter("month") Integer month) {
         Calendar accMonth = Calendar.getInstance();

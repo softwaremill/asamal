@@ -2,7 +2,7 @@ package pl.softwaremill.asamal.controller;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import org.jboss.seam.solder.core.Veto;
+import org.jboss.solder.core.Veto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

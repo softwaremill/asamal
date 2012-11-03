@@ -3,7 +3,7 @@
 #region('content')
     <h1>$m['welcome.configuration']</h1>
 
-    <form method="post" action="$a.formAction('admin', 'saveConfig')" accept-charset="utf-8">
+    <form method="post" action="$a.link('admin', 'saveConfig')" accept-charset="utf-8">
         #foreach($c in $conf.getProperties().entrySet())
             <label>$c.key - <i>$m["configuration.$c.key"]</i></label>
 

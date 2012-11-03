@@ -2,6 +2,7 @@ package pl.softwaremill.asamal;
 
 import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.producers.AsamalProducers;
+import pl.softwaremill.common.util.RichString;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
@@ -16,9 +17,6 @@ public class MockAsamalProducers implements AsamalProducers {
 
     private AsamalContext mockAsamalContext;
     private AsamalParameters mockAsamalParameters;
-
-    private HttpServletRequest request;
-    private HttpServletResponse response;
 
     private HttpServletRequest mockRequest;
     private HttpServletResponse mockResponse;
@@ -59,12 +57,12 @@ public class MockAsamalProducers implements AsamalProducers {
 
     @Produces
     public HttpServletRequest produceRequest() {
-        return resolveMock(mockRequest, request);
+        return mockRequest;
     }
 
     @Produces
     public HttpServletResponse produceResponse() {
-        return resolveMock(mockResponse, response);
+        return mockResponse;
     }
 
     private <T> T resolveMock(T mock, T original) {
@@ -74,12 +72,11 @@ public class MockAsamalProducers implements AsamalProducers {
     public void clear() {
         asamalContext = mockAsamalContext = null;
         asamalParameters = mockAsamalParameters = null;
-        request = mockRequest = null;
-        response = mockResponse = null;
+        mockRequest = null;
+        mockResponse = null;
     }
 
-    public void setHttpObjects(HttpServletRequest request, HttpServletResponse response) {
-        this.request = request;
-        this.response = response;
+    public static void main(String[] args) {
+        System.out.println(new RichString("Tomeczek").encodeAsPassword());
     }
 }

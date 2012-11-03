@@ -120,7 +120,7 @@
 
 
             var currentPage = 0;
-            var jsonLink = "$a.jsonLink('payments','loadAttendants')";
+            var jsonLink = "$a.link('payments','loadAttendants')";
             var totalTickets = $totalTickets;
             var viewModel;
             var index = 0;

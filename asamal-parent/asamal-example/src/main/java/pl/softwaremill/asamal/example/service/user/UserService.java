@@ -44,7 +44,7 @@ public class UserService implements Serializable {
             entityManager.persist(user);
             entityManager.flush();
         } catch (PersistenceException e) {
-            throw new UserExistsException("User with login "+user.getUsername()+" already exists.");
+            throw new UserExistsException("User with login "+user.getUsername()+" already exists.", e);
         }
     }
 

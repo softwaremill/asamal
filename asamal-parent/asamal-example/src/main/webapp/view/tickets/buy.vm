@@ -5,7 +5,7 @@
 
     <div id="tickets" class="well">
         <h2>$m['tickets.details.invoice']</h2>
-        <form class="form-horizontal" action="$a.formAction('tickets', 'doBuy')" method="post"
+        <form class="form-horizontal" action="$a.link('tickets', 'doBuy')" method="post"
               accept-charset="UTF-8" id="ticketForm">
             
             <div class="row">

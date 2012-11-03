@@ -3,12 +3,7 @@ package pl.softwaremill.asamal.example.controller;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.prefs.CsvPreference;
 import pl.softwaremill.asamal.controller.ControllerBean;
-import pl.softwaremill.asamal.controller.annotation.Controller;
-import pl.softwaremill.asamal.controller.annotation.Download;
-import pl.softwaremill.asamal.controller.annotation.Filters;
-import pl.softwaremill.asamal.controller.annotation.Get;
-import pl.softwaremill.asamal.controller.annotation.Json;
-import pl.softwaremill.asamal.controller.annotation.PathParameter;
+import pl.softwaremill.asamal.controller.annotation.*;
 import pl.softwaremill.asamal.example.filters.ActiveFilter;
 import pl.softwaremill.asamal.example.filters.AuthorizationFilter;
 import pl.softwaremill.asamal.example.model.json.ViewTicket;
@@ -35,12 +30,14 @@ public class Stats extends ControllerBean {
     public void dashboard() {
     }
 
-    @Json(params = "/page")
+    @Get(params = "/page")
+    @Json
     public ViewUsers loadAttendants(@PathParameter("page") Integer pageNumber) {
         return ticketService.getAllSoldTickets(pageNumber, 10);
     }
 
-    @Download(contentType = "application/csv")
+    @Get
+    @ContentType("application/csv")
     public byte[] exportAttendees() {
         ViewUsers users = ticketService.getAllSoldTickets(-1, -1);
 

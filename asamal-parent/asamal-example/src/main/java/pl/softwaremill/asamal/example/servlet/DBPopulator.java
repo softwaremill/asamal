@@ -19,6 +19,7 @@ import javax.persistence.PersistenceContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import javax.transaction.UserTransaction;
 import java.util.Date;
 
 @WebListener
@@ -39,13 +40,22 @@ public class DBPopulator implements ServletContextListener {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Inject
+    private UserTransaction ux;
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 
         updateConfigurations();
 
         if (entityManager.createQuery("select u from User u").getResultList().size() == 0) {
-            populateDB();
+            try {
+                ux.begin();
+                populateDB();
+                ux.commit();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         // set converter

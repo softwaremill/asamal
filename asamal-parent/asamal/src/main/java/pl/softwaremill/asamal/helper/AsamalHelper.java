@@ -22,32 +22,11 @@ public class AsamalHelper {
         this.contextPath = request.getContextPath();
         this.presentationContext = presentationContext;
     }
-    
-    public String formAction(String controller, String view) {
-        StringWriter sw = new StringWriter();
-        
-        return sw.append(contextPath).append("/post/").append(controller).
-                append("/").append(view).toString();
-    }
-    
-    public String formActionFormData(String controller, String view) {
-        StringWriter sw = new StringWriter();
 
-        return sw.append(contextPath).append("/post-formdata/").append(controller).
-                append("/").append(view).toString();
-    }
-    
     public String link(String controller, String view) {
         StringWriter sw = new StringWriter();
 
         return sw.append(contextPath).append("/").append(controller).
-                append("/").append(view).toString();
-    }
-
-    public String jsonLink(String controller, String view) {
-        StringWriter sw = new StringWriter();
-
-        return sw.append(contextPath).append("/json/").append(controller).
                 append("/").append(view).toString();
     }
 

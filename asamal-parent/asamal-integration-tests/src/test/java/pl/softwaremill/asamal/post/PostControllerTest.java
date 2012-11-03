@@ -1,3 +1,4 @@
+
 package pl.softwaremill.asamal.post;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -32,11 +33,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -84,7 +81,7 @@ public class PostControllerTest extends ControllerTest {
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("doPost");
 
         // by default post doesn't return anythings
-        assertThat(output).isEqualTo(null);
+        assertThat(output.getEntity()).isNull();
     }
 
     @Test
@@ -116,7 +113,7 @@ public class PostControllerTest extends ControllerTest {
         assertThat(D.inject(TestRecorder.class).getMethodsCalled()).containsOnly("doFormDataPost");
 
         // by default post doesn't return anythings
-        assertThat(output).isEqualTo(null);
+        assertThat(output.getEntity()).isNull();
     }
 
     @Test(expected = RuntimeException.class)

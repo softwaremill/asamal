@@ -2,7 +2,7 @@
 
 #region('content')
 
-        <form action="$a.formAction('admin', 'doEditDiscount')" method="post"
+        <form action="$a.link('admin', 'doEditDiscount')" method="post"
               class="form-horizontal">
 
             #renderPartial('discount_edit')

@@ -5,7 +5,7 @@
 
     <div id="options">
         <form class="form-horizontal" id="optionForm" method="post" accept-charset="UTF-8"
-              action="$a.formAction("admin", "updateOption")">
+              action="$a.link("admin", "updateOption")">
 
             #renderPartial('option_edit')
 

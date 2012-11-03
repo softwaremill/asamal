@@ -45,7 +45,7 @@
             #end
         </table>
 
-        <form action="$a.formAction('admin', 'addDiscount')" method="post"
+        <form action="$a.link('admin', 'addDiscount')" method="post"
               class="form-horizontal">
 
             #renderPartial('discount_edit')
