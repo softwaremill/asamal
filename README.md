@@ -2,7 +2,7 @@
 
 ## What is it ?
 
-Asamal is a Proof Of Concept web framework build completely on top of the JEE6 stack.
+Asamal is a Proof Of Concept web framework build completely on top of the JEE6 stack that is RESTful friendly.
 
 The aim is to build an (almost)completely functional lightweight, action-based web framework in a finite time.
 
@@ -77,9 +77,11 @@ Now if you try to point your browser to `APP_URL/admin/index` Asamal will:
 
 * resolve the AdminController (look at the first **admin** element in the url)
 * call the **index** method on it
-* resolve **index.vm** located in `/view/admin` in your application WEB-APP and render it to the user
+* If the return method is void and content type is default (text/html; character-encoging=uth-8 see Content Types section below). In the above example it is.
+** resolve **index.vm** located in `/view/admin` in your application WEB-APP and render it to the user
+* If the return method is not void return as the view entity the object - now make sure this object will be understandable for the JAX-RS implementation you are using. You can read more about what is understandable for Resteasy here [JAXB providers](http://docs.jboss.org/resteasy/docs/2.3.1.GA/userguide/html/Built_in_JAXB_providers.html)
 
-Wait, what **index.vm** are you talking about ? you might think...
+But coming back to our example - what **index.vm** are you talking about ? you might think...
 
 Asamal uses [Apache Velocity](http://velocity.apache.org/) to render the web pages. Your velocity template might look like this:
 
@@ -96,6 +98,14 @@ Asamal uses [Apache Velocity](http://velocity.apache.org/) to render the web pag
 
 Notice the *$var* element - this is the variable that we have passed into context in our action.
 
+##### DELETE
+
+DELETE operation is very similar to GET, but is annotated with `pl.softwaremill.asamal.controller.annotation.Delete` annotation. All the GET rules apply.
+
+##### PUT
+
+PUT operation is very similar to GET, but is annotated with `pl.softwaremill.asamal.controller.annotation.Put` annotation. All the GET rules apply.
+
 ##### POST
 
 Writing POST actions is equally easy. Just annotate it with `pl.softwaremill.asamal.controller.annotation.Post`
@@ -111,7 +121,19 @@ including a view will not execute the action method for this view
 that are expected by this template, it might be a good idea to externalize setting of
 them using some private method on the controller or such.
 
-##### JSON
+Optionally the method can also have content-type specified and return an Object that will be passed to the JAX-RS response.
+
+##### Content Types
+
+By default the content type of all methods is `text-html; character-encoding=utf8` but you might want to set it to something else.
+
+The easiest is to use `pl.softwaremill.asamal.controller.annotation.ContentType` annotation and specify it's value that will be used as the content type.
+
+In case you are re-using your content type in many places, you can create another annotation, and use @ContentType on it - if that annotation is used on your method, the content type will get inherited. You can check out `pl.softwaremill.asamal.controller.annotation.Json` for an example.
+
+Be aware that if stacked annotation is used in pair with @ContentType, the @ContentType will always take precedence.
+
+###### JSON
 
 In Asamal it is very easy to produce JSON responses.
 
@@ -126,6 +148,7 @@ public class User {
 
 // And in our controller
 
+@Get
 @Json
 public User user() {
 	return new User("Tomek", "Szymanski");
@@ -368,10 +391,7 @@ It is accessible via the `$a` variable from all you vm files.
 
 |Method|Desciription|Method|Sample Usage|
 |------|:----------:|:----:|----------:|
-|**link(controller, view)**|The method will generate a GET link to given controller/action|GET|&lt;a href="$a.link('home','index')">Home</a&gt;|
-|**formAction(controller,view)**|Generates form action link|POST|&lt;form method="post" action="$a.formAction('users','addUser')"&gt;|
-|**formActionFormData(controller,view)**|Similar to formAction, but generates a link that will accept multipart forms - you have to use it when you are uploading a file|POST|&lt;form method="post" action="$a.formActionFormData('users','addUser')"&gt;|
-|**jsonLink(controller,view)**|Generates a link to JSON-producing action. The action has to be annotated with @Json|GET|&lt;a href="$a.jsonLink('users', 'usersInJson')"&gt;Download in JSON&lt;/a&gt;|
+|**link(controller, view)**|The method will generate a link to given controller/action|GET POST PUT DELETE|&lt;a href="$a.link('home','index')">Home</a&gt;|
 |**jsLink(jsName)**|Generates a link to javascript file, which should be locate under /static/js in your WEB-APP|GET|&lt;script src="$a.jsLink("jquery-min-1.7.1.js")"></script&gt;
 |**cssLink(cssName)**|Generates a link to CSS file, which should be locate under /static/css in your WEB-APP|GET|&lt;link href="$a.cssLink("bootstrap.css")" rel="stylesheet"&gt;|
 |**imgLink(imgName)**|Generates a link to image, which should be locate under /static/img in your WEB-APP|GET|&lt;img src="$a.imgLink("logo.png")"/&gt;|
@@ -452,7 +472,9 @@ TBD
 
 ### Uploading files
 
-TBD
+If you want to upload a file set your form's content type to be `multipart/form-data` and leave everything else untouched.
+
+Now if you access parameter with a name of the input type="file" you will get a corresponding InputStream for that file.
 
 ### PDFs
 
