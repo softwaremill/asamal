@@ -18,6 +18,9 @@ public class MockAsamalProducers implements AsamalProducers {
     private AsamalContext mockAsamalContext;
     private AsamalParameters mockAsamalParameters;
 
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+
     private HttpServletRequest mockRequest;
     private HttpServletResponse mockResponse;
 
@@ -45,6 +48,14 @@ public class MockAsamalProducers implements AsamalProducers {
         this.mockAsamalParameters = mockAsamalParameters;
     }
 
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
+    }
+
+    public void setResponse(HttpServletResponse response) {
+        this.response = response;
+    }
+
     @Produces
     public AsamalContext produceContext() {
         return resolveMock(mockAsamalContext, asamalContext);
@@ -57,12 +68,12 @@ public class MockAsamalProducers implements AsamalProducers {
 
     @Produces
     public HttpServletRequest produceRequest() {
-        return mockRequest;
+        return resolveMock(request, mockRequest);
     }
 
     @Produces
     public HttpServletResponse produceResponse() {
-        return mockResponse;
+        return resolveMock(response, mockResponse);
     }
 
     private <T> T resolveMock(T mock, T original) {

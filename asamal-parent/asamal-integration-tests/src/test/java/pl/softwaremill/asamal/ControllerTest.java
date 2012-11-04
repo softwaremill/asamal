@@ -78,6 +78,9 @@ public class ControllerTest {
 
         // this is used to resolve BM by the PostHandler
         when(servletContext.getAttribute(AsamalListener.BEAN_MANAGER)).thenReturn(bm);
+
+        producers.setRequest(req);
+        producers.setResponse(resp);
     }
 
     @After
