@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.httphandler;
+package pl.softwaremill.asamal.request;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.junit.After;

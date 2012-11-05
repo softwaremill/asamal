@@ -20,11 +20,11 @@ import pl.softwaremill.asamal.exception.HttpErrorException;
 import pl.softwaremill.asamal.extension.view.PresentationExtensionResolver;
 import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.asamal.helper.AsamalHelper;
-import pl.softwaremill.asamal.httphandler.AsamalViewHandler;
-import pl.softwaremill.asamal.httphandler.PostHandler;
 import pl.softwaremill.asamal.i18n.Messages;
 import pl.softwaremill.asamal.plugin.velocity.AsamalVelocityExtension;
 import pl.softwaremill.asamal.plugin.velocity.context.VelocityPresentationContext;
+import pl.softwaremill.asamal.request.AsamalViewHandler;
+import pl.softwaremill.asamal.request.http.PostHandler;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 import pl.softwaremill.common.util.dependency.D;
 

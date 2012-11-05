@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.httphandler;
+package pl.softwaremill.asamal.request;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

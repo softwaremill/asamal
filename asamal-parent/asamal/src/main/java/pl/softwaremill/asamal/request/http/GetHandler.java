@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.httphandler;
+package pl.softwaremill.asamal.request.http;
 
 import com.lowagie.text.pdf.BaseFont;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -8,6 +8,7 @@ import pl.softwaremill.asamal.exception.HttpErrorException;
 import pl.softwaremill.asamal.extension.exception.ResourceNotFoundException;
 import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.asamal.producers.AsamalProducers;
+import pl.softwaremill.asamal.request.AsamalViewHandler;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -74,9 +75,10 @@ public class GetHandler extends AbstractHttpHandler {
     @Produces("application/pdf")
     public Object handlePDFGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                                @PathParam("controller") String controller,
-                               @PathParam("view") String view, @PathParam("path") String extraPath)
+                               @PathParam("view") String view, @PathParam("path") String extraPath,
+                               byte[] content)
             throws HttpErrorException {
-        Response page = handleGet(req, resp, controller, view, extraPath);
+        Response page = handleGet(req, resp, controller, view, extraPath, content);
 
         if (page == null)
             return null;
@@ -137,9 +139,10 @@ public class GetHandler extends AbstractHttpHandler {
     @Path("/{controller}/{view}{sep:/?}{path:.*}")
     public Response handleGet(@Context HttpServletRequest req, @Context HttpServletResponse resp,
                               @PathParam("controller") String controller,
-                              @PathParam("view") String view, @PathParam("path") String extraPath)
+                              @PathParam("view") String view, @PathParam("path") String extraPath,
+                              byte[] content)
             throws HttpErrorException {
-        return executeView(controller, view, req, resp, extraPath, null, RequestType.GET);
+        return executeView(controller, view, req, resp, extraPath, null, RequestType.GET, content);
     }
 
 }

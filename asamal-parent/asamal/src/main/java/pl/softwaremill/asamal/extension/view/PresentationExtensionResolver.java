@@ -1,6 +1,7 @@
 package pl.softwaremill.asamal.extension.view;
 
 import pl.softwaremill.asamal.controller.cdi.AsamalAnnotationScanner;
+import pl.softwaremill.asamal.exception.NoViewFoundException;
 import pl.softwaremill.asamal.extension.exception.ResourceNotFoundException;
 import pl.softwaremill.common.util.dependency.D;
 
@@ -12,7 +13,8 @@ public class PresentationExtensionResolver {
     private AsamalAnnotationScanner asamalAnnotationScanner;
 
     public PresentationExtension resolvePresentationExtension(ResourceResolver resourceResolver,
-                                                                      String controller, String view) {
+                                                                      String controller, String view)
+            throws NoViewFoundException {
         for (Class<? extends PresentationExtension> extensionClass :
                 asamalAnnotationScanner.getPresentationExtensions()) {
             try {
@@ -28,7 +30,7 @@ public class PresentationExtensionResolver {
         }
 
         // this means there's no view available with any knows extension die
-        throw new RuntimeException("There is no file for controller "+controller+" and view "+view);
+        throw new NoViewFoundException("There is no file for controller "+controller+" and view "+view);
     }
 
 

@@ -1,6 +1,9 @@
 package pl.softwaremill.asamal.controller.cdi;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import org.apache.commons.beanutils.ConvertUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.softwaremill.asamal.controller.AsamalFilter;
@@ -12,7 +15,9 @@ import pl.softwaremill.asamal.controller.exception.RequiredParameterNotFoundExce
 import pl.softwaremill.asamal.extension.view.ResourceResolver;
 import pl.softwaremill.common.util.dependency.D;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,11 +32,16 @@ public class ControllerResolver {
 
     public static final String HTML_CONTENT_TYPE = MediaType.TEXT_HTML + "; charset=UTF-8";
     private ControllerBean controller;
+    private byte[] content;
 
     private final static Logger log = LoggerFactory.getLogger(ControllerResolver.class);
 
-    public static ControllerResolver resolveController(String controllerName) throws FilterStopException {
-        ControllerResolver resolver = new ControllerResolver();
+    public ControllerResolver(byte[] content) {
+        this.content = content;
+    }
+
+    public static ControllerResolver resolveController(String controllerName, byte[] content) throws FilterStopException {
+        ControllerResolver resolver = new ControllerResolver(content);
 
         resolver.controller = D.inject(ControllerBean.class, new ControllerImpl(controllerName));
 
@@ -56,7 +66,7 @@ public class ControllerResolver {
             throws InvocationTargetException, IllegalAccessException, NoSuchMethodException, FilterStopException,
             AmbiguousViewMethodsException, RequiredParameterNotFoundException {
         // get the view method
-        Method method = findViewMethod(view, controller.getRealClass());
+        Method method = findViewMethod(view, controller.getRealClass(), requestType);
         Method possiblyProxiedMethod = controller.getClass().getDeclaredMethod(view, method.getParameterTypes());
 
         // check method filters
@@ -154,6 +164,23 @@ public class ControllerResolver {
                     }
 
                     continue;
+                } else if (annotation.annotationType() == JSONObject.class) {
+
+                    try {
+                        String jsonSource = new String(content, "UTF-8");
+
+                        if (jsonSource == null) {
+                            throw new RequiredParameterNotFoundException("JSON Object required, but none was send ("
+                                    + requestType.getRequestAnnotation() + ")." +
+                                    " Method: " + method.getName());
+                        }
+
+                        Class<?> paramClass = method.getParameterTypes()[i];
+
+                        params[i] = new ObjectMapper().readValue(jsonSource, paramClass);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Couldn't deserialize JSON object", e);
+                    }
                 }
             }
         }
@@ -172,7 +199,8 @@ public class ControllerResolver {
         }
     }
 
-    private Method findViewMethod(String view, Class<? extends ControllerBean> beanClass)
+    private Method findViewMethod(String view, Class<? extends ControllerBean> beanClass,
+                                  final RequestType requestType)
             throws AmbiguousViewMethodsException, NoSuchMethodException {
         Set<Method> foundMethods = new HashSet<Method>();
 
@@ -189,8 +217,7 @@ public class ControllerResolver {
             while (it.hasNext()) {
                 Method method = it.next();
 
-                if (method.getAnnotation(Get.class) == null && method.getAnnotation(Post.class) == null
-                        && method.getAnnotation(Json.class) == null) {
+                if (nonRequestMethod(method)) {
                     it.remove();
                 }
             }
@@ -198,6 +225,18 @@ public class ControllerResolver {
 
         // now if we still have more then one, we have to fail
         if (foundMethods.size() > 1) {
+            // maybe only one of the is of requested type?
+            Collection<Method> methodsWithRequestedType = Collections2.filter(foundMethods, new Predicate<Method>() {
+
+                public boolean apply(@Nullable Method input) {
+                    return input.getAnnotation(requestType.getRequestAnnotation()) != null;
+                }
+            });
+
+            if (methodsWithRequestedType.size() == 1) {
+                return methodsWithRequestedType.iterator().next();
+            }
+
             throw new AmbiguousViewMethodsException("Ambiguous methods found: " + foundMethods.toString());
         }
 
@@ -209,26 +248,36 @@ public class ControllerResolver {
         return foundMethods.iterator().next();
     }
 
+    private boolean nonRequestMethod(Method method) {
+        for (RequestType requestType : RequestType.values()) {
+            if (method.getAnnotation(requestType.getRequestAnnotation()) != null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public ControllerBean getController() {
         return controller;
     }
 
-    public boolean skipViewHash(String view) throws NoSuchMethodException {
+    public boolean skipViewHash(String view, RequestType requestType) throws NoSuchMethodException {
         if(System.getProperty(ResourceResolver.ASAMAL_DEV_DIR) != null) {
             // in DEV mode, ignore view hashes
             return true;
         }
 
         try {
-            return findViewMethod(view, controller.getRealClass()).getAnnotation(Post.class).skipViewHash();
+            return findViewMethod(view, controller.getRealClass(), requestType).getAnnotation(Post.class).skipViewHash();
         } catch (AmbiguousViewMethodsException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String contentType(String view) {
+    public String contentType(String view, RequestType requestType) {
         try {
-            Method viewMethod = findViewMethod(view, controller.getRealClass());
+            Method viewMethod = findViewMethod(view, controller.getRealClass(), requestType);
 
             for (Annotation annotation : viewMethod.getDeclaredAnnotations()) {
                 ContentType contentType = annotation.annotationType().getAnnotation(ContentType.class);
@@ -245,9 +294,9 @@ public class ControllerResolver {
         }
     }
 
-    public boolean isVoid(String view) {
+    public boolean isVoid(String view, RequestType requestType) {
         try {
-            return findViewMethod(view, controller.getRealClass()).getReturnType().equals(Void.TYPE);
+            return findViewMethod(view, controller.getRealClass(), requestType).getReturnType().equals(Void.TYPE);
         } catch (AmbiguousViewMethodsException e) {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {

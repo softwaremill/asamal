@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.httphandler;
+package pl.softwaremill.asamal.request;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -8,11 +8,8 @@ import pl.softwaremill.asamal.controller.AsamalContext;
 import pl.softwaremill.asamal.controller.ControllerBean;
 import pl.softwaremill.asamal.controller.cdi.AsamalAnnotationScanner;
 import pl.softwaremill.asamal.exception.HttpErrorException;
-import pl.softwaremill.asamal.extension.view.ContextConstants;
-import pl.softwaremill.asamal.extension.view.PresentationContext;
-import pl.softwaremill.asamal.extension.view.PresentationExtension;
-import pl.softwaremill.asamal.extension.view.PresentationExtensionResolver;
-import pl.softwaremill.asamal.extension.view.ResourceResolver;
+import pl.softwaremill.asamal.exception.NoViewFoundException;
+import pl.softwaremill.asamal.extension.view.*;
 import pl.softwaremill.asamal.helper.AsamalHelper;
 import pl.softwaremill.asamal.i18n.Messages;
 import pl.softwaremill.asamal.servlet.AsamalListener;
@@ -65,8 +62,14 @@ public class AsamalViewHandler {
 
             ResourceResolver resourceResolver = resourceResolverFactory.create(req);
 
-            PresentationExtension presentationExtension = presentationExtensionResolver.
-                    resolvePresentationExtension(resourceResolver, controller, view);
+            PresentationExtension presentationExtension = null;
+            try {
+                presentationExtension = presentationExtensionResolver.
+                        resolvePresentationExtension(resourceResolver, controller, view);
+            } catch (NoViewFoundException e) {
+                // just return null - no view available
+                return null;
+            }
 
             PresentationContext context = presentationExtension.createNewPresentationContext();
 

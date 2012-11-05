@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.httphandler;
+package pl.softwaremill.asamal.request.http;
 
 import pl.softwaremill.asamal.AsamalParameters;
 import pl.softwaremill.asamal.controller.AsamalContext;
@@ -9,6 +9,7 @@ import pl.softwaremill.asamal.controller.cdi.ControllerResolver;
 import pl.softwaremill.asamal.controller.cdi.RequestType;
 import pl.softwaremill.asamal.exception.HttpErrorException;
 import pl.softwaremill.asamal.producers.AsamalProducers;
+import pl.softwaremill.asamal.request.AsamalViewHandler;
 import pl.softwaremill.common.cdi.security.SecurityConditionException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +69,8 @@ public class AbstractHttpHandler {
 
     protected Response executeView(String controller, String view,
                                    HttpServletRequest req, HttpServletResponse resp, String extraPath,
-                                   MultivaluedMap<String, Object> formValues, RequestType requrestType)
+                                   MultivaluedMap<String, Object> formValues, RequestType requrestType,
+                                   byte[] content)
             throws HttpErrorException {
         // create the context
         AsamalContext context = createContext(req, resp, extraPath);
@@ -77,7 +79,7 @@ public class AbstractHttpHandler {
         ControllerBean controllerBean = null;
 
         try {
-            ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
+            ControllerResolver controllerResolver = ControllerResolver.resolveController(controller, content);
 
             Object viewResult = controllerResolver.executeView(requrestType, view);
             controllerBean = controllerResolver.getController();
@@ -94,9 +96,9 @@ public class AbstractHttpHandler {
                 }
 
                 // now show the view if we are supposed to see html
-                String contentType = controllerResolver.contentType(view);
+                String contentType = controllerResolver.contentType(view, requrestType);
 
-                if (ControllerResolver.HTML_CONTENT_TYPE.equals(contentType) && controllerResolver.isVoid(view)) {
+                if (ControllerResolver.HTML_CONTENT_TYPE.equals(contentType) && controllerResolver.isVoid(view, requrestType)) {
                     viewResult = viewHandler.showView(req, controllerBean, controller, view);
                 }
 

@@ -9,7 +9,7 @@ import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.model.ticket.PaymentMethod;
 import pl.softwaremill.asamal.example.service.email.EmailService;
-import pl.softwaremill.asamal.httphandler.GetHandler;
+import pl.softwaremill.asamal.request.http.GetHandler;
 import pl.softwaremill.common.cdi.transaction.Transactional;
 
 import javax.enterprise.inject.Instance;
@@ -18,12 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -97,7 +92,7 @@ public class AdminService {
                 System.out.println("Generating invoice: "+invoiceId);
                 InputStream input = (InputStream) asamalGetHandler.handlePDFGet(servletRequestInstance.get(),
                         servletResponseInstance.get(), "invoice", "pdf",
-                        invoiceId.toString());
+                        invoiceId.toString(), null);
 
                 ZipEntry ze = new ZipEntry(
                         configurationBean.getProperty(Conf.INVOICE_ID).replaceAll("/", "_").toLowerCase() + invoiceId +

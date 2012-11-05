@@ -1,4 +1,4 @@
-package pl.softwaremill.asamal.httphandler;
+package pl.softwaremill.asamal.request.http;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -13,6 +13,7 @@ import pl.softwaremill.asamal.controller.cdi.RequestType;
 import pl.softwaremill.asamal.exception.HttpErrorException;
 import pl.softwaremill.asamal.exception.IllegalIncludeRedirectException;
 import pl.softwaremill.asamal.producers.AsamalProducers;
+import pl.softwaremill.asamal.request.AsamalViewHandler;
 import pl.softwaremill.asamal.viewhash.ViewDescriptor;
 import pl.softwaremill.asamal.viewhash.ViewHashGenerator;
 
@@ -156,9 +157,9 @@ public class PostHandler extends AbstractHttpHandler {
         createParamateres(req, formValues);
 
         try {
-            ControllerResolver controllerResolver = ControllerResolver.resolveController(controller);
+            ControllerResolver controllerResolver = ControllerResolver.resolveController(controller, null);
 
-            if (reRenderingPost || !controllerResolver.skipViewHash(view)) {
+            if (reRenderingPost || !controllerResolver.skipViewHash(view, RequestType.POST)) {
                 // for all post queries, they have to include the view hash
                 List<Object> viewHashes = formValues.get(ViewHashGenerator.VIEWHASH);
                 if (viewHashes != null) {
@@ -204,7 +205,7 @@ public class PostHandler extends AbstractHttpHandler {
                         viewDescriptor.getView());
             }
 
-            return buildResponse(viewResult, controllerResolver.contentType(view));
+            return buildResponse(viewResult, controllerResolver.contentType(view, RequestType.POST));
         } catch (FilterStopException e) {
             // stop execution
             return null;

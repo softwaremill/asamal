@@ -135,6 +135,8 @@ Be aware that if stacked annotation is used in pair with @ContentType, the @Cont
 
 ###### JSON
 
+####### JSON Responses
+
 In Asamal it is very easy to produce JSON responses.
 
 Just annotate the action with `pl.softwaremill.asamal.controller.annotation.Json` and make it return any java POJO.
@@ -159,6 +161,23 @@ browsing to `/{controller}/user` will render (with a proper content-type set to 
 ```
 {name: "Tomek", lastName: "Szymanski"}
 ```
+####### JSON Requests
+
+When you are passing as a request body a JSON object, just add a parameter to your controller method annotated with @JSONObject
+
+For example
+
+```java
+
+@Get
+@Json
+public void createUser(@JSONObject User user) {
+
+	enitityManager.persist(user);
+}
+```
+
+The above will deserialize User automatically using Jackson.
 
 ##### Autobinding & Validation
 
