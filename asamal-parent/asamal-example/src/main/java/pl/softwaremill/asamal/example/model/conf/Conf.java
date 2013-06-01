@@ -8,6 +8,9 @@ public enum Conf {
 
     CONFERENCE_LOGO(""),
 
+    CONFERENCE_WEBSITE_LABEL(""),
+    CONFERENCE_WEBSITE_LINK(""),
+
     INVOICE_NAME(""),
     INVOICE_COMPANY("Foo (Pty) Ltd."),
     INVOICE_VAT("FB 123-456-789"),

@@ -98,6 +98,13 @@
                         <a href="$a.link('home', 'index')">Home</a></li>
                     <li #if($c.name == 'tickets' && $view == 'buy')class="active"#end>
                         <a href="$a.link('tickets', 'buy')">Buy Tickets</a></li>
+                    #if($!conf.getProperty('CONFERENCE_WEBSITE_LINK') != "")
+                        <li>
+                            <a href="$!conf.getProperty('CONFERENCE_WEBSITE_LINK')">
+                                $!conf.getProperty('CONFERENCE_WEBSITE_LABEL')
+                            </a>
+                        </li>
+                    #end
                 </ul>
 
                 <ul class="nav pull-right">
