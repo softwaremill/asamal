@@ -87,9 +87,9 @@
 
         <!-- paypal -->
         <dependency>
-            <groupId>pl.softwaremill.common</groupId>
+            <groupId>com.softwaremill.common</groupId>
             <artifactId>softwaremill-paypal</artifactId>
-            <version>${sml.common.version}</version>
+            <version>78-SNAPSHOT</version>
         </dependency>
 
         <!-- email -->

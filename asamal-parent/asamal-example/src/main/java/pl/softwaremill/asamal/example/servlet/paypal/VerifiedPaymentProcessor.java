@@ -9,9 +9,9 @@ import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Invoice;
 import pl.softwaremill.asamal.example.model.ticket.InvoiceStatus;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
-import pl.softwaremill.common.paypal.process.PayPalParameters;
-import pl.softwaremill.common.paypal.process.processors.VerifiedPayPalProcessor;
-import pl.softwaremill.common.paypal.process.status.PayPalStatus;
+import com.softwaremill.common.paypal.process.PayPalParameters;
+import com.softwaremill.common.paypal.process.processors.VerifiedPayPalProcessor;
+import com.softwaremill.common.paypal.process.status.PayPalStatus;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;

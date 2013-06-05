@@ -32,7 +32,7 @@ import pl.softwaremill.asamal.example.model.ticket.TicketCategory;
 import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.service.ticket.TicketService;
 import pl.softwaremill.common.cdi.transaction.Transactional;
-import pl.softwaremill.common.paypal.button.PaypalButtonGenerator;
+import com.softwaremill.common.paypal.button.PaypalButtonGenerator;
 
 import javax.inject.Inject;
 import java.io.Serializable;

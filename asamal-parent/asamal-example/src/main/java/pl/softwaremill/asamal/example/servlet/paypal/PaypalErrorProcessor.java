@@ -1,7 +1,7 @@
 package pl.softwaremill.asamal.example.servlet.paypal;
 
 import pl.softwaremill.asamal.example.service.email.EmailService;
-import pl.softwaremill.common.paypal.process.PayPalErrorHandler;
+import com.softwaremill.common.paypal.process.PayPalErrorHandler;
 
 /**
  * Handles the error

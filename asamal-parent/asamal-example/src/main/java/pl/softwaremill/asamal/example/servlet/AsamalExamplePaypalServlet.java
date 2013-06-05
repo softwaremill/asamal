@@ -7,10 +7,10 @@ import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.service.email.EmailService;
 import pl.softwaremill.asamal.example.servlet.paypal.PaypalErrorProcessor;
 import pl.softwaremill.asamal.example.servlet.paypal.VerifiedPaymentProcessor;
-import pl.softwaremill.common.paypal.process.PayPalErrorHandler;
-import pl.softwaremill.common.paypal.process.processors.PayPalProcessor;
-import pl.softwaremill.common.paypal.process.processors.PayPalProcessorsFactory;
-import pl.softwaremill.common.paypal.servlet.IPNServlet;
+import com.softwaremill.common.paypal.process.PayPalErrorHandler;
+import com.softwaremill.common.paypal.process.processors.PayPalProcessor;
+import com.softwaremill.common.paypal.process.processors.PayPalProcessorsFactory;
+import com.softwaremill.common.paypal.servlet.IPNServlet;
 import pl.softwaremill.common.util.dependency.D;
 
 import javax.inject.Inject;
