@@ -39,11 +39,13 @@ public class TicketBinder {
         List<TicketOptionDefinition> optionDefinitions = optionService.getAllOptionDefinitions();
 
         for (int i = 0; i < availableCategories.size(); i++) {
-            int numberOfAttendees = Integer.parseInt(
-                    bean.getParameter(NUMBER_OF_TICKETS_PREFIX + availableCategories.get(i).getIdName())
-            );
+            String numberOfTicketsPerCategory = bean.getParameter(
+                    NUMBER_OF_TICKETS_PREFIX + availableCategories.get(i).getIdName());
 
-            if (numberOfAttendees > 0) {
+            int numberOfAttendees;
+
+            if (numberOfTicketsPerCategory != null &&
+                    ((numberOfAttendees = Integer.parseInt(numberOfTicketsPerCategory)) > 0)) {
                 ticketsByCategory[i] = new Ticket[numberOfAttendees];
                 for (int j = 0; j < numberOfAttendees; j++) {
                     ticketsByCategory[i][j] = new Ticket();
