@@ -89,6 +89,7 @@ public class GetHandler extends AbstractHttpHandler {
                     new ByteArrayInputStream(page.getEntity().toString()
                             .replaceAll("\\&ouml;", "ö").replaceAll("\\&Ouml;", "Ö")
                             .replaceAll("\\&oacute;", "ó").replaceAll("\\&Oacute;", "Ó").replaceAll("\\&nbsp;", " ")
+                            .replaceAll("\\&uuml;", "ü").replaceAll("\\&Uuml;", "Ü")
                             .getBytes("UTF-8")));
 
             ITextRenderer renderer = new ITextRenderer();
