@@ -1,7 +1,10 @@
 package pl.softwaremill.asamal.example.model.json;
 
+import pl.softwaremill.asamal.example.logic.conf.ConfigurationBean;
+import pl.softwaremill.asamal.example.model.conf.Conf;
 import pl.softwaremill.asamal.example.model.ticket.Ticket;
 import pl.softwaremill.asamal.example.model.ticket.TicketOption;
+import pl.softwaremill.common.util.dependency.D;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +20,10 @@ public class ViewTicket {
 
     private String company;
 
+    private String email;
+
+    private String invoiceNo;
+
     private List<String> optionValues;
 
     public ViewTicket(Ticket ticket) {
@@ -24,6 +31,9 @@ public class ViewTicket {
         this.lastName = ticket.getLastName();
         this.company = ticket.getInvoice().getCompanyName();
         this.optionValues = new ArrayList<String>();
+        this.email = ticket.getInvoice().getUser().getUsername();
+        this.invoiceNo = D.inject(ConfigurationBean.class).getProperty(Conf.INVOICE_ID) +
+                ticket.getInvoice().getMethod().toString() + "/" + ticket.getInvoice().getInvoiceNumber();
 
         Collections.sort(ticket.getOptions(), new Comparator<TicketOption>() {
             @Override
@@ -59,12 +69,23 @@ public class ViewTicket {
         return company;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
     @Override
     public String toString() {
         return "ViewTicket{" +
                 "firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", category='" + category + '\'' +
+                ", company='" + company + '\'' +
+                ", email='" + email + '\'' +
+                ", invoiceNo='" + invoiceNo + '\'' +
                 ", optionValues=" + optionValues +
                 '}';
     }

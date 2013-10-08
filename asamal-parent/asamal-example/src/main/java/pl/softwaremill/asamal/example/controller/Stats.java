@@ -46,7 +46,8 @@ public class Stats extends ControllerBean {
         StringWriter sw = new StringWriter();
         CsvListWriter writer = new CsvListWriter(sw, CsvPreference.EXCEL_PREFERENCE);
 
-        List<String> header = new ArrayList<String>(Arrays.asList("First Name", "Last Name", "Company", "Category"));
+        List<String> header = new ArrayList<String>(Arrays.asList("First Name", "Last Name", "Company", "Category",
+                "Email", "Invoice no"));
         header.addAll(users.getTicketOptionLabels());
 
         try {
@@ -54,7 +55,8 @@ public class Stats extends ControllerBean {
 
             for (ViewTicket viewTicket : users.getTickets()) {
                 List<String> elements = new ArrayList<String>(Arrays.asList(viewTicket.getFirstName(),
-                        viewTicket.getLastName(), viewTicket.getCompany(), viewTicket.getCategory()));
+                        viewTicket.getLastName(), viewTicket.getCompany(), viewTicket.getCategory(),
+                        viewTicket.getEmail(), viewTicket.getInvoiceNo()));
                 elements.addAll(viewTicket.getOptionValues());
 
                 writer.write(elements);
